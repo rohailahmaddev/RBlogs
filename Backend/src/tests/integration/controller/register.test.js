@@ -2,11 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import request from "supertest";
 import fs from "node:fs/promises";
 
-/* ------------------------------------------------------------------ */
-/*  Mock everything that talks to the outside world                    */
-/*  (database, Cloudinary, email). Paths are relative to THIS file,    */
-/*  so keep it next to service.js.                                     */
-/* ------------------------------------------------------------------ */
 vi.mock("../../../modules/repository.js", () => ({
   getUserByEmailRepo: vi.fn(),
   createUser : vi.fn(),

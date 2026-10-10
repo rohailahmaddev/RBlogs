@@ -1,6 +1,6 @@
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { forgotPasswordService, resendVerificationEmailService, resetPasswordService, userRegisterService, verifyEmailService } from "./service.js";
+import { forgotPasswordService, loginUserService, logoutUserService, resendVerificationEmailService, resetPasswordService, userRegisterService, verifyEmailService } from "./service.js";
 
 export const registerUserController = asyncHandler(async (req,res) => {
     const { name, email, password, bio } = req.body;
@@ -48,10 +48,6 @@ export const loginUserController = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
     const loginResult = await loginUserService(email, password, req);
-
-    if (!loginResult) {
-        throw new Error("Unable to log in user");
-    }
 
     const { loggedInUser, cookieOptions, accessToken, refreshToken } = loginResult;
 

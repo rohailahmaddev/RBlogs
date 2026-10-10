@@ -2,9 +2,9 @@ import { env } from "../config/env.js";
 import { sendFogotPasswordEmail, sendVerificationEmail } from "../infrastructure/email/email.services.js";
 import { deleteFromCloudinary, uploadOnCloudinary } from "../infrastructure/storage/cloudinary.storage.js";
 import { ApiError } from "../utils/ApiError.js";
-import { getAccessAndRefreshToken, getErrorMessage, hashPassword, hashToken, isDuplicateError } from "../utils/helper.js";
+import { comparePassword, getAccessAndRefreshToken, getErrorMessage, hashPassword, hashToken, isDuplicateError } from "../utils/helper.js";
 import { getTemporaryToken } from "../utils/jwt.js";
-import { createUser, getUserByEmailRepo, getUserByResetPasswordToken, logoutUser, updateForgotPasswordToken, updateUserPasswordById, updateVerificationEmailTokenRepo, verifyEmailRepo } from "./repository.js";
+import { clearForgotPasswordToken, createUser, getUserByEmailRepo, getUserByResetPasswordToken, logoutUser, updateForgotPasswordToken, updateUserPasswordById, updateVerificationEmailTokenRepo, verifyEmailRepo } from "./repository.js";
 
 const sendEmailService = async (user, req) => {
     const { unHashedToken, hashedToken, tokenExpiry } = getTemporaryToken()
@@ -14,7 +14,7 @@ const sendEmailService = async (user, req) => {
     } catch (error) {
         throw new ApiError(500, "Something went wrong.")
     }
-    
+
     await sendVerificationEmail(user, req, unHashedToken)
 }
 
@@ -165,21 +165,20 @@ export const loginUserService = async (email, password, req) => {
     const user = await getUserByEmailRepo(email)
 
     if (!user) {
-        throw new ApiError(400, "Invalid email. Please register first.")
+        throw new ApiError(400, "Invalid login credentials.")
     }
 
-    if (!user.is_active) {
-        throw new ApiError(403, "Your account is blocked please contact support service.")
-    }
-
+    // if (!user.is_active) {
+    //     throw new ApiError(403, "Your account is blocked please contact support service.")
+    // }
     const isPasswordMatch = await passwordCheckService(password, user)
-
+      
     if (isPasswordMatch) {
         if (!user.is_verified) {
             await sendEmailService(user, req);
             throw new ApiError(409, "User already exist but not verified. Please check your email for verification link.")
         }
-
+        
         const { accessToken, refreshToken } = await getAccessAndRefreshToken(user.id);
 
         const cookieOptions = {
@@ -190,7 +189,7 @@ export const loginUserService = async (email, password, req) => {
         };
 
         const loggedInUser = {
-            full_name: user.full_name,
+            full_name: user.name,
             email: user.email,
         };
 
@@ -199,7 +198,7 @@ export const loginUserService = async (email, password, req) => {
 }
 
 export const logoutUserService = async (accessToken, refreshToken) => {
-    if (!accessToken || accessToken.trim() === '' || !refreshToken || refreshToken.trim() === '') {
+    if ( typeof accessToken !== "string" || !accessToken || accessToken.trim() === '' || !refreshToken || refreshToken.trim() === '') {
         throw new ApiError(400, "No tokens found in cookies")
     }
 
@@ -208,6 +207,7 @@ export const logoutUserService = async (accessToken, refreshToken) => {
     try {
         await logoutUser(hashedRefreshToken)
     } catch (error) {
+        console.error(error)
         throw new ApiError(500, "Failed to logout.")
     }
 
@@ -234,7 +234,17 @@ export const forgotPasswordService = async (email, req) => {
         throw new ApiError(500, "Failed to generate the tokens try again")
     }
 
-    await sendFogotPasswordEmail(user, req, unHashedToken);
+    try {
+        await sendFogotPasswordEmail(user, req, unHashedToken);
+    } catch (error) {
+        // Remove the token that the user never received.
+        try {
+            await clearForgotPasswordToken(user.id);
+        } catch (cleanupError) {
+            console.error("Failed to clear password reset token:",cleanupError);
+        }
+        throw new ApiError(500,"Unable to send the password reset email. Please try again.");
+    }
 
     return null;
 }
@@ -249,15 +259,15 @@ export const resetPasswordService = async (unhashedToken, newPassword) => {
         throw new ApiError(500, "Failed to found the user try again.")
     }
 
-    if (user.length === 0) {
+    if (!user || user.length === 0) {
         throw new ApiError(400, "Invalid user or reset time is over. Please request a new password reset link.")
     }
-
-    const hashedPassword = await hashPassword(newPassword)
 
     if (!user[0]?.id) {
         throw new ApiError(400, "Invalid user or reset time is over. Please request a new password reset link.")
     }
+
+    const hashedPassword = await hashPassword(newPassword)
 
     try {
         await updateUserPasswordById(user[0]?.id, hashedPassword)

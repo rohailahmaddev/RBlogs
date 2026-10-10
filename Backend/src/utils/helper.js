@@ -185,4 +185,4 @@ export const requiredString = (label) =>
   z.string({
     error: (issue) =>
       issue.input === undefined ? `Please provide register ${label}` : `${label} must be text`,
-  });
+});

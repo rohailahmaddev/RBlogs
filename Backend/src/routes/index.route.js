@@ -2,8 +2,8 @@ import {Router} from "express"
 // import { addBlog, deleteBlog, getBlogs, getSingleBlog, loginUser, logoutUser, registerUser, updateBlog } from "../modules/index.controllers.js";
 import {verifyJWT, verifyAdmin} from "../middleware/auth.middleware.js"
 import upload from "../middleware/multer.middleware.js";
-import { loginSchema, registerSchema, resendVerificationEmailSchema, resetPasswordSchema } from "../validator/auth.validations.js";
-import { loginUserController, logoutUserController, registerUserController, resendVerificationEmailController, resetPasswordController, verifyEmailController } from "../modules/controller.js";
+import { forgotPasswordSchema, loginSchema, registerSchema, resendVerificationEmailSchema, resetPasswordSchema } from "../validator/auth.validations.js";
+import { forgotPasswordController, loginUserController, logoutUserController, registerUserController, resendVerificationEmailController, resetPasswordController, verifyEmailController } from "../modules/controller.js";
 import { validateSchema } from "../middleware/validate.middleware.js";
 
 const router = Router();
@@ -30,8 +30,12 @@ router.route("/login").post(
 )
 
 router.route("/logout").post(
-  verifyJWT,
   logoutUserController
+)
+
+router.route("/forgot-password").post(
+  validateSchema(forgotPasswordSchema),
+  forgotPasswordController
 )
 
 router.route("/reset-password/:token").post(

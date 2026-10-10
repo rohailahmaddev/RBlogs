@@ -2,7 +2,6 @@ import Mailgen from "mailgen";
 import { passwordResetMailGenerator, verificationMailGenerator } from "./email.templates.js"
 import { transporter } from "./email.config.js";
 import { ApiError } from "../../utils/ApiError.js";
-import { getErrorMessage } from "../../utils/helper.js";
 
 
 
@@ -55,11 +54,10 @@ export const sendFogotPasswordEmail = async (user, req, unHashedToken) => {
         subject: "Please reset your password.",
         mailgenContent: passwordResetMailGenerator(
           user?.full_name,
-          `${req.protocol}://${req.get("host")}/api/auth/reset-password/${unHashedToken}`
+          `${req.protocol}://${req.get("host")}/api/v1/user/reset-password/${unHashedToken}`
         ),
       })
     } catch (error) {
       throw new ApiError(500, `Failed to reset password email.`)
     }
 }
-
