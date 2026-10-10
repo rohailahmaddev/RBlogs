@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { requiredString } from "../utils/helper";
 
 //register
 export const registerSchema = z.object({
@@ -47,6 +48,15 @@ export const forgotPasswordSchema = z.object({
     .string()
     .trim()
     .toLowerCase()
+    .email("Invalid email address"),
+});
+
+//resendVerificationEmail
+export const resendVerificationEmailSchema = z.object({
+  email: requiredString("email")
+    .trim()
+    .toLowerCase()
+    .min(1, "Please provide register email")   // "" or "   " counts as missing
     .email("Invalid email address"),
 });
 

@@ -45,20 +45,20 @@ export const createUser = async ({ name, email, hashedPassword, bio, imageUrl, h
 }
 
 export const verifyEmailRepo = async (hashedToken) => {
-    const user = await prisma.user.update({
-        where: {
-            verify_token: hashedToken,
-            verify_token_expiry: {
-                gt: new Date(),
-            },
-        },
-        data: {
-            is_verified: true
-        }
-    })
-
-    return user;
-}
+  try {
+    return await prisma.user.update({
+      where: {
+        verifyToken: hashedToken,                
+        verifyTokenExpiry: { gt: new Date() },   
+      },
+      data: { isVerified: true, verifyToken: null, verifyTokenExpiry: null },
+      select: { id: true, name: true, email: true },
+    });
+  } catch (error) {
+    if (error.code === "P2025") return null; 
+    throw error;                              
+  }
+};
 
 export const logoutUser = async (refreshToken) => {
     await prisma.user.update({

@@ -2,7 +2,7 @@ import {Router} from "express"
 // import { addBlog, deleteBlog, getBlogs, getSingleBlog, loginUser, logoutUser, registerUser, updateBlog } from "../modules/index.controllers.js";
 import {verifyJWT, verifyAdmin} from "../middleware/auth.middleware.js"
 import upload from "../middleware/multer.middleware.js";
-import { loginSchema, registerSchema, resetPasswordSchema } from "../validator/auth.validations.js";
+import { loginSchema, registerSchema, resendVerificationEmailSchema, resetPasswordSchema } from "../validator/auth.validations.js";
 import { loginUserController, logoutUserController, registerUserController, resendVerificationEmailController, resetPasswordController, verifyEmailController } from "../modules/controller.js";
 import { validateSchema } from "../middleware/validate.middleware.js";
 
@@ -20,6 +20,7 @@ router.route("/email-verify/:token").post(
 )
 
 router.route("/resend-verification-email").post(
+  validateSchema(resendVerificationEmailSchema),
   resendVerificationEmailController
 )
 

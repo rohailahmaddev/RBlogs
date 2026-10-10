@@ -11,8 +11,8 @@ const sendEmail = async ( options ) => {
   const mailGenerator = new Mailgen({
     theme: "default",
     product: {
-      name: "3R Store",
-      link: "https://3rstore.com"
+      name: "RBlogs",
+      link: "https://RBlogs.com"
     }
   })
 
@@ -21,14 +21,14 @@ const sendEmail = async ( options ) => {
 
   try {
     await transporter.sendMail({
-      from: "https://3rstore.com",
+      from: "https://RBlogs.com",
       to: options.email,
       subject: options.subject,
       text: emailTextual,
       html: emailHTML
     });
   } catch (error) {
-    throw new ApiError(500, `Failed to send email. ${getErrorMessage(error)}`);
+    throw new ApiError(500, `Failed to send email.`);
   }
   
 };
@@ -40,11 +40,11 @@ export const sendVerificationEmail = async (user, req, unHashedToken) => {
         subject: "Please verify your email",
         mailgenContent: verificationMailGenerator(
           user?.full_name,
-          `${req.protocol}://${req.get("host")}/api/auth/verify-email/${unHashedToken}`
+          `${req.protocol}://${req.get("host")}/api/v1/user/verify-email/${unHashedToken}`
         ),
       })
     } catch (error) {
-      throw new ApiError(500, `Failed to send verification email. ${getErrorMessage(error)}`)
+      throw new ApiError(500, `Failed to send verification email.`)
     }
 }
 
@@ -59,7 +59,7 @@ export const sendFogotPasswordEmail = async (user, req, unHashedToken) => {
         ),
       })
     } catch (error) {
-      throw new ApiError(500, `Failed to reset password email. ${getErrorMessage(error)}`)
+      throw new ApiError(500, `Failed to reset password email.`)
     }
 }
 

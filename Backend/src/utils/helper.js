@@ -5,6 +5,7 @@ import crypto from "crypto"
 import { ApiError } from "./ApiError.js";
 import { getAccessToken, getRefreshToken } from "./jwt.js";
 import { prisma } from "../config/database.js";
+import z from "zod";
 
 export const hashToken = (token) => {    
   return crypto.createHmac("sha256",env.TEMPORARY_TOKEN_SECRET).update(token).digest("hex");
@@ -177,3 +178,11 @@ function isAxiosLikeError(
 ) {
   return typeof error === "object" && error !== null && "isAxiosError" in error;
 }
+
+export const isDuplicateError = (error) => error?.code === "ER_DUP_ENTRY" || error?.code === "P2002";
+
+export const requiredString = (label) =>
+  z.string({
+    error: (issue) =>
+      issue.input === undefined ? `Please provide register ${label}` : `${label} must be text`,
+  });

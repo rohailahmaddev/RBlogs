@@ -2,7 +2,7 @@ import { env } from "../config/env.js";
 import { sendFogotPasswordEmail, sendVerificationEmail } from "../infrastructure/email/email.services.js";
 import { deleteFromCloudinary, uploadOnCloudinary } from "../infrastructure/storage/cloudinary.storage.js";
 import { ApiError } from "../utils/ApiError.js";
-import { getAccessAndRefreshToken, getErrorMessage, hashPassword, hashToken } from "../utils/helper.js";
+import { getAccessAndRefreshToken, getErrorMessage, hashPassword, hashToken, isDuplicateError } from "../utils/helper.js";
 import { getTemporaryToken } from "../utils/jwt.js";
 import { createUser, getUserByEmailRepo, getUserByResetPasswordToken, logoutUser, updateForgotPasswordToken, updateUserPasswordById, updateVerificationEmailTokenRepo, verifyEmailRepo } from "./repository.js";
 
@@ -14,7 +14,7 @@ const sendEmailService = async (user, req) => {
     } catch (error) {
         throw new ApiError(500, "Something went wrong.")
     }
-
+    
     await sendVerificationEmail(user, req, unHashedToken)
 }
 
@@ -68,7 +68,7 @@ export const userRegisterService = async ({
         }
 
         // duplicate email error check.
-        if (error.code === "ER_DUP_ENTRY") {
+        if (isDuplicateError(error)) {
             throw new ApiError(409, "User already exist. Please login.");
         }
 
@@ -77,8 +77,8 @@ export const userRegisterService = async ({
 
     const insertedUser = {
         id: result.id,
-        name: result.name,
-        email: result.email,
+        name,
+        email,
     };
 
     await sendVerificationEmail(insertedUser, req, unHashedToken);
@@ -86,26 +86,35 @@ export const userRegisterService = async ({
     return insertedUser;
 }
 
+const VERIFY_FAILED_MESSAGE = "Invalid user or verification time is over. Please request a new verification email.";
+
 export const verifyEmailService = async (unhashedToken) => {
 
     if (unhashedToken.trim() === '') {
-        throw new ApiError(402, "Token is not present. Please resend verification email")
+        throw new ApiError(400, "Token is not present. Please resend verification email")
     }
 
     const hashedToken = hashToken(unhashedToken)
 
     let result;
     try {
+
         result = await verifyEmailRepo(hashedToken)
+
     } catch (error) {
-        throw new ApiError(400, `Invalid user or verification time is over. Please request a new verification email.`)
+
+        throw new ApiError(500, `Something went wrong.}`)
+    }
+
+    
+    if(!result){
+        throw new ApiError(400, VERIFY_FAILED_MESSAGE)
     }
 
     const verifiedUser = {
         id: result.id,
-        full_name: result.full_name,
+        name: result.name,
         email: result.email,
-        phone: result.phone,
     }
 
     return verifiedUser;
@@ -115,11 +124,17 @@ export const verifyEmailService = async (unhashedToken) => {
 
 export const resendVerificationEmailService = async (email, req) => {
 
-    if (email.trim() === '') {
-        throw new ApiError(402, "Please provide register email for resend verification email.")
+    if (typeof email !== "string" || email.trim() === "") {
+        throw new ApiError(400, "Please provide register email for resend verification email.")
     }
 
-    const user = await getUserByEmailRepo(email)
+    let user;
+    try {
+        user = await getUserByEmailRepo(email.trim())
+    } catch (error) {
+        throw new ApiError(500, "Something went wrong.")
+    }
+    
 
     if (!user) {
         throw new ApiError(400, "Invalid email. Please register first.")

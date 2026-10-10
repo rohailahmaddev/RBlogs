@@ -10,7 +10,7 @@ export const errorHandler = ( err, req, res, next ) => {
     const customErr = err;
 
     let statusCode = 500;
-    let message = err.message || "Something went wrong";
+    let message = "Something went wrong";
     let errors;
 
     // --- MySQL-specific errors ---
@@ -54,10 +54,9 @@ export const errorHandler = ( err, req, res, next ) => {
     statusCode: error.statusCode,
     message: error.message,
     code:error.code,
-    errors: error.errors,
+    // errors: error.errors,
     // Only leak stack trace in development
     ...(env.NODE_ENV === "development" && { stack: error.stack }),
   };
-
   return res.status(error.statusCode).json(response);
 };
