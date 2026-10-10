@@ -36,7 +36,7 @@ import { hashPassword, hashToken } from "../../../utils/helper.js";
 /* ------------------------------------------------------------------ */
 const BASE = "/api/v1/user/reset-password"; // <- change to your real route
 const RAW_TOKEN = "9d2f6c1e4b7a8035c1d9e2f4a6b8c0d1";
-const NEW_PASSWORD = "N3w!Str0ng#Passw0rd"; // must satisfy your resetPasswordSchema
+const NEW_PASSWORD = "N3w!Str0n"; // must satisfy your resetPasswordSchema
 const HASHED_PASSWORD = "$2b$10$mockedHashOfTheNewPassword";
 
 // ASSUMPTION: body is { newPassword }. Add confirmPassword here if your schema needs it.

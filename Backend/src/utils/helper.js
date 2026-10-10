@@ -184,5 +184,5 @@ export const isDuplicateError = (error) => error?.code === "ER_DUP_ENTRY" || err
 export const requiredString = (label) =>
   z.string({
     error: (issue) =>
-      issue.input === undefined ? `Please provide register ${label}` : `${label} must be text`,
+      issue.input === undefined ? `Please provide ${label}` : `${label} must be text`,
 });

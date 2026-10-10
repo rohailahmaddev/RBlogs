@@ -60,12 +60,12 @@ export const resendVerificationEmailSchema = z.object({
 
 //reset 
 export const resetPasswordSchema = z.object({
-  token: z
-    .string()
-    .trim()
-    .min(1, "Reset token is required"),
+  // token: z
+  //   .string()
+  //   .trim()
+  //   .min(1, "Reset token is required"),
 
-  password: requiredString("password")
+  newPassword: requiredString("New password")
     .trim()
     .min(8, "Password must be at least 8 characters")
     .max(10, "Password must not exceed 10 characters"),
