@@ -1,0 +1,95 @@
+
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum Role {
+    admin
+    publisher
+    reader
+}
+
+enum PostStatus {
+    draft
+    published
+}
+
+model User {
+    id        Int      @id @default(autoincrement())
+    name     String     @db.VarChar(200)
+    email     String   @unique @db.VarChar(200)
+    password String    @db.VarChar(100)
+    role     Role      @default(reader)
+    avatar_url String?  @db.VarChar(500)
+    bio       String?   @db.VarChar(300)
+    is_verified Boolean   @default(false)
+    verify_token          String?          @unique @db.VarChar(255)
+    verify_token_expiry   DateTime?
+    reset_token           String?          @db.VarChar(255)
+    reset_token_expiry    DateTime?
+    refresh_token String?          @db.VarChar(255)
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+    Posts Posts[]
+    subscriptions subscriptions[] @relation("UserSubscriptions")
+    subscribers subscriptions[] @relation("AuthorSubscribers")
+}
+
+model Categories {
+    id        Int      @id @default(autoincrement())
+    name      String   @unique @db.VarChar(100)
+    slug     String   @unique @db.VarChar(100)
+    created_at DateTime @default(now())
+    Posts Posts[]
+}
+
+model Posts {
+    id Int @id @default(autoincrement())
+    author_id Int
+    category_id Int
+    title String @db.VarChar(500)
+    slug String @unique @db.VarChar(500)
+    excerpt String @db.VarChar(500)
+    content Json
+    cover_url String? @db.VarChar(500)
+    status PostStatus @default(draft)
+    read_time Int @default(1)
+    published_at DateTime @default(now())
+    notity_at DateTime?
+    updated_at DateTime @updatedAt
+    created_at DateTime @default(now())
+    category Categories @relation(fields: [category_id], references: [id], onDelete: Restrict)
+    author User @relation(fields: [author_id], references: [id], onDelete: Restrict)
+
+    @@index([status, published_at])
+    @@index([author_id])
+    @@index([category_id])
+}
+
+model subscriptions {
+    id Int @id @default(autoincrement())
+    subscriber_id Int
+    publisher_id Int
+    created_at DateTime @default(now())
+    subscriber User @relation("UserSubscriptions", fields: [subscriber_id], references: [id], onDelete: Cascade)
+    publisher User @relation("AuthorSubscribers", fields: [publisher_id], references: [id], onDelete: Cascade)
+
+    @@unique([subscriber_id, publisher_id])
+    @@index([publisher_id])
+}
+
+model ContactMessage {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(100)
+  email     String   @db.VarChar(255)
+  subject   String   @db.VarChar(200)
+  message   String   @db.Text
+  isRead    Boolean  @default(false) @map("is_read")
+  createdAt DateTime @default(now()) @map("created_at")
+}
