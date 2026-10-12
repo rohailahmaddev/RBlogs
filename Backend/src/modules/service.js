@@ -25,7 +25,7 @@ const uploadAvatarImage = async (avatarLocalPath) => {
     } catch (error) {
         throw new ApiError(502, `Failed to upload avatar image. ${getErrorMessage(error)}`)
     }
-    
+
 }
 
 export const userRegisterService = async ({
@@ -106,8 +106,8 @@ export const verifyEmailService = async (unhashedToken) => {
         throw new ApiError(500, `Something went wrong.}`)
     }
 
-    
-    if(!result){
+
+    if (!result) {
         throw new ApiError(400, VERIFY_FAILED_MESSAGE)
     }
 
@@ -134,7 +134,7 @@ export const resendVerificationEmailService = async (email, req) => {
     } catch (error) {
         throw new ApiError(500, "Something went wrong.")
     }
-    
+
 
     if (!user) {
         throw new ApiError(400, "Invalid email. Please register first.")
@@ -172,13 +172,13 @@ export const loginUserService = async (email, password, req) => {
     //     throw new ApiError(403, "Your account is blocked please contact support service.")
     // }
     const isPasswordMatch = await passwordCheckService(password, user)
-      
+
     if (isPasswordMatch) {
         if (!user.is_verified) {
             await sendEmailService(user, req);
             throw new ApiError(409, "User already exist but not verified. Please check your email for verification link.")
         }
-        
+
         const { accessToken, refreshToken } = await getAccessAndRefreshToken(user.id);
 
         const cookieOptions = {
@@ -198,7 +198,7 @@ export const loginUserService = async (email, password, req) => {
 }
 
 export const logoutUserService = async (accessToken, refreshToken) => {
-    if ( typeof accessToken !== "string" || !accessToken || accessToken.trim() === '' || !refreshToken || refreshToken.trim() === '') {
+    if (typeof accessToken !== "string" || !accessToken || accessToken.trim() === '' || !refreshToken || refreshToken.trim() === '') {
         throw new ApiError(400, "No tokens found in cookies")
     }
 
@@ -241,9 +241,9 @@ export const forgotPasswordService = async (email, req) => {
         try {
             await clearForgotPasswordToken(user.id);
         } catch (cleanupError) {
-            console.error("Failed to clear password reset token:",cleanupError);
+            console.error("Failed to clear password reset token:", cleanupError);
         }
-        throw new ApiError(500,"Unable to send the password reset email. Please try again.");
+        throw new ApiError(500, "Unable to send the password reset email. Please try again.");
     }
 
     return null;

@@ -7,24 +7,24 @@ import { getAccessToken, getRefreshToken } from "./jwt.js";
 import { prisma } from "../config/database.js";
 import z from "zod";
 
-export const hashToken = (token) => {    
-  return crypto.createHmac("sha256",env.TEMPORARY_TOKEN_SECRET).update(token).digest("hex");
+export const hashToken = (token) => {
+  return crypto.createHmac("sha256", env.TEMPORARY_TOKEN_SECRET).update(token).digest("hex");
 }
 
 export const hashPassword = async (password) => {
-  const hashedPassword = await bcrypt.hash(password,10)
+  const hashedPassword = await bcrypt.hash(password, 10)
   return hashedPassword;
 }
 
 export const comparePassword = async (newPassword, userPassword) => {
-  const isPassword = await bcrypt.compare(newPassword,userPassword)
+  const isPassword = await bcrypt.compare(newPassword, userPassword)
   return isPassword;
 }
 
 export const getAccessAndRefreshToken = async (userId) => {
 
   const user = await prisma.user.findUnique({
-    where:{id:userId},
+    where: { id: userId },
   })
 
   if (!user) {
@@ -38,19 +38,19 @@ export const getAccessAndRefreshToken = async (userId) => {
     // const refreshTokenExpiryMs = ms(env.REFRESH_TOKEN_EXPIRY);
     // const refreshTokenExpiry = new Date(Date.now() + refreshTokenExpiryMs);
 
-    await prisma.$transaction( async (tx) => {
-        await tx.user.update({
-          where:{id:userId},
-            data:{
-              refresh_token:refreshToken, 
-            }
-        })
+    await prisma.$transaction(async (tx) => {
+      await tx.user.update({
+        where: { id: userId },
+        data: {
+          refresh_token: refreshToken,
+        }
+      })
     })
 
     return { accessToken, refreshToken };
 
   } catch (error) {
-    const message = error instanceof Error ? error.message: String(error)
+    const message = error instanceof Error ? error.message : String(error)
     throw new ApiError(500, `Something went wrong. ${message}`)
   }
 }
@@ -60,7 +60,7 @@ export function getErrorMessage(error) {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     switch (error.code) {
       case "P2002": {
-        const meta = error.meta 
+        const meta = error.meta
 
         // Newer driver-adapter shape (e.g. MySQL via Prisma driver adapters)
         const constraintIndex = meta?.driverAdapterError?.cause?.constraint?.index;
@@ -157,13 +157,13 @@ export function getErrorMessage(error) {
 
 function isCloudinaryError(
   error
-){
+) {
   return typeof error === "object" && error !== null && "http_code" in error;
 }
 
 function isSmtpError(
   error
-){
+) {
   return (
     typeof error === "object" &&
     error !== null &&
@@ -185,4 +185,4 @@ export const requiredString = (label) =>
   z.string({
     error: (issue) =>
       issue.input === undefined ? `Please provide ${label}` : `${label} must be text`,
-});
+  });

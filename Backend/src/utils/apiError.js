@@ -5,7 +5,7 @@ export class ApiError extends Error {
     code,
     errors,
     stack
-) {
+  ) {
     super(message);
     this.statusCode = statusCode;
     this.code = code;

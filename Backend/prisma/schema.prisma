@@ -9,10 +9,10 @@ datasource db {
   provider = "mysql"
 }
 
-enum Role {
-    admin
-    publisher
-    reader
+enum ROLE {
+    ADMIN
+    PUBLISHER
+    READER
 }
 
 enum PostStatus {
@@ -25,7 +25,7 @@ model User {
     name     String     @db.VarChar(200)
     email     String   @unique @db.VarChar(200)
     password String    @db.VarChar(100)
-    role     Role      @default(reader)
+    role     ROLE      @default(READER)
     avatar_url String?  @db.VarChar(500)
     bio       String?   @db.VarChar(300)
     is_verified Boolean   @default(false)

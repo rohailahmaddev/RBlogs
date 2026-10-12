@@ -48,7 +48,7 @@ beforeEach(() => {
   vi.resetAllMocks();
   getUserByEmailRepo.mockResolvedValue(unverifiedUser);
   sendVerificationEmail.mockResolvedValue(undefined);
-  vi.spyOn(console, "error").mockImplementation(() => {});
+  vi.spyOn(console, "error").mockImplementation(() => { });
 });
 
 /* ------------------------------------------------------------------ */
@@ -195,7 +195,7 @@ describe("POST /resend-verification-email", () => {
       sendVerificationEmail.mockRejectedValue(new Error("SMTP 535 auth failed for smtp.secret-host.com"));
       getUserByEmailRepo.mockResolvedValue(unverifiedUser);
       const mailRes = await resend();
-      
+
       expect(JSON.stringify(dbRes.body)).not.toMatch(/ER_PARSE_ERROR|SELECT|user/i);
       expect(JSON.stringify(mailRes.body)).not.toMatch(/SMTP|secret-host/i);
     });

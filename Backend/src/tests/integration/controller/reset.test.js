@@ -51,7 +51,7 @@ beforeEach(() => {
   getUserByResetPasswordToken.mockResolvedValue([row]);
   hashPassword.mockResolvedValue(HASHED_PASSWORD);
   updateUserPasswordById.mockResolvedValue(undefined);
-  vi.spyOn(console, "error").mockImplementation(() => {});
+  vi.spyOn(console, "error").mockImplementation(() => { });
 });
 
 /* ------------------------------------------------------------------ */

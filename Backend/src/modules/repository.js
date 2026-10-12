@@ -1,4 +1,4 @@
-import { prisma} from "../config/database.js"
+import { prisma } from "../config/database.js"
 
 
 export const getUserByEmailRepo = async (email) => {
@@ -38,26 +38,26 @@ export const createUser = async ({ name, email, hashedPassword, bio, imageUrl, h
             avatar_url: imageUrl,
             bio: bio,
             verify_token: hashedToken,
-            verify_token_expiry:   tokenExpiry
+            verify_token_expiry: tokenExpiry
         }
     })
     return result;
 }
 
 export const verifyEmailRepo = async (hashedToken) => {
-  try {
-    return await prisma.user.update({
-      where: {
-        verifyToken: hashedToken,                
-        verifyTokenExpiry: { gt: new Date() },   
-      },
-      data: { isVerified: true, verifyToken: null, verifyTokenExpiry: null },
-      select: { id: true, name: true, email: true },
-    });
-  } catch (error) {
-    if (error.code === "P2025") return null; 
-    throw error;                              
-  }
+    try {
+        return await prisma.user.update({
+            where: {
+                verifyToken: hashedToken,
+                verifyTokenExpiry: { gt: new Date() },
+            },
+            data: { isVerified: true, verifyToken: null, verifyTokenExpiry: null },
+            select: { id: true, name: true, email: true },
+        });
+    } catch (error) {
+        if (error.code === "P2025") return null;
+        throw error;
+    }
 };
 
 export const logoutUser = async (refreshToken) => {
@@ -81,13 +81,13 @@ export const updateForgotPasswordToken = async (userId, hashedToken, tokenExpiry
 }
 
 export const clearForgotPasswordToken = async (userId) => {
-  return prisma.user.update({
-    where: { id: userId },
-    data: {
-      reset_token: null,
-      reset_token_expiry: null,
-    },
-  });
+    return prisma.user.update({
+        where: { id: userId },
+        data: {
+            reset_token: null,
+            reset_token_expiry: null,
+        },
+    });
 };
 
 export const getUserByResetPasswordToken = async (hashedToken) => {

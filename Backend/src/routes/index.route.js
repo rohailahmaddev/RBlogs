@@ -1,6 +1,6 @@
-import {Router} from "express"
+import { Router } from "express"
 // import { addBlog, deleteBlog, getBlogs, getSingleBlog, loginUser, logoutUser, registerUser, updateBlog } from "../modules/index.controllers.js";
-import {verifyJWT, verifyAdmin} from "../middleware/auth.middleware.js"
+import { verifyJWT, verifyAdmin } from "../middleware/auth.middleware.js"
 import upload from "../middleware/multer.middleware.js";
 import { forgotPasswordSchema, loginSchema, registerSchema, resendVerificationEmailSchema, resetPasswordSchema } from "../validator/auth.validations.js";
 import { forgotPasswordController, loginUserController, logoutUserController, registerUserController, resendVerificationEmailController, resetPasswordController, verifyEmailController } from "../modules/controller.js";

@@ -3,22 +3,22 @@ import { requiredString } from "../utils/helper";
 
 //register
 export const registerSchema = z.object({
- name: requiredString("name")
+  name: requiredString("name")
     .trim()
     .min(2, "Name must be at least 2 characters")
     .max(50, "Name must not exceed 50 characters"),
- 
+
   email: requiredString("email")
     .trim()
     .toLowerCase()
     .min(1, "Please provide register email.")
     .email("Invalid email address"),
- 
+
   password: requiredString("password")
     .trim()
     .min(8, "Password must be at least 8 characters")
     .max(10, "Password must not exceed 10 characters"),
- 
+
   bio: z
     .string()
     .trim()
@@ -28,10 +28,10 @@ export const registerSchema = z.object({
 
 //login
 export const loginSchema = z.object({
-  email:requiredString("email")
+  email: requiredString("email")
     .trim()
     .toLowerCase()
-    .min(1,"Please provide register email")
+    .min(1, "Please provide register email")
     .email("Invalid email address"),
 
   password: requiredString("password")
@@ -42,10 +42,10 @@ export const loginSchema = z.object({
 
 //forgotPassword
 export const forgotPasswordSchema = z.object({
-  email:requiredString("email")
+  email: requiredString("email")
     .trim()
     .toLowerCase()
-    .min(1, "Please provide register email") 
+    .min(1, "Please provide register email")
     .email("Invalid email address"),
 });
 
@@ -75,19 +75,19 @@ export const resetPasswordSchema = z.object({
 export const changePasswordSchema = z
   .object({
     current_password: requiredString("Current password")
-    .trim()
-    .min(8, "Password must be at least 8 characters")
-    .max(10, "Password must not exceed 10 characters"),
+      .trim()
+      .min(8, "Password must be at least 8 characters")
+      .max(10, "Password must not exceed 10 characters"),
 
     new_password: requiredString("New password")
-    .trim()
-    .min(8, "Password must be at least 8 characters")
-    .max(10, "Password must not exceed 10 characters"),
+      .trim()
+      .min(8, "Password must be at least 8 characters")
+      .max(10, "Password must not exceed 10 characters"),
 
     confirm_password: requiredString("Confirm password")
-    .trim()
-    .min(8, "Password must be at least 8 characters")
-    .max(10, "Password must not exceed 10 characters"),
+      .trim()
+      .min(8, "Password must be at least 8 characters")
+      .max(10, "Password must not exceed 10 characters"),
   })
   .refine(
     (data) => data.new_password === data.confirm_password,
