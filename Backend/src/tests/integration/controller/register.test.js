@@ -2,9 +2,14 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import request from "supertest";
 import fs from "node:fs/promises";
 
+/* ------------------------------------------------------------------ */
+/*  Mock everything that talks to the outside world                    */
+/*  (database, Cloudinary, email). Paths are relative to THIS file,    */
+/*  so keep it next to service.js.                                     */
+/* ------------------------------------------------------------------ */
 vi.mock("../../../modules/repository.js", () => ({
   getUserByEmailRepo: vi.fn(),
-  createUser : vi.fn(),
+  createUser: vi.fn(),
   updateVerificationEmailTokenRepo: vi.fn(),
 }));
 
@@ -19,10 +24,9 @@ vi.mock("../../../infrastructure/storage/cloudinary.storage.js", () => ({
 
 // Imported AFTER the mocks above (vi.mock is hoisted by Vitest)
 import app from "../../../app.js";
-
 import {
   getUserByEmailRepo,
-  createUser ,
+  createUser,
   updateVerificationEmailTokenRepo,
 } from "../../../modules/repository.js";
 import { sendVerificationEmail } from "../../../infrastructure/email/email.services.js";
@@ -39,7 +43,7 @@ const REGISTER_URL = "/api/v1/user/register"; // <- change to your real route
 const validBody = {
   name: "Rohail",
   email: "rohail@example.com",
-  password: "Password12",
+  password: "Password1",
   bio: "Full-stack developer",
 };
 
@@ -88,10 +92,13 @@ describe("POST /register", () => {
     it("creates the user, hashes the password and sends a verification email", async () => {
       const res = await register();
 
+      console.log(res)
       expect(res.status).toBe(201);
       expect(res.body.message).toMatch(/verification email sent/i);
       expect(res.body.data.user).toMatchObject({
         id: 1,
+        name: validBody.name,
+        email: validBody.email,
       });
 
       // The DB gets a HASH, never the plain password
@@ -129,8 +136,25 @@ describe("POST /register", () => {
       expect(createUser).toHaveBeenCalledTimes(1);
     });
 
+    it("defaults new accounts to READER", async () => {
+      const res = await register();
+
+      expect(res.status).toBe(201);
+      expect(createUser).toHaveBeenCalledWith(expect.objectContaining({ role: "READER" }));
+      expect(res.body.data.user.role).toBe("READER");
+    });
+
+    it("lets a user register as PUBLISHER", async () => {
+      const res = await register({ ...validBody, role: "PUBLISHER" });
+
+      expect(res.status).toBe(201);
+      expect(createUser).toHaveBeenCalledWith(expect.objectContaining({ role: "PUBLISHER" }));
+      expect(res.body.data.user.role).toBe("PUBLISHER");
+    });
+
     it("uploads the avatar and stores its URL", async () => {
       const res = await register(validBody, { avatar: true });
+
       expect(res.status).toBe(201);
       expect(uploadOnCloudinary).toHaveBeenCalledTimes(1);
       expect(createUser).toHaveBeenCalledWith(
@@ -141,21 +165,37 @@ describe("POST /register", () => {
 
   describe("validation", () => {
     it.each([
-      ["invalid email", { email: "not-an-email" }],
-      ["missing email", { email: undefined }],
-      ["password shorter than 8", { password: "short" }],
-      ["password longer than 10", { password: "x".repeat(11) }],
-      ["missing password", { password: undefined }],
-      ["one-letter name", { name: "A" }],
-      ["missing name", { name: undefined }],
-      ["bio longer than 300", { bio: "b".repeat(301) }],
-    ])("rejects %s with 400 and touches nothing", async (_label, override) => {
+      ["invalid email", { email: "not-an-email" }, /invalid email/i],
+      ["missing email", { email: undefined }, /please provide email/i],
+      ["blank email", { email: "   " }, /please provide email/i],
+      ["missing password", { password: undefined }, /please provide password/i],
+      ["password shorter than 8", { password: "short" }, /at least 8/i],
+      ["password longer than 10", { password: "x".repeat(129) }, /not exceed 10/i],
+      ["missing name", { name: undefined }, /please provide name/i],
+      ["blank name", { name: "   " }, /Name must be at least 2 characters/i],
+      ["one-letter name", { name: "A" }, /at least 2/i],
+      ["bio longer than 300", { bio: "b".repeat(301) }, /bio must not exceed 300/i],
+      ["ADMIN role (privilege escalation)", { role: "ADMIN" }, /role must be/i],
+      ["unknown role", { role: "SUPERUSER" }, /role must be/i],
+    ])("rejects %s with 400 and a clear message", async (_label, override, message) => {
       const res = await register({ ...validBody, ...override });
 
       expect(res.status).toBe(400); // use 422 if your validate() middleware does
+      expect(res.body.message).toMatch(message);
       expect(getUserByEmailRepo).not.toHaveBeenCalled();
       expect(createUser).not.toHaveBeenCalled();
       expect(sendVerificationEmail).not.toHaveBeenCalled();
+    });
+
+    it("reports the first problem as `message` and every problem in `errors`", async () => {
+      const res = await register({ password: validBody.password }); // name and email missing
+
+      expect(res.status).toBe(400);
+      expect(res.body.message).toMatch(/please provide (name|email)/i);
+      expect(res.body.errors.fieldErrors).toMatchObject({
+        name: expect.arrayContaining([expect.stringMatching(/please provide name/i)]),
+        email: expect.arrayContaining([expect.stringMatching(/please provide email/i)]),
+      });
     });
   });
 
@@ -164,7 +204,7 @@ describe("POST /register", () => {
       getUserByEmailRepo.mockResolvedValue({ id: 7, email: validBody.email, is_verified: true });
 
       const res = await register();
-      
+
       expect(res.status).toBe(409);
       expect(res.body.message).toMatch(/already exist/i);
       expect(createUser).not.toHaveBeenCalled();

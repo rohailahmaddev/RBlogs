@@ -1,9 +1,9 @@
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { forgotPasswordService, loginUserService, logoutUserService, resendVerificationEmailService, resetPasswordService, userRegisterService, verifyEmailService } from "./service.js";
+import { addBlogPostService, forgotPasswordService, getAllUserService, loginUserService, logoutUserService, resendVerificationEmailService, resetPasswordService, userRegisterService, verifyEmailService } from "./service.js";
 
 export const registerUserController = asyncHandler(async (req, res) => {
-    const { name, email, password, bio } = req.body;
+    const { name, email, password, bio, role } = req.body;
 
     const avatarLocalPath = req.file?.path;
     const user = await userRegisterService({
@@ -11,6 +11,7 @@ export const registerUserController = asyncHandler(async (req, res) => {
         email,
         password,
         bio,
+        role,
         req,
         avatarLocalPath
     })
@@ -94,4 +95,23 @@ export const resetPasswordController = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(new ApiResponse(200, "Password reset successfully. Please login with your new password."))
+})
+
+export const getAllUserController = asyncHandler(async (req, res) => {
+    const users = await getAllUserService(req)
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, "User fetched successfully.",users))
+})
+
+
+
+//blogs posts
+export const addBlogPostController = asyncHandler(async (req, res) => {
+    const post = await addBlogPostService(req)
+
+    return res
+    .status(200)
+    .json(new ApiResponse(201, "Blog posted successfully.", post))
 })

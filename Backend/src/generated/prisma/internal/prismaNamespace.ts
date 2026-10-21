@@ -830,10 +830,11 @@ export const PostsScalarFieldEnum = {
   excerpt: 'excerpt',
   content: 'content',
   cover_url: 'cover_url',
+  public_id: 'public_id',
   status: 'status',
   read_time: 'read_time',
   published_at: 'published_at',
-  notity_at: 'notity_at',
+  notify_at: 'notify_at',
   updated_at: 'updated_at',
   created_at: 'created_at'
 } as const
@@ -930,7 +931,8 @@ export const PostsOrderByRelevanceFieldEnum = {
   title: 'title',
   slug: 'slug',
   excerpt: 'excerpt',
-  cover_url: 'cover_url'
+  cover_url: 'cover_url',
+  public_id: 'public_id'
 } as const
 
 export type PostsOrderByRelevanceFieldEnum = (typeof PostsOrderByRelevanceFieldEnum)[keyof typeof PostsOrderByRelevanceFieldEnum]
@@ -967,9 +969,9 @@ export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 
 
 
 /**
- * Reference to a field of type 'Role'
+ * Reference to a field of type 'ROLE'
  */
-export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
+export type EnumROLEFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ROLE'>
     
 
 

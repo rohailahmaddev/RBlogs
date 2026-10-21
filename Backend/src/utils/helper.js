@@ -186,3 +186,56 @@ export const requiredString = (label) =>
     error: (issue) =>
       issue.input === undefined ? `Please provide ${label}` : `${label} must be text`,
   });
+
+export function generateExcerpt(content, maxLength = 160) {
+  const plain = content
+    .replace(/<[^>]*>/g, " ")            // strip HTML tags
+    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1") // markdown links/images -> text
+    .replace(/[#*_`>~-]+/g, " ")         // markdown symbols
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (plain.length <= maxLength) return plain;
+
+  const cut = plain.slice(0, maxLength);
+  const lastSpace = cut.lastIndexOf(" ");
+  return (lastSpace > 0 ? cut.slice(0, lastSpace) : cut).trimEnd() + "…";
+}
+
+export function extractText(node){
+  if (node == null) return "";
+  if (typeof node === "string") return node;
+  if (Array.isArray(node)) return node.map(extractText).join(" ");
+
+  if (typeof node === "object") {
+    const obj = node;
+    const parts = [];
+    for (const [key, value] of Object.entries(obj)) {
+      // skip metadata that isn't readable content
+      if (["type", "id", "attrs", "marks", "url", "src", "level"].includes(key)) continue;
+      parts.push(extractText(value));
+    }
+    return parts.join(" ");
+  }
+  return "";
+}
+
+export function calculateReadTime(content, wpm = 200) {
+  const text = extractText(content)
+    .replace(/<[^>]*>/g, " ")  
+    .replace(/&nbsp;/g, " ")
+    .trim();
+
+  const words = text ? text.split(/\s+/).length : 0;
+  return Math.max(1, Math.ceil(words / wpm));
+}
+
+export const createSlug = (title) => {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "") 
+    .replace(/\s+/g, "-")         
+    .replace(/-+/g, "-");    
+}

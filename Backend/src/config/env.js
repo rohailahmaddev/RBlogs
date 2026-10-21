@@ -109,7 +109,8 @@ const envSchema = z.object({
     .string()
     .min(1, "CLOUDINARY_API_SECRET is required"),
 
-  ADMIN_EMAIL:requiredString("email")
+  ADMIN_EMAIL: z
+    .string()
     .trim()
     .toLowerCase()
     .min(1, "Please provide register email")

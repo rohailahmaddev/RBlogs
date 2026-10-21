@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { requiredString } from "../utils/helper";
-import { SELF_REGISTER_ROLES } from "../modules/RBAC/role";
+import { ROLES, SELF_REGISTER_ROLES } from "../modules/RBAC/role";
 
 //register
 export const registerSchema = z.object({
@@ -12,7 +12,7 @@ export const registerSchema = z.object({
   email: requiredString("email")
     .trim()
     .toLowerCase()
-    .min(1, "Please provide register email.")
+    .min(1, "Please provide email.")
     .email("Invalid email address"),
 
   password: requiredString("password")
@@ -36,7 +36,7 @@ export const loginSchema = z.object({
   email: requiredString("email")
     .trim()
     .toLowerCase()
-    .min(1, "Please provide register email")
+    .min(1, "Please provide email")
     .email("Invalid email address"),
 
   password: requiredString("password")
@@ -50,7 +50,7 @@ export const forgotPasswordSchema = z.object({
   email: requiredString("email")
     .trim()
     .toLowerCase()
-    .min(1, "Please provide register email")
+    .min(1, "Please provide email")
     .email("Invalid email address"),
 });
 
@@ -59,7 +59,7 @@ export const resendVerificationEmailSchema = z.object({
   email: requiredString("email")
     .trim()
     .toLowerCase()
-    .min(1, "Please provide register email")   // "" or "   " counts as missing
+    .min(1, "Please provide email")   // "" or "   " counts as missing
     .email("Invalid email address"),
 });
 

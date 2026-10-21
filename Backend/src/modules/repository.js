@@ -29,7 +29,7 @@ export const updateVerificationEmailTokenRepo = async (userId, verifyToken, veri
     return result;
 }
 
-export const createUser = async ({ name, email, hashedPassword, bio, imageUrl, hashedToken, tokenExpiry }) => {
+export const createUser = async ({ name, email, hashedPassword, bio, role, imageUrl, hashedToken, tokenExpiry }) => {
     const result = await prisma.user.create({
         data: {
             name: name,
@@ -37,6 +37,7 @@ export const createUser = async ({ name, email, hashedPassword, bio, imageUrl, h
             password: hashedPassword,
             avatar_url: imageUrl,
             bio: bio,
+            role:role,
             verify_token: hashedToken,
             verify_token_expiry: tokenExpiry
         }
@@ -107,5 +108,30 @@ export const updateUserPasswordById = async (userId, newPassword) => {
     await prisma.user.update({
         where: { id: userId },
         data: { password: newPassword }
+    })
+}
+
+
+//blog posts
+export const createBlogs = async({ userId, title, content, coverImage, categoryId, status, read_time, excerpt, imagePublicId, tx }) => {
+    await tx.posts.create({
+        user_id:userId,
+        category_id:categoryId,
+        title:title,
+        slug:slug,
+        excerpt:excerpt,
+        content:content,
+        cover_url:coverImage,
+        public_id:imagePublicId,
+        status:status,
+        read_time:read_time,
+        notity_at:null,
+    })
+}
+
+//category
+export const getCategory = async(categroy,tx) => {
+    return await tx.categories.findUnique({
+        where:{name:categroy}
     })
 }

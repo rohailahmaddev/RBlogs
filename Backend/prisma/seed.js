@@ -4,10 +4,9 @@
 //   1. Put ADMIN_EMAIL and ADMIN_PASSWORD in .env
 //   2. npx prisma db seed
 
-import { hashPassword } from "../utils/helper";
-import { prisma } from "./database";
-import { env } from "./env";
-
+import { hashPassword } from "../src/utils/helper";
+import { prisma } from "../src/config/database";
+import { env } from "../src/config/env";
 
 async function main() {
   const email = env.ADMIN_EMAIL?.trim().toLowerCase();
@@ -21,11 +20,10 @@ async function main() {
     update: { role: "ADMIN" },
     create: {
       name: "Admin",
-      username: "admin",
       email,
-      passwordHash: await hashPassword(password),
+      password: await hashPassword(password),
       role: "ADMIN",
-      isVerified: true,
+      is_verified: true,
     },
   });
 

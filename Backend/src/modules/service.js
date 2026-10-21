@@ -1,10 +1,12 @@
+import { prisma } from "../config/database.js";
 import { env } from "../config/env.js";
 import { sendFogotPasswordEmail, sendVerificationEmail } from "../infrastructure/email/email.services.js";
 import { deleteFromCloudinary, uploadOnCloudinary } from "../infrastructure/storage/cloudinary.storage.js";
 import { ApiError } from "../utils/ApiError.js";
-import { comparePassword, getAccessAndRefreshToken, getErrorMessage, hashPassword, hashToken, isDuplicateError } from "../utils/helper.js";
+import { calculateReadTime, comparePassword, createSlug, generateExcerpt, getAccessAndRefreshToken, getErrorMessage, hashPassword, hashToken, isDuplicateError } from "../utils/helper.js";
 import { getTemporaryToken } from "../utils/jwt.js";
-import { clearForgotPasswordToken, createUser, getUserByEmailRepo, getUserByResetPasswordToken, logoutUser, updateForgotPasswordToken, updateUserPasswordById, updateVerificationEmailTokenRepo, verifyEmailRepo } from "./repository.js";
+import { ROLES, SELF_REGISTER_ROLES } from "./RBAC/role.js";
+import { clearForgotPasswordToken, createBlogs, createUser, getCategory, getUserByEmailRepo, getUserByResetPasswordToken, logoutUser, updateForgotPasswordToken, updateUserPasswordById, updateVerificationEmailTokenRepo, verifyEmailRepo } from "./repository.js";
 
 const sendEmailService = async (user, req) => {
     const { unHashedToken, hashedToken, tokenExpiry } = getTemporaryToken()
@@ -18,10 +20,10 @@ const sendEmailService = async (user, req) => {
     await sendVerificationEmail(user, req, unHashedToken)
 }
 
-const uploadAvatarImage = async (avatarLocalPath) => {
+const uploadImage = async (imageLocalPath) => {
 
     try {
-        return await uploadOnCloudinary(avatarLocalPath)
+        return await uploadOnCloudinary(imageLocalPath)
     } catch (error) {
         throw new ApiError(502, `Failed to upload avatar image. ${getErrorMessage(error)}`)
     }
@@ -33,8 +35,13 @@ export const userRegisterService = async ({
     email,
     password,
     bio,
+    role = ROLES.READER,
     req,
     avatarLocalPath }) => {
+
+    if(!SELF_REGISTER_ROLES.includes(role)){
+        throw new ApiError(400, "Role must be READER or PUBLISHER");
+    }
 
     const existingUser = await getUserByEmailRepo(email)
 
@@ -52,7 +59,7 @@ export const userRegisterService = async ({
 
     let avatarImage = null;
     if (avatarLocalPath) {
-        avatarImage = await uploadAvatarImage(avatarLocalPath)
+        avatarImage = await uploadImage(avatarLocalPath)
     }
 
     const { unHashedToken, hashedToken, tokenExpiry } = getTemporaryToken()
@@ -61,7 +68,7 @@ export const userRegisterService = async ({
 
     let result;
     try {
-        result = await createUser({ name, email, hashedPassword, bio, imageUrl, hashedToken, tokenExpiry })
+        result = await createUser({ name, email, hashedPassword, bio, role, imageUrl, hashedToken, tokenExpiry })
     } catch (error) {
         if (avatarImage?.public_id) {
             await deleteFromCloudinary(avatarImage.public_id)
@@ -79,6 +86,7 @@ export const userRegisterService = async ({
         id: result.id,
         name,
         email,
+        role
     };
 
     await sendVerificationEmail(insertedUser, req, unHashedToken);
@@ -98,11 +106,12 @@ export const verifyEmailService = async (unhashedToken) => {
 
     let result;
     try {
-
+        
         result = await verifyEmailRepo(hashedToken)
 
     } catch (error) {
 
+        console.error("verifyEmailService failed:", error);
         throw new ApiError(500, `Something went wrong.}`)
     }
 
@@ -279,3 +288,59 @@ export const resetPasswordService = async (unhashedToken, newPassword) => {
 
 }
 
+export const getAllUserService = async (req) => {
+
+}
+
+
+
+//blogs posts
+
+const postStatus = {
+    draft:"draft",
+    published:"published"
+}
+
+export const addBlogPostService = async (req) => {
+    const { title, excerpt, content, category, status} = req.body;
+    const userId = req?.user.id;
+    const fileLocalPath = req?.file?.path;
+
+    const allowedStatus = Object.values(postStatus)
+
+    if(!allowedStatus.includes(status)) throw new ApiError(400,`Unknown role:${status}`)
+
+    if(!excerpt) {
+        excerpt = generateExcerpt(content)
+    }
+
+    let coverImage = null;
+    let imagePublicId = null;
+    if (fileLocalPath) {
+        coverImage = await uploadImage(fileLocalPath)
+        imagePublicId = coverImage?.public_id
+    }
+
+     
+    const slug = createSlug(title)
+    const read_time = calculateReadTime(content)
+
+    let post;
+    try {
+        await prisma.$transaction(async(tx) => {
+
+            const result = await getCategory(category,tx)
+            if(!result) throw new ApiError(404, "Category not found.")
+            const categoryId = result?.id;
+
+            post = await createBlogs({ userId, title, content, coverImage, categoryId, status, read_time, excerpt, imagePublicId, slug, tx })
+        })
+        
+    } catch (error) {
+        if(error instanceof ApiError) throw error
+        throw new ApiError(500, "Something went wrong.")
+    }
+
+
+    return post;
+}

@@ -63,7 +63,7 @@ export const authorizeRole = (...allowedRoles) => {
   const valid = Object.values(ROLES)
 
   for(const role of allowedRoles){
-    if(!valid.includes(role)) throw new Error(`Unknown role: ${role}`)
+    if(!valid.includes(role)) throw new ApiError(400,`Unknown role: ${role}`)
   }
 
   return (req, res, next) => {

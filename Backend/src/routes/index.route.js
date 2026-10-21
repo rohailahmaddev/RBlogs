@@ -42,6 +42,18 @@ router.route("/reset-password/:token").post(
   validateSchema(resetPasswordSchema),
   resetPasswordController
 )
+
+
+//post routes
+router.route("/create-post").post(
+  
+)
+
+
+
+
+
+
 // router.route("/login").post(loginUser)
 // router.route("/blogs").get(getBlogs)
 // router.route("/blogs/:id").get(getSingleBlog)
