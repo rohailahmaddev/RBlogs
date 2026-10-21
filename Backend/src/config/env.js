@@ -1,5 +1,6 @@
 import { z } from "zod";
 import "dotenv/config";
+import { requiredString } from "../utils/helper";
 
 const envSchema = z.object({
   // Application
@@ -107,6 +108,16 @@ const envSchema = z.object({
   CLOUDINARY_API_SECRET: z
     .string()
     .min(1, "CLOUDINARY_API_SECRET is required"),
+
+  ADMIN_EMAIL:requiredString("email")
+    .trim()
+    .toLowerCase()
+    .min(1, "Please provide register email")
+    .email("Invalid email address"),
+
+  ADMIN_PASSWORD: z
+    .string()
+    .min(4, "Password must be 4 digits long.")
 });
 
 const parsed = envSchema.safeParse(process.env);

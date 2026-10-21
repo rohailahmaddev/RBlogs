@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { requiredString } from "../utils/helper";
+import { SELF_REGISTER_ROLES } from "../modules/RBAC/role";
 
 //register
 export const registerSchema = z.object({
@@ -24,6 +25,10 @@ export const registerSchema = z.object({
     .trim()
     .max(300, "Bio must not exceed 300 characters")
     .optional(),
+
+  role: z
+    .enum(SELF_REGISTER_ROLES, { error: "Role must be READER or PUBLISHER" })
+    .default(ROLES.READER),
 });
 
 //login

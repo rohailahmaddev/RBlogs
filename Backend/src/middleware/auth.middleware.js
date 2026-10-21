@@ -2,9 +2,15 @@ import jwt from "jsonwebtoken"
 import { asyncHandler } from "../utils/asyncHandler";
 import { ROLES } from "../modules/RBAC/role";
 
+const getAccessToken = (req) => {
+  const header = req.headers.authorization;
+  if(header?.startsWith("Bearer ")) return header.slice(7).trim()
+  return req.cookies.token
+}
+
 //verify user
 export const verifyJWT = asyncHandler ( async(req, res, next) => {
-    const token = req.cookies.token 
+    const token = getAccessToken(req) 
   
     if (!token) {
       throw new ApiError(401, "Please login to continue.");
@@ -34,7 +40,7 @@ export const verifyJWT = asyncHandler ( async(req, res, next) => {
 
 //verify admin
 export const verifyAdmin = (req, res, next) => {
-    const token = req.cookies.token
+    const token = getAccessToken(req)
   
     if (!token) throw new ApiError(401, "Please login to continue.");
   
