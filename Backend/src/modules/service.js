@@ -1,5 +1,6 @@
 import crypto from "crypto"
 import { env } from "../config/env.js";
+import fs from "node:fs/promises";
 import { sendFogotPasswordEmail, sendVerificationEmail } from "../infrastructure/email/email.services.js";
 import { deleteFromCloudinary, uploadOnCloudinary } from "../infrastructure/storage/cloudinary.storage.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -309,6 +310,14 @@ export const addBlogPostService = async (req) => {
     const allowedStatus = Object.values(postStatus)
     const MAX_SLUG_ATTEMPTS = 5;
 
+    // if (
+    //   typeof category === "string" &&
+    //   category.trim() !== "" &&
+    //   !Number.isNaN(Number(category))
+    // ) {
+    //   throw new ApiError(400, "Provided category must not be a number.");
+    // }
+
     if (!allowedStatus.includes(status)) throw new ApiError(400, `Unknown status:${status}`)
 
     let coverImage = null;
@@ -360,6 +369,8 @@ export const addBlogPostService = async (req) => {
 
         if (error instanceof ApiError) throw error
         throw new ApiError(500, `Something went wrong.`)
+    }  finally {
+       if (fileLocalPath) await fs.unlink(fileLocalPath).catch(() => {});
     }
 
 }
