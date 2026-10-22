@@ -113,8 +113,8 @@ export const updateUserPasswordById = async (userId, newPassword) => {
 
 
 //blog posts
-export const createBlogs = async({ userId, title, content, coverImage, categoryId, status, read_time, excerpt, imagePublicId, tx }) => {
-    await tx.posts.create({
+export const createBlogs = async({ userId, title, content, coverImage, categoryId, status, read_time, excerpt, imagePublicId }) => {
+    await prisma.posts.create({
         user_id:userId,
         category_id:categoryId,
         title:title,
@@ -130,8 +130,8 @@ export const createBlogs = async({ userId, title, content, coverImage, categoryI
 }
 
 //category
-export const getCategory = async(categroy,tx) => {
-    return await tx.categories.findUnique({
+export const getCategory = async(categroy) => {
+    return await prisma.categories.findUnique({
         where:{name:categroy}
     })
 }

@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken"
 import { asyncHandler } from "../utils/asyncHandler";
-import { ROLES } from "../modules/RBAC/role";
+import { ROLES } from "../utils/contants.js";
+import { ApiError } from "../utils/ApiError.js";
 
 const getAccessToken = (req) => {
   const header = req.headers.authorization;
@@ -29,6 +30,7 @@ export const verifyJWT = asyncHandler ( async(req, res, next) => {
       next()        
 
     } catch (error) {
+      if(error instanceof ApiError) throw error
       throw new ApiError(
         401,
         error.name === "TokenExpiredError"

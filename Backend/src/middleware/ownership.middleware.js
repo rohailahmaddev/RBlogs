@@ -1,4 +1,4 @@
-import { ROLES } from "../modules/RBAC/role"
+import { ROLES } from "../utils/contants"
 import { asyncHandler } from "../utils/asyncHandler"
 
 const canManagePost = (user, post) => {

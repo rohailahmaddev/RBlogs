@@ -1,11 +1,11 @@
-import { prisma } from "../config/database.js";
+import crypto from "crypto"
 import { env } from "../config/env.js";
 import { sendFogotPasswordEmail, sendVerificationEmail } from "../infrastructure/email/email.services.js";
 import { deleteFromCloudinary, uploadOnCloudinary } from "../infrastructure/storage/cloudinary.storage.js";
 import { ApiError } from "../utils/ApiError.js";
-import { calculateReadTime, comparePassword, createSlug, generateExcerpt, getAccessAndRefreshToken, getErrorMessage, hashPassword, hashToken, isDuplicateError } from "../utils/helper.js";
+import { calculateReadTime, comparePassword, createSlug, extractText, generateExcerpt, getAccessAndRefreshToken, getErrorMessage, hashPassword, hashToken, isDuplicateError } from "../utils/helper.js";
 import { getTemporaryToken } from "../utils/jwt.js";
-import { ROLES, SELF_REGISTER_ROLES } from "./RBAC/role.js";
+import { ROLES, SELF_REGISTER_ROLES } from "../utils/contants.js";
 import { clearForgotPasswordToken, createBlogs, createUser, getCategory, getUserByEmailRepo, getUserByResetPasswordToken, logoutUser, updateForgotPasswordToken, updateUserPasswordById, updateVerificationEmailTokenRepo, verifyEmailRepo } from "./repository.js";
 
 const sendEmailService = async (user, req) => {
@@ -25,7 +25,7 @@ const uploadImage = async (imageLocalPath) => {
     try {
         return await uploadOnCloudinary(imageLocalPath)
     } catch (error) {
-        throw new ApiError(502, `Failed to upload avatar image. ${getErrorMessage(error)}`)
+        throw new ApiError(500, `Something went wrong.`)
     }
 
 }
@@ -39,7 +39,7 @@ export const userRegisterService = async ({
     req,
     avatarLocalPath }) => {
 
-    if(!SELF_REGISTER_ROLES.includes(role)){
+    if (!SELF_REGISTER_ROLES.includes(role)) {
         throw new ApiError(400, "Role must be READER or PUBLISHER");
     }
 
@@ -79,7 +79,7 @@ export const userRegisterService = async ({
             throw new ApiError(409, "User already exist. Please login.");
         }
 
-        throw new ApiError(500, `Failed to create the user. ${getErrorMessage(error)}`)
+        throw new ApiError(500, `Failed to create the user.`)
     }
 
     const insertedUser = {
@@ -106,7 +106,7 @@ export const verifyEmailService = async (unhashedToken) => {
 
     let result;
     try {
-        
+
         result = await verifyEmailRepo(hashedToken)
 
     } catch (error) {
@@ -297,50 +297,69 @@ export const getAllUserService = async (req) => {
 //blogs posts
 
 const postStatus = {
-    draft:"draft",
-    published:"published"
+    draft: "draft",
+    published: "published"
 }
 
 export const addBlogPostService = async (req) => {
-    const { title, excerpt, content, category, status} = req.body;
+    const { title, excerpt, content, category, status = "draft" } = req.body;
     const userId = req?.user.id;
     const fileLocalPath = req?.file?.path;
 
     const allowedStatus = Object.values(postStatus)
+    const MAX_SLUG_ATTEMPTS = 5;
 
-    if(!allowedStatus.includes(status)) throw new ApiError(400,`Unknown role:${status}`)
-
-    if(!excerpt) {
-        excerpt = generateExcerpt(content)
-    }
+    if (!allowedStatus.includes(status)) throw new ApiError(400, `Unknown status:${status}`)
 
     let coverImage = null;
-    let imagePublicId = null;
-    if (fileLocalPath) {
-        coverImage = await uploadImage(fileLocalPath)
-        imagePublicId = coverImage?.public_id
-    }
-
-     
-    const slug = createSlug(title)
-    const read_time = calculateReadTime(content)
-
-    let post;
     try {
-        await prisma.$transaction(async(tx) => {
 
-            const result = await getCategory(category,tx)
-            if(!result) throw new ApiError(404, "Category not found.")
-            const categoryId = result?.id;
+        const categoryRecord = await getCategory(category);
+        if (!categoryRecord) throw new ApiError(404, "Category not found.");
 
-            post = await createBlogs({ userId, title, content, coverImage, categoryId, status, read_time, excerpt, imagePublicId, slug, tx })
-        })
-        
+        if (fileLocalPath) {
+            coverImage = await uploadImage(fileLocalPath)
+        }
+
+        const excerptContent = excerpt || generateExcerpt(extractText(content));
+        const read_time = calculateReadTime(content);
+        const baseSlug = createSlug(title) || "untitled";
+
+        for (let attempt = 0; attempt < MAX_SLUG_ATTEMPTS; attempt++) {
+            const slug = attempt === 0 ? baseSlug : `${baseSlug}-${crypto.randomBytes(3).toString("hex")}`;
+            try {
+                return await createBlogs({
+                    userId,
+                    title,
+                    slug,
+                    content,
+                    excerpt: excerptContent,
+                    read_time,
+                    status,
+                    categoryId: categoryRecord.id,
+                    coverImage: coverImage?.url ?? null,
+                    imagePublicId: coverImage?.public_id ?? null,
+                });
+            } catch (error) {
+               
+                if (error?.code !== "P2002") throw error; // only retry unique violations
+            }
+        }
+
+        throw new ApiError(409, "Could not generate a unique slug. Please try again.");
+
     } catch (error) {
-        if(error instanceof ApiError) throw error
-        throw new ApiError(500, "Something went wrong.")
+
+        if (coverImage?.public_id) {
+            try {
+                await deleteFromCloudinary(coverImage?.public_id);
+            } catch (cleanupError) {
+                console.error("Failed to clean up uploaded image:", cleanupError);
+            }
+        }
+
+        if (error instanceof ApiError) throw error
+        throw new ApiError(500, `Something went wrong.`)
     }
 
-
-    return post;
 }

@@ -112,6 +112,6 @@ export const addBlogPostController = asyncHandler(async (req, res) => {
     const post = await addBlogPostService(req)
 
     return res
-    .status(200)
+    .status(201)
     .json(new ApiResponse(201, "Blog posted successfully.", post))
 })

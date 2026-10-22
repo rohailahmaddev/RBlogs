@@ -1,5 +1,6 @@
-import { env } from "../config/env";
-import { ApiError } from "../utils/ApiError";
+import { env } from "../config/env.js";
+import { ApiError } from "../utils/ApiError.js";
+
 
 export const errorHandler = ( err, req, res, next ) => {
   let error;
@@ -11,6 +12,7 @@ export const errorHandler = ( err, req, res, next ) => {
 
     let statusCode = 500;
     let message = "Something went wrong";
+    let code;
     let errors;
 
     // --- MySQL-specific errors ---
@@ -53,7 +55,7 @@ export const errorHandler = ( err, req, res, next ) => {
     success: false,
     statusCode: error.statusCode,
     message: error.message,
-    code:error.code,
+    // code:error.code,
     // errors: error.errors,
     // Only leak stack trace in development
     ...(env.NODE_ENV === "development" && { stack: error.stack }),
