@@ -8,10 +8,19 @@ const UPLOAD_TIMEOUT = 30000;
 cloudinary.config({
   cloud_name: env.CLOUD_NAME,
   api_key: env.CLOUDINARY_API_KEY,
-  api_secret: env.CLOUDINARY_SECRET_KEY,
+  api_secret: env.CLOUDINARY_API_SECRET,
 });
 
-export const uploadOnCloudinary = (buffer, folder = "uploads") => {
+export const uploadOnCloudinary = async (buffer, folder = "uploads") => {
+
+// try {
+//   const result = await cloudinary.api.ping();
+//   console.log("Ping result:", result);
+// } catch (error) {
+//   console.error("Ping failed:", error.message);
+//   console.error("HTTP status:", error.http_code);
+// }
+
   return new Promise((resolve, reject) => {
     // Input validation
     if (!buffer || !Buffer.isBuffer(buffer)) {

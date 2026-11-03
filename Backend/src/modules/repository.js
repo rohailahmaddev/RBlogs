@@ -49,10 +49,10 @@ export const verifyEmailRepo = async (hashedToken) => {
     try {
         return await prisma.user.update({
             where: {
-                verifyToken: hashedToken,
-                verifyTokenExpiry: { gt: new Date() },
+                verify_token: hashedToken,
+                verify_token_expiry: { gt: new Date() },
             },
-            data: { isVerified: true, verifyToken: null, verifyTokenExpiry: null },
+            data: { is_verified: true, verify_token: null, verify_token_expiry: null },
             select: { id: true, name: true, email: true },
         });
     } catch (error) {
@@ -113,21 +113,31 @@ export const updateUserPasswordById = async (userId, newPassword) => {
 
 
 //blog posts
-export const createBlogs = async({ userId, title, content, coverImage, categoryId, status, read_time, excerpt, imagePublicId }) => {
-    await prisma.posts.create({
-        user_id:userId,
-        category_id:categoryId,
-        title:title,
-        slug:slug,
-        excerpt:excerpt,
-        content:content,
-        cover_url:coverImage,
-        public_id:imagePublicId,
-        status:status,
-        read_time:read_time,
-        notity_at:null,
+export const getBlogById = async(id) => {
+    return prisma.posts.findUnique({
+        where:{id:id}
     })
 }
+
+export const createBlogs = async({ userId, title, slug, content, coverImage, categoryId, status, read_time, excerpt, imagePublicId }) => {
+    await prisma.posts.create({
+            data:{
+            author_id:userId,
+            category_id:categoryId,
+            title:title,
+            slug:slug,
+            excerpt:excerpt,
+            content:content,
+            cover_url:coverImage,
+            public_id:imagePublicId,
+            status:status,
+            read_time:read_time,
+            notify_at:null,
+        }
+})
+}
+
+
 
 //category
 export const getCategory = async(categroy) => {
@@ -135,3 +145,4 @@ export const getCategory = async(categroy) => {
         where:{name:categroy}
     })
 }
+

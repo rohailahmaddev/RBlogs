@@ -24,8 +24,10 @@ const sendEmailService = async (user, req) => {
 const uploadImage = async (imageLocalPath) => {
 
     try {
-        return await uploadOnCloudinary(imageLocalPath)
+        const buffer = await fs.readFile(imageLocalPath)
+        return await uploadOnCloudinary(buffer)
     } catch (error) {
+        console.error(error)
         throw new ApiError(500, `Something went wrong.`)
     }
 
@@ -310,14 +312,6 @@ export const addBlogPostService = async (req) => {
     const allowedStatus = Object.values(postStatus)
     const MAX_SLUG_ATTEMPTS = 5;
 
-    // if (
-    //   typeof category === "string" &&
-    //   category.trim() !== "" &&
-    //   !Number.isNaN(Number(category))
-    // ) {
-    //   throw new ApiError(400, "Provided category must not be a number.");
-    // }
-
     if (!allowedStatus.includes(status)) throw new ApiError(400, `Unknown status:${status}`)
 
     let coverImage = null;
@@ -367,10 +361,48 @@ export const addBlogPostService = async (req) => {
             }
         }
 
+        console.error("addBlogPostService failed:", error);
         if (error instanceof ApiError) throw error
         throw new ApiError(500, `Something went wrong.`)
     }  finally {
        if (fileLocalPath) await fs.unlink(fileLocalPath).catch(() => {});
     }
+
+}
+
+export const updateBlogPostService = async (req) => {
+    const { id } = req.params;
+    const { title, content, category, excerpt, status="draft" } = req.body;
+    let fileLocalPath = req?.file?.path;
+    let hasDeletedImage = req?.body?.deletedImagesId !== undefined
+    
+
+    if (!id || !Number.isInteger(id) || id <= 0) {
+        throw new ApiError(400,"Invalid blog id." );
+    }
+
+    const blogId = Number(id);
+
+    let deletedImageId
+    if(hasDeletedImage) {
+        deletedImageId = req?.body?.deletedImagesId
+    }
+
+    let coverImage
+    try {
+        const blog = await getBlogById(blogId)
+        if(!blog) throw new ApiError(404, "Blog not found");
+
+        if (fileLocalPath) {
+            coverImage = await uploadImage(fileLocalPath)
+        }
+
+        
+
+    } catch (error) {
+        if(error instanceof ApiError) throw error
+        throw new ApiError(500, `Something went wrong.`)
+    }
+
 
 }

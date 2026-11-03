@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { requiredString } from "../utils/helper";
-import { ROLES, SELF_REGISTER_ROLES } from "../utils/contants";
+import { requiredString } from "../utils/helper.js";
+import { ROLES, SELF_REGISTER_ROLES } from "../utils/contants.js";
 
 //register
 export const registerSchema = z.object({

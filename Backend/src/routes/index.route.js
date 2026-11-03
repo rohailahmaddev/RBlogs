@@ -17,11 +17,11 @@ router.route("/register").post(
   registerUserController
 )
 
-router.route("/email-verify/:token").post(
+router.route("/verify-email/:token").get(
   verifyEmailController
 )
 
-router.route("/resend-verification-email").post(
+router.route("/resend-verification-email").get(
   validateSchema(resendVerificationEmailSchema),
   resendVerificationEmailController
 )
@@ -35,7 +35,7 @@ router.route("/logout").post(
   logoutUserController
 )
 
-router.route("/forgot-password").post(
+router.route("/forgot-password").get(
   validateSchema(forgotPasswordSchema),
   forgotPasswordController
 )

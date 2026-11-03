@@ -39,7 +39,7 @@ export const sendVerificationEmail = async (user, req, unHashedToken) => {
         subject: "Please verify your email",
         mailgenContent: verificationMailGenerator(
           user?.full_name,
-          `${req.protocol}://${req.get("host")}/api/v1/user/verify-email/${unHashedToken}`
+          `${req.protocol}://${req.get("host")}/api/v1/users/verify-email/${unHashedToken}`
         ),
       })
     } catch (error) {
@@ -54,7 +54,7 @@ export const sendFogotPasswordEmail = async (user, req, unHashedToken) => {
         subject: "Please reset your password.",
         mailgenContent: passwordResetMailGenerator(
           user?.full_name,
-          `${req.protocol}://${req.get("host")}/api/v1/user/reset-password/${unHashedToken}`
+          `${req.protocol}://${req.get("host")}/api/v1/users/reset-password/${unHashedToken}`
         ),
       })
     } catch (error) {

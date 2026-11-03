@@ -1,16 +1,22 @@
 import jwt from "jsonwebtoken"
-import { asyncHandler } from "../utils/asyncHandler";
 import { ROLES } from "../utils/contants.js";
 import { ApiError } from "../utils/ApiError.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { env } from "../config/env.js";
+import { getUserById } from "../modules/repository.js";
 
 const getAccessToken = (req) => {
   const header = req.headers.authorization;
-  if(header?.startsWith("Bearer ")) return header.slice(7).trim()
-  return req.cookies.token
-}
+
+  if (header?.startsWith("Bearer ")) {
+    return header.slice(7).trim();
+  }
+
+  return req.cookies?.accessToken;
+};
 
 //verify user
-export const verifyJWT = asyncHandler ( async(req, res, next) => {
+export const verifyJWT = asyncHandler( async(req, res, next) => {
     const token = getAccessToken(req) 
   
     if (!token) {
@@ -19,18 +25,20 @@ export const verifyJWT = asyncHandler ( async(req, res, next) => {
   
     try {
     
-      const decoded = jwt.verify(token, process.env.JWT_SECRET)
+      const decoded = jwt.verify(token, env.ACCESS_TOKEN_SECRET)
 
       const user = await getUserById(decoded.id);
+
       if (!user) throw new ApiError(401, "User no longer exists. Please login again.");
 
       // Only what routes need. Never attach the whole row (it has the password hash).
       req.user = { id: user.id, name: user.name, email: user.email, role: user.role };
-      req.user = decoded 
+      // req.user = decoded 
       next()        
 
     } catch (error) {
       if(error instanceof ApiError) throw error
+      console.error(error)
       throw new ApiError(
         401,
         error.name === "TokenExpiredError"

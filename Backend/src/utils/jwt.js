@@ -1,5 +1,6 @@
 import { env } from "../config/env.js";
 import crypto from "crypto";
+import jwt from "jsonwebtoken"
 
 export const getAccessToken = (user) => {
   return jwt.sign({
@@ -7,8 +8,8 @@ export const getAccessToken = (user) => {
     email: user.email,
     fullname: user.full_name,
   },
-    env.ACCESS_TOKEN_SECRET,
-    { expiresIn: env.ACCESS_TOKEN_EXPIRY });
+  env.ACCESS_TOKEN_SECRET,
+  { expiresIn: env.ACCESS_TOKEN_EXPIRY });
 }
 
 export const getRefreshToken = (user) => {

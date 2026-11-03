@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { extractText } from "../utils/helper";
+import { extractText } from "../utils/helper.js";
 
 const MAX_CONTENT_BYTES = 500 * 1024; // 500 KB of editor JSON
 
@@ -50,9 +50,9 @@ const postBase = z.object({
 
   // Maps to category_id in the DB
   category: z.coerce
-    .number({ error: "Category must be a number" })
-    .int()
-    .positive("Invalid category"),
+    .string({ error: "Category must be a string." })
+    .trim()
+    .min(3, "Category must be at least 3 characters"),
 
   status: z.enum(["draft", "published"], {
     error: "Status must be draft or published",

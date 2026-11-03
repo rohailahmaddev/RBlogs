@@ -1,6 +1,6 @@
 import { z } from "zod";
 import "dotenv/config";
-import { requiredString } from "../utils/helper";
+// import { requiredString } from "../utils/helper.js";
 
 const envSchema = z.object({
   // Application
