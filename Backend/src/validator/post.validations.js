@@ -49,10 +49,10 @@ const postBase = z.object({
   content: jsonContent,
 
   // Maps to category_id in the DB
-  category: z.coerce
-    .string({ error: "Category must be a string." })
-    .trim()
-    .min(3, "Category must be at least 3 characters"),
+  categoryId: z.coerce
+    .number()
+    .int()
+    .positive("Category must be a positive integer"),
 
   status: z.enum(["draft", "published"], {
     error: "Status must be draft or published",

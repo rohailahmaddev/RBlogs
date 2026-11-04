@@ -3,10 +3,10 @@ import { Router } from "express"
 import { verifyJWT, verifyAdmin, authorizeRole } from "../middleware/auth.middleware.js"
 import upload from "../middleware/multer.middleware.js";
 import { forgotPasswordSchema, loginSchema, registerSchema, resendVerificationEmailSchema, resetPasswordSchema } from "../validator/auth.validations.js";
-import { addBlogPostController, forgotPasswordController, loginUserController, logoutUserController, registerUserController, resendVerificationEmailController, resetPasswordController, verifyEmailController } from "../modules/controller.js";
+import { addBlogPostController, deleteBlogController, forgotPasswordController, loginUserController, logoutUserController, registerUserController, resendVerificationEmailController, resetPasswordController, updateBlogPostController, verifyEmailController } from "../modules/controller.js";
 import { validateSchema } from "../middleware/validate.middleware.js";
 import { ROLES } from "../utils/contants.js";
-import { createPostSchema } from "../validator/post.validations.js";
+import { createPostSchema, updatePostSchema } from "../validator/post.validations.js";
 
 const router = Router();
 
@@ -53,6 +53,14 @@ router.route("/create-post").post(
   upload.single("file"),
   validateSchema(createPostSchema),
   addBlogPostController
+)
+
+router.route("/update-post/:id").put(
+  verifyJWT,
+  authorizeRole(ROLES.PUBLISHER, ROLES.ADMIN),
+  upload.single("file"),
+  validateSchema(updatePostSchema),
+  updateBlogPostController
 )
 
 router.route("/delete-post/:id").delete(

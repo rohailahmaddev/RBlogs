@@ -152,9 +152,9 @@ export const updateBlogById = async({ blogId, data }) => {
 
 
 //category
-export const getCategory = async(category) => {
+export const getCategory = async(categoryId) => {
     return await prisma.categories.findUnique({
-        where:{name:category}
+        where:{id:categoryId}
     })
 }
 
