@@ -1,6 +1,6 @@
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { addBlogPostService, forgotPasswordService, getAllUserService, loginUserService, logoutUserService, resendVerificationEmailService, resetPasswordService, userRegisterService, verifyEmailService } from "./service.js";
+import { addBlogPostService, forgotPasswordService, getAllUserService, loginUserService, logoutUserService, resendVerificationEmailService, resetPasswordService, updateBlogPostService, userRegisterService, verifyEmailService } from "./service.js";
 
 export const registerUserController = asyncHandler(async (req, res) => {
     const { name, email, password, bio, role } = req.body;
@@ -106,7 +106,6 @@ export const getAllUserController = asyncHandler(async (req, res) => {
 })
 
 
-
 //blogs posts
 export const addBlogPostController = asyncHandler(async (req, res) => {
     const post = await addBlogPostService(req)
@@ -122,4 +121,12 @@ export const updateBlogPostController = asyncHandler( async (req, res) => {
     return res
     .status(200)
     .json(new ApiResponse(200, "Blog post updated successfully."))
+})
+
+export const deleteBlogController = asyncHandler(async (req, res) => {
+    const deletedPostId = await deleteBlogPostService(req)
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, "Blog post deleted successfully.", { deletedPostId }))
 })

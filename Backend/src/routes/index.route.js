@@ -55,6 +55,12 @@ router.route("/create-post").post(
   addBlogPostController
 )
 
+router.route("/delete-post/:id").delete(
+  verifyJWT,
+  authorizeRole(ROLES.PUBLISHER, ROLES.ADMIN),
+  deleteBlogController
+)
+
 
 
 

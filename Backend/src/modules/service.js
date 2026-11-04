@@ -132,8 +132,6 @@ export const verifyEmailService = async (unhashedToken) => {
     return verifiedUser;
 }
 
-// without testing
-
 export const resendVerificationEmailService = async (email, req) => {
 
     if (typeof email !== "string" || email.trim() === "") {
@@ -291,9 +289,16 @@ export const resetPasswordService = async (unhashedToken, newPassword) => {
 
 }
 
-export const getAllUserService = async (req) => {
+// export const getAllUserService = async (req) => {
+//     let users;
+//     try {
+//         users = await getAllUserRepo()
+//     } catch (error) {
+//         throw new ApiError(500, "Failed to fetch users try again.")
+//     }
 
-}
+//     return users;
+// }
 
 
 
@@ -313,7 +318,6 @@ export const addBlogPostService = async (req) => {
     const MAX_SLUG_ATTEMPTS = 5;
 
     if (!allowedStatus.includes(status)) throw new ApiError(400, `Unknown status:${status}`)
-
     let coverImage = null;
     try {
 
@@ -406,3 +410,33 @@ export const updateBlogPostService = async (req) => {
 
 
 }
+
+export const deleteBlogPostService = async (req) => {
+    const { id } = req.params;
+
+    if (!id || !Number.isInteger(id) || id <= 0) {
+        throw new ApiError(400, "Invalid blog id.");
+    }
+
+    const blogId = Number(id);
+
+    try{
+        const blog = await getBlogById(blogId)
+        if(!blog) throw new ApiError(404, "Blog not found");
+
+        if(blog.image_public_id) {
+            try {
+                await deleteFromCloudinary(blog.image_public_id)
+            } catch (error) {
+                console.error("Failed to delete image from Cloudinary:", error);
+            }
+        }
+        await deleteBlogPost(blogId);
+    } catch (error) {
+        if(error instanceof ApiError) throw error
+        console.error("deleteBlogPostService failed:", error);
+        throw new ApiError(500, `Something went wrong.`)
+    }
+
+}
+
