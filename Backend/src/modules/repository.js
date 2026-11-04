@@ -143,12 +143,18 @@ export const deleteBlogById = async(id) => {
     })
 }
 
+export const updateBlogById = async({ blogId, data }) => {
+    return await prisma.posts.update({
+        where:{id:blogId},
+        data: data
+    })
+}
 
 
 //category
 export const getCategory = async(category) => {
     return await prisma.categories.findUnique({
-        where:{name:categroy}
+        where:{name:category}
     })
 }
 

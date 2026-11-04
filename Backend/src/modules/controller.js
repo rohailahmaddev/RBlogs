@@ -115,13 +115,15 @@ export const addBlogPostController = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, "Blog posted successfully.", post))
 })
 
-export const updateBlogPostController = asyncHandler( async (req, res) => {
-    const updatedPost = await updateBlogPostService(req) 
-
-    return res
-    .status(200)
-    .json(new ApiResponse(200, "Blog post updated successfully."))
-})
+export const updateBlogPostController = asyncHandler(async (req, res) => {
+    const blog = await updateBlogPostService({
+        blogId: req.params.id,
+        user: req.user,
+        body: req.body,
+        file: req?.file?.path,
+    });
+    return res.status(200).json(new ApiResponse(200, "Blog updated successfully.", { blog }));
+});
 
 export const deleteBlogController = asyncHandler(async (req, res) => {
     const deletedPostId = await deleteBlogPostService(req)

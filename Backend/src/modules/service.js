@@ -304,7 +304,7 @@ export const resetPasswordService = async (unhashedToken, newPassword) => {
 
 //blogs posts
 
-const postStatus = {
+const POST_STATUSES = {
     draft: "draft",
     published: "published"
 }
@@ -314,7 +314,7 @@ export const addBlogPostService = async (req) => {
     const userId = req?.user.id;
     const fileLocalPath = req?.file?.path;
 
-    const allowedStatus = Object.values(postStatus)
+    const allowedStatus = Object.values(POST_STATUSES)
     const MAX_SLUG_ATTEMPTS = 5;
 
     if (!allowedStatus.includes(status)) throw new ApiError(400, `Unknown status:${status}`)
@@ -374,51 +374,101 @@ export const addBlogPostService = async (req) => {
 
 }
 
-export const updateBlogPostService = async (req) => {
-    const { id } = req.params;
-    const { title, content, category, excerpt, status="draft" } = req.body;
-    let fileLocalPath = req?.file?.path;
-    let hasDeletedImage = req?.body?.deletedImagesId !== undefined
-    
+export const updateBlogPostService = async ({ blogId, user, body, file }) => {
 
-    if (!id || !Number.isInteger(id) || id <= 0) {
-        throw new ApiError(400,"Invalid blog id." );
+    let blogId = Number(blogId);
+
+    if (!Number.isInteger(blogId) || blogId <= 0) {
+        throw new ApiError(400, "Invalid blog id.");
     }
 
-    const blogId = Number(id);
-
-    let deletedImageId
-    if(hasDeletedImage) {
-        deletedImageId = req?.body?.deletedImagesId
+    if (!user.role !== ROLES.ADMIN && blog.authorId !== user.id) {
+        throw new ApiError(403, "You can only edit your own posts.");
     }
 
-    let coverImage
+    let blog;
     try {
-        const blog = await getBlogById(blogId)
-        if(!blog) throw new ApiError(404, "Blog not found");
+        blog = await getBlogById(blogId);
+    } catch (error) {
+        console.error("getBlogById failed:", error);
+        throw new ApiError(404, "Blog not found.");
+    }
 
-        if (fileLocalPath) {
-            coverImage = await uploadImage(fileLocalPath)
+    if (!blog) {
+        throw new ApiError(404, "Blog not found.");
+    }
+
+    const { title, content, excerpt, categoryId, status } = body;
+    const removeCover = body.removeCover === true || body.removeCover === "true";
+
+    let data = {};
+    if (title !== undefined) data.title = title;
+    if (excerpt !== undefined) data.excerpt = excerpt;
+    if (content !== undefined) data.content = parseContent(content);
+    if (categoryId !== undefined) data.categoryId = Number(categoryId);
+
+    if (status !== undefined) {
+        if (!POST_STATUSES.includes(status)) {
+            throw new ApiError(400, "Status must be DRAFT or PUBLISHED.");
+        }
+        data.status = status;
+        if (status === "PUBLISHED" && !blog.publishedAt) data.publishedAt = new Date();
+    }
+
+    const oldPublicId = blog.public_id;
+    let newImage = null;
+
+    if (file) {
+        try {
+            newImage = await uploadImage(file.buffer);
+        } catch (error) {
+            console.error("Failed to upload cover image:", error);
+            throw new ApiError(502, `Failed to upload cover image.`);
         }
 
-        
-
-    } catch (error) {
-        if(error instanceof ApiError) throw error
-        throw new ApiError(500, `Something went wrong.`)
+        data.cover_url = newImage.secure_url ?? newImage.url;
+        data.public_id = newImage.public_id;
+    } else if (removeCover) {
+        data.cover_url = null;
+        data.public_id = null;
     }
 
+    if (Object.keys(data).length === 0) {
+        throw new ApiError(400, "Nothing to update.");
+    }
 
+    let updatedBlog;
+    try {
+        updatedBlog = await updateBlogPost(blogId, data); 
+    } catch (error) {
+        console.error("updateBlogPost failed:", error);
+
+        if (newImage?.public_id) {
+            await deleteFromCloudinary(newImage.public_id).catch(() => {});
+        }
+
+        throw new ApiError(500, `Failed to update the blog post.`);
+    }
+
+    if (oldPublicId && (file || removeCover)) {
+        try {
+            await deleteFromCloudinary(oldPublicId);
+        } catch (error) {
+            console.error("Could not delete old cover image:", oldPublicId, error);
+        }
+    }
+
+    return updatedBlog;
 }
 
 export const deleteBlogPostService = async (req) => {
     const { id } = req.params;
 
-    if (!id || !Number.isInteger(id) || id <= 0) {
+    const blogId = Number(id);
+
+    if (!blogId || !Number.isInteger(blogId) || blogId <= 0) {
         throw new ApiError(400, "Invalid blog id.");
     }
-
-    const blogId = Number(id);
 
     try{
         const blog = await getBlogById(blogId)
