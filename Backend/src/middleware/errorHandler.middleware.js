@@ -1,7 +1,7 @@
 import { env } from "../config/env.js";
 import { ApiError } from "../utils/ApiError.js";
-import { getErrorMessage } from "../utils/helper.js";
 
+import { getErrorMessage } from "../utils/helper.js";
 
 export const errorHandler = ( err, req, res, next ) => {
   let error;
@@ -11,8 +11,9 @@ export const errorHandler = ( err, req, res, next ) => {
   } else {
     const customErr = err;
 
+    console.log(err);
     let statusCode = 500;
-    let message = `Something went wrong ${getErrorMessage(customErr)}`;
+    let message = `Something went wrong.`;
     let code;
     let errors;
 
@@ -38,16 +39,43 @@ export const errorHandler = ( err, req, res, next ) => {
       message = "One of the fields exceeds the allowed length.";
     }
 
-    // --- JWT-specific errors (in case any slip through un-caught) ---
-    else if (customErr.name === "JsonWebTokenError") {
+    // auth errors
+    else if (customErr.name === "TokenMissingError") {
       statusCode = 401;
-      code="JSON_WEBTOKEN_ERROR"
-      message = "Invalid token";
+      code = "TOKEN_MISSING"
+      message = "Token is missing from the request.";
+    } else if (customErr.name === "JsonWebTokenError") {
+      statusCode = 401;
+      code = "TOKEN_INVALID"
+      message = "Token is invalid.";
     } else if (customErr.name === "TokenExpiredError") {
       statusCode = 401;
-      code = "TOKEN_EXPIRED_ERROR"
-      message = "Token expired";
+      code = "TOKEN_EXPIRED"
+      message = "Token has expired.";
+    } else if (customErr.name === "UserNotFoundError") {
+      statusCode = 404;
+      code = "USER_NOT_FOUND"
+      message = "User not found.";
+    } else if (customErr.name === "RoleNotAllowedError") {
+      statusCode = 403;
+      code = "ROLE_NOT_ALLOWED"
+      message = "You do not have permission to perform this action.";
+    } else if (customErr.name === "NotResourceOwnerError") {
+      statusCode = 403;
+      code = "NOT_RESOURCE_OWNER"
+      message = "You are not the owner of this resource.";
     }
+
+    // // --- JWT-specific errors (in case any slip through un-caught) ---
+    // else if (customErr.name === "JsonWebTokenError") {
+    //   statusCode = 401;
+    //   code="JSON_WEBTOKEN_ERROR"
+    //   message = "Invalid token";
+    // } else if (customErr.name === "TokenExpiredError") {
+    //   statusCode = 401;
+    //   code = "TOKEN_EXPIRED_ERROR"
+    //   message = "Token expired";
+    // }
 
     error = new ApiError(statusCode, message, errors, err.stack);
   }

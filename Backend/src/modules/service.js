@@ -8,7 +8,6 @@ import { calculateReadTime, comparePassword, createSlug, extractText, generateEx
 import { getTemporaryToken } from "../utils/jwt.js";
 import { ROLES, SELF_REGISTER_ROLES } from "../utils/contants.js";
 import { clearForgotPasswordToken, createBlogs, createUser, getBlogById, getCategory, getUserByEmailRepo, getUserByResetPasswordToken, logoutUser, updateBlogById, updateForgotPasswordToken, updateUserPasswordById, updateVerificationEmailTokenRepo, verifyEmailRepo } from "./repository.js";
-import { updateBlogPostController } from "./controller.js";
 
 const sendEmailService = async (user, req) => {
     const { unHashedToken, hashedToken, tokenExpiry } = getTemporaryToken()
@@ -31,7 +30,6 @@ const uploadImage = async (imageLocalPath) => {
         console.error(error)
         throw new ApiError(500, `Something went wrong.`)
     }
-
 }
 
 export const userRegisterService = async ({
@@ -374,108 +372,116 @@ export const addBlogPostService = async (req) => {
     }
 
 }
-
 export const updateBlogPostService = async ({ blogId: rawId, user, body, file }) => {
 
-    let blogId = Number(rawId);
-
-    if (!Number.isInteger(blogId) || blogId <= 0) {
-        throw new ApiError(400, "Invalid blog id.");
-    }
-
-    let blog;
     try {
-        blog = await getBlogById(blogId);
-    } catch (error) {
-        console.error("getBlogById failed:", error);
-        throw new ApiError(500, "Blog not found.");
-    }
+        let blogId = Number(rawId);
 
-    
-    if (!blog) {
-        throw new ApiError(404, "Blog not found.");
-    }
+        if (!Number.isInteger(blogId) || blogId <= 0) {
+            throw new ApiError(400, "Invalid blog id.");
+        }
 
-    if (user.role !== ROLES.ADMIN && blog.author_id !== user.id) {
-        throw new ApiError(403, "You can only edit your own posts.");
-    }
-
-    const { title, content, excerpt:rawExcerpt, categoryId, status } = body;
-    const removeCover = body.removeCover === true || body.removeCover === "true";
-
-    if(categoryId !== undefined) {
-        const cId = Number(categoryId);
+        let blog;
         try {
-            const categoryRecord = await getCategory(cId);
-            if (!categoryRecord) throw new ApiError(404, "Category not found.");
+            blog = await getBlogById(blogId);
         } catch (error) {
-            console.error("getCategory failed:", error);    
-            throw new ApiError(500, `Something went wrong.`);
+            console.error("getBlogById failed:", error);
+            throw new ApiError(500, "Blog not found.");
         }
-    }   
 
-    let data = {};
-    if (title !== undefined) data.title = title;
-    if (rawExcerpt !== undefined) data.excerpt = rawExcerpt;
-    if (content !== undefined) data.content = content;
-    if (categoryId !== undefined) data.category_id = Number(categoryId);
 
-    if(content && rawExcerpt === undefined) {
-        data.excerpt = generateExcerpt(extractText(content || blog.content));
-    }
-
-    if (status !== undefined) {
-        if (!POST_STATUSES.includes(status)) {
-            throw new ApiError(400, "Status must be DRAFT or PUBLISHED.");
+        if (!blog) {
+            throw new ApiError(404, "Blog not found.");
         }
-        data.status = status;
-        if (status === "PUBLISHED" && !blog.published_at) data.published_at = new Date();
-    }
 
-    const oldPublicId = blog.public_id;
-    let newImage = null;
+        if (user.role !== ROLES.ADMIN && blog.author_id !== user.id) {
+            throw new ApiError(403, "You can only edit your own posts.");
+        }
 
-    if (file) {
+        const { title, content, excerpt:rawExcerpt, categoryId, status } = body;
+        const removeCover = body.removeCover === true || body.removeCover === "true";
+
+        if(categoryId !== undefined) {
+            const cId = Number(categoryId);
+            try {
+                const categoryRecord = await getCategory(cId);
+                if (!categoryRecord) throw new ApiError(404, "Category not found.");
+            } catch (error) {
+                if (error instanceof ApiError) throw error
+                console.error("getCategory failed:", error);    
+                throw new ApiError(500, `Something went wrong.`);
+            }
+        }   
+
+        let data = {};
+        if (title !== undefined) data.title = title;
+        if (rawExcerpt !== undefined) data.excerpt = rawExcerpt;
+        if (content !== undefined) data.content = content;
+        if (categoryId !== undefined) data.category_id = Number(categoryId);
+
+        if(content && rawExcerpt === undefined) {
+            data.excerpt = generateExcerpt(extractText(content || blog.content));
+        }
+
+        if (status !== undefined) {
+            if (!Object.values(POST_STATUSES).includes(status)) {
+                throw new ApiError(400, "Status must be DRAFT or PUBLISHED.");
+            }
+            data.status = status;
+            console.log("status", status);
+            if (status === "published" && !blog.published_at) data.published_at = new Date();
+        }
+
+        const oldPublicId = blog.public_id;
+        let newImage = null;
+
+        if (file) {
+            try {
+                newImage = await uploadImage(file);
+            } catch (error) {
+                console.error("Failed to upload cover image:", error);
+                throw new ApiError(502, `Failed to upload cover image.`);
+            }
+            data.cover_url = newImage.secure_url ?? newImage.url;
+            data.public_id = newImage.public_id;
+        } else if (removeCover) {
+            data.cover_url = null;
+            data.public_id = null;
+        }
+
+        if (Object.keys(data).length === 0 && (!file && !newImage)) {
+            throw new ApiError(400, "Nothing to update.");
+        }
+
+        let updatedBlog;
         try {
-            newImage = await uploadImage(file.buffer);
+            updatedBlog = await updateBlogById(blogId, data); 
         } catch (error) {
-            console.error("Failed to upload cover image:", error);
-            throw new ApiError(502, `Failed to upload cover image.`);
+            console.error("updateBlogPost failed:", error);
+
+            if (newImage?.public_id) {
+                await deleteFromCloudinary(newImage.public_id).catch(() => {});
+            }
+
+            throw new ApiError(500, `Failed to update the blog post.`);
         }
 
-        data.cover_url = newImage.secure_url ?? newImage.url;
-        data.public_id = newImage.public_id;
-    } else if (removeCover) {
-        data.cover_url = null;
-        data.public_id = null;
-    }
-
-    if (Object.keys(data).length === 0 && (!file && !newImage)) {
-        throw new ApiError(400, "Nothing to update.");
-    }
-
-    let updatedBlog;
-    try {
-        updatedBlog = await updateBlogById(blogId, data); 
-    } catch (error) {
-        console.error("updateBlogPost failed:", error);
-
-        if (newImage?.public_id) {
-            await deleteFromCloudinary(newImage.public_id).catch(() => {});
+        if (oldPublicId && (file || removeCover)) {
+            try {
+                await deleteFromCloudinary(oldPublicId);
+            } catch (error) {
+                console.error("Could not delete old cover image:", oldPublicId, error);
+            }
         }
 
-        throw new ApiError(500, `Failed to update the blog post.${getErrorMessage(error)}`);
-    }
-
-    if (oldPublicId && (file || removeCover)) {
-        try {
-            await deleteFromCloudinary(oldPublicId);
-        } catch (error) {
-            console.error("Could not delete old cover image:", oldPublicId, error);
+        return updatedBlog;
+    } finally {
+        if (file) {
+            await fs.unlink(file).catch((error) => {
+            console.error("Temporary file cleanup failed:", error);
+            });
         }
     }
-
-    return updatedBlog;
 }
 
 export const deleteBlogPostService = async (req) => {

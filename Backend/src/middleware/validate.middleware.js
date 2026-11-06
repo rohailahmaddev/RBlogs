@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { ApiError } from "../utils/ApiError";
 
 export const validateSchema = (schema) => {
     return (req, res, next) => {
@@ -17,6 +18,16 @@ export const validateSchema = (schema) => {
                 // Every problem, grouped by field (same shape as before)
                 errors: result.error.flatten(),
             });
+        }
+
+        const hasBodyFields = Object.values(result.data ?? {}).some(
+            (value) => value !== undefined
+        );
+
+        const hasFile = Boolean(req.file);
+
+        if (!hasBodyFields && !hasFile) {
+            throw new ApiError(400, "Provide at least one field to update");
         }
 
         req.body = result.data;

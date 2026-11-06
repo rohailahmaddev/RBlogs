@@ -52,7 +52,7 @@ const postBase = z.object({
   categoryId: z.coerce
     .number()
     .int()
-    .positive("Category must be a positive integer"),
+    .positive("CategoryId must be a positive integer"),
 
   status: z.enum(["draft", "published"], {
     error: "Status must be draft or published",
@@ -69,12 +69,12 @@ export const updatePostSchema = postBase
   .partial()
   .extend({
     // true = delete the existing cover image without uploading a new one
-    remove_cover: formBoolean.optional(),
+    removeCover: formBoolean.optional(),
   })
-  .refine(
-    (data) => Object.values(data).some((v) => v !== undefined),
-    "Provide at least one field to update"
-  );
+  // .refine(
+  //   (data) => Object.values(data).some((v) => v !== undefined),
+  //   "Provide at least one field to update"
+  // );
 
 // ---------- Params ----------
 export const postIdParamSchema = z.object({
@@ -85,7 +85,7 @@ export const postIdParamSchema = z.object({
 export const listPostsQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(50).default(10),
-  category: z.coerce.number().int().positive().optional(),
+  categoryId: z.coerce.number().int().positive().optional(),
   author: z.coerce.number().int().positive().optional(),
   status: z.enum(["draft", "published"]).optional(),
   search: z.string().trim().min(1).max(100).optional(),
