@@ -150,6 +150,8 @@ export const updateBlogById = async({ blogId, data }) => {
     })
 }
 
+export const getBlogs = async({ pageNumber, limit: limitNumber, categoryId, searchTitle })
+
 
 //category
 export const getCategory = async(categoryId) => {

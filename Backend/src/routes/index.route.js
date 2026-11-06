@@ -69,7 +69,11 @@ router.route("/delete-post/:id").delete(
   deleteBlogController
 )
 
-
+router.route("/get-posts").get(
+  verifyJWT,
+  authorizeRole(ROLES.PUBLISHER, ROLES.ADMIN, ROLES.USER),
+  getBlogsController
+)
 
 
 

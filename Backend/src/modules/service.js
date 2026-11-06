@@ -372,6 +372,7 @@ export const addBlogPostService = async (req) => {
     }
 
 }
+
 export const updateBlogPostService = async ({ blogId: rawId, user, body, file }) => {
 
     try {
@@ -513,3 +514,47 @@ export const deleteBlogPostService = async (req) => {
 
 }
 
+export const getBlogByIdService = async (req) => {
+    const { id } = req.params;
+
+    const blogId = Number(id);
+
+    if (!blogId || !Number.isInteger(blogId) || blogId <= 0) {
+        throw new ApiError(400, "Invalid blog id.");
+    }
+
+    try {
+        const blog = await getBlogById(blogId);
+        if (!blog) {
+            throw new ApiError(404, "Blog not found.");
+        }
+        return blog;
+    } catch (error) {
+        console.error("getBlogByIdService failed:", error);
+        throw new ApiError(500, `Something went wrong.`)
+    }
+}
+
+export const getBlogsService = async (req) => {
+    const { page =1 , limit = 10, categoryId, searchTitle } = req.query;
+    
+    const pageNumber = Number(page);
+    const limitNumber = Number(limit);
+
+    if (!Number.isInteger(pageNumber) || pageNumber <= 0) {
+        throw new ApiError(400, "Invalid page number.");
+    }
+
+    if (!Number.isInteger(limitNumber) || limitNumber <= 0) {
+        throw new ApiError(400, "Invalid limit number.");
+    }
+
+    try {
+        const blogs = await getBlogs({ page: pageNumber, limit: limitNumber, categoryId, searchTitle });
+        return blogs;
+    } catch (error) {
+        console.error("getBlogsService failed:", error);
+        throw new ApiError(500, `Something went wrong.`)
+    }
+
+}

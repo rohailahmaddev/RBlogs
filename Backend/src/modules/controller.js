@@ -132,3 +132,11 @@ export const deleteBlogController = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, "Blog post deleted successfully.", { deletedPostId }))
 })
+
+export const getBlogsController = asyncHandler(async (req, res) => {
+    const blogs = await getBlogsService(req)
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, "Blogs fetched successfully.", blogs))   
+})
