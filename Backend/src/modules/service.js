@@ -7,7 +7,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { calculateReadTime, comparePassword, createSlug, extractText, generateExcerpt, getAccessAndRefreshToken, getErrorMessage, hashPassword, hashToken, isDuplicateError } from "../utils/helper.js";
 import { getTemporaryToken } from "../utils/jwt.js";
 import { ROLES, SELF_REGISTER_ROLES } from "../utils/contants.js";
-import { clearForgotPasswordToken, createBlogs, createUser, getBlogById, getCategory, getUserByEmailRepo, getUserByResetPasswordToken, logoutUser, updateBlogById, updateForgotPasswordToken, updateUserPasswordById, updateVerificationEmailTokenRepo, verifyEmailRepo } from "./repository.js";
+import { clearForgotPasswordToken, createBlogs, createUser, getBlogById, getBlogs, getCategory, getUserByEmailRepo, getUserByResetPasswordToken, logoutUser, updateBlogById, updateForgotPasswordToken, updateUserPasswordById, updateVerificationEmailTokenRepo, verifyEmailRepo } from "./repository.js";
 
 const sendEmailService = async (user, req) => {
     const { unHashedToken, hashedToken, tokenExpiry } = getTemporaryToken()
@@ -563,7 +563,7 @@ const resolveFilterOptions = async ({query, user}) => {
 
 }
 
-const toBlogCard = (row) => ({
+const toBlogCard = (row) =>({
   id: row.id,
   title: row.title,
   slug: row.slug,
@@ -573,8 +573,8 @@ const toBlogCard = (row) => ({
   status: row.status,
   publishedAt: row.published_at ?? null,
   createdAt: row.created_at ?? null,
-  category: row.category_id != null ? { id: row.category_id, name: row.category_name } : null,
-  author: { id: row.author_id, name: row.author_name },
+  category: row.category.id != null ? { id: row.category.id, name: row.category.name } : null,
+  author: { id: row.author.id, name: row.author.name },
 });
 
 export const getBlogsService = async ({query, user}) => {
@@ -596,7 +596,6 @@ export const getBlogsService = async ({query, user}) => {
     return {
         items: rows.map(toBlogCard),
         pagination: {
-            rows,
             totalCount,
             totalPage,
             currentPage: Number(page),

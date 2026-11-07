@@ -1,9 +1,9 @@
 import { Router } from "express"
 // import { addBlog, deleteBlog, getBlogs, getSingleBlog, loginUser, logoutUser, registerUser, updateBlog } from "../modules/index.controllers.js";
-import { verifyJWT, verifyAdmin, authorizeRole } from "../middleware/auth.middleware.js"
+import { verifyJWT, verifyAdmin, authorizeRole, optionalAuth } from "../middleware/auth.middleware.js"
 import upload from "../middleware/multer.middleware.js";
 import { forgotPasswordSchema, loginSchema, registerSchema, resendVerificationEmailSchema, resetPasswordSchema } from "../validator/auth.validations.js";
-import { addBlogPostController, deleteBlogController, forgotPasswordController, loginUserController, logoutUserController, registerUserController, resendVerificationEmailController, resetPasswordController, updateBlogPostController, verifyEmailController } from "../modules/controller.js";
+import { addBlogPostController, deleteBlogController, forgotPasswordController, getBlogsController, loginUserController, logoutUserController, registerUserController, resendVerificationEmailController, resetPasswordController, updateBlogPostController, verifyEmailController } from "../modules/controller.js";
 import { validateSchema } from "../middleware/validate.middleware.js";
 import { ROLES } from "../utils/contants.js";
 import { createPostSchema, updatePostSchema } from "../validator/post.validations.js";
@@ -70,8 +70,7 @@ router.route("/delete-post/:id").delete(
 )
 
 router.route("/get-posts").get(
-  verifyJWT,
-  authorizeRole(ROLES.PUBLISHER, ROLES.ADMIN, ROLES.USER),
+  optionalAuth,
   getBlogsController
 )
 
