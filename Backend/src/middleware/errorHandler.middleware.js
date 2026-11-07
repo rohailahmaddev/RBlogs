@@ -1,17 +1,15 @@
 import { env } from "../config/env.js";
 import { ApiError } from "../utils/ApiError.js";
-
 import { getErrorMessage } from "../utils/helper.js";
 
 export const errorHandler = ( err, req, res, next ) => {
   let error;
 
-  if (err instanceof ApiError) {
+  if ( err instanceof ApiError ) {
     error = err;
   } else {
+    console.error("ErrorHandler:",err)
     const customErr = err;
-
-    console.log(err);
     let statusCode = 500;
     let message = `Something went wrong.`;
     let code;

@@ -7,7 +7,8 @@ import { ApiError } from "../utils/ApiError.js";
 import { calculateReadTime, comparePassword, createSlug, extractText, generateExcerpt, getAccessAndRefreshToken, getErrorMessage, hashPassword, hashToken, isDuplicateError } from "../utils/helper.js";
 import { getTemporaryToken } from "../utils/jwt.js";
 import { ROLES, SELF_REGISTER_ROLES } from "../utils/contants.js";
-import { clearForgotPasswordToken, createBlogs, createUser, getBlogById, getBlogs, getCategory, getUserByEmailRepo, getUserByResetPasswordToken, logoutUser, updateBlogById, updateForgotPasswordToken, updateUserPasswordById, updateVerificationEmailTokenRepo, verifyEmailRepo } from "./repository.js";
+import { clearForgotPasswordToken, createBlogs, createUser, deleteBlogPost, getBlogById, getBlogs, getCategory, getUserByEmailRepo, getUserByResetPasswordToken, logoutUser, updateBlogById, updateForgotPasswordToken, updateUserPasswordById, updateVerificationEmailTokenRepo, verifyEmailRepo } from "./repository.js";
+import { boolean } from "zod";
 
 const sendEmailService = async (user, req) => {
     const { unHashedToken, hashedToken, tokenExpiry } = getTemporaryToken()
@@ -429,7 +430,6 @@ export const updateBlogPostService = async ({ blogId: rawId, user, body, file })
                 throw new ApiError(400, "Status must be DRAFT or PUBLISHED.");
             }
             data.status = status;
-            console.log("status", status);
             if (status === "published" && !blog.published_at) data.published_at = new Date();
         }
 
@@ -487,52 +487,109 @@ export const updateBlogPostService = async ({ blogId: rawId, user, body, file })
 
 export const deleteBlogPostService = async (req) => {
     const { id } = req.params;
+    const user = req.user;
 
     const blogId = Number(id);
 
+    if (!/^\d+$/.test(id) || !Number.isSafeInteger(blogId) || blogId <= 0) {
+        throw new ApiError(400, "Invalid blog id.");
+    }
+
     if (!blogId || !Number.isInteger(blogId) || blogId <= 0) {
         throw new ApiError(400, "Invalid blog id.");
+    }
+
+    let blog;
+    try {
+        blog = await getBlogById(blogId)
+    } catch (error) {
+        console.error("getBlogById failed:", error);
+        throw new ApiError(500, `Something went wrong.`);
+    }
+
+    if(!blog) throw new ApiError(404, "Blog not found");
+
+    if(blog.author_id !== user.id && user.role !== ROLES.ADMIN){
+        throw new ApiError(403, "You can only delete your own blogs.")
     }
 
     try{
-        const blog = await getBlogById(blogId)
-        if(!blog) throw new ApiError(404, "Blog not found");
-
-        if(blog.image_public_id) {
-            try {
-                await deleteFromCloudinary(blog.image_public_id)
-            } catch (error) {
-                console.error("Failed to delete image from Cloudinary:", error);
-            }
-        }
         await deleteBlogPost(blogId);
     } catch (error) {
-        if(error instanceof ApiError) throw error
-        console.error("deleteBlogPostService failed:", error);
-        throw new ApiError(500, `Something went wrong.`)
+        if (error?.code === "P2025") throw new ApiError(404, "Blog not found.");
+        console.error("deleteBlogPost failed:", error);
+        throw new ApiError(500, `Something went wrong.`);
     }
+
+    if(blog.public_id) {
+        try {
+            await deleteFromCloudinary(blog.public_id)
+        } catch (error) {
+            console.error("Failed to delete image from Cloudinary:", error);
+        }
+    }
+
+    return blogId;
 
 }
 
+
+const toBlogCard = (row) =>({
+  id: row.id,
+  title: row.title,
+  slug: row.slug,
+  excerpt: row.excerpt ?? "",
+  coverUrl: row.cover_url ?? null,
+  readTime: row.read_time ?? null,
+  status: row.status,
+  publishedAt: row.published_at ?? null,
+  createdAt: row.created_at ?? null,
+  category: row.category.id != null ? { id: row.category.id, name: row.category.name } : null,
+  author: { id: row.author.id, name: row.author.name },
+});
+
+const isPublished = (blog) => String(blog.status).toLowerCase() === "published";
+const canSeeDraft = (blog, user) => Boolean(user) && (user.role === ROLES.ADMIN || blog.author_id === user.id)
+
+const toBlogDetail = (blog) => ({
+  id: blog.id,
+  title: blog.title,
+  slug: blog.slug,
+  excerpt: blog.excerpt ?? "",
+  content: blog.content,
+  coverUrl: blog.cover_url ?? null,
+  readTime: blog.read_time ?? null,
+  status: String(blog.status).toLowerCase(),
+  publishedAt: blog.published_at ?? null,
+  createdAt: blog.created_at ?? null,
+  updatedAt: blog.updated_at ?? null,
+  category: blog.category ? { id: blog.category.id, name: blog.category.name } : null,
+  author: blog.author ? { id: blog.author.id, name: blog.author.name } : null,
+});
+
 export const getBlogByIdService = async (req) => {
     const { id } = req.params;
-
+    const user = req.user;
     const blogId = Number(id);
 
-    if (!blogId || !Number.isInteger(blogId) || blogId <= 0) {
+    if (!/^\d+$/.test(id) || !Number.isSafeInteger(blogId) || blogId <= 0) {
         throw new ApiError(400, "Invalid blog id.");
     }
 
+    let blog;
     try {
-        const blog = await getBlogById(blogId);
-        if (!blog) {
-            throw new ApiError(404, "Blog not found.");
-        }
-        return blog;
+        blog = await getBlogById(blogId);
     } catch (error) {
         console.error("getBlogByIdService failed:", error);
         throw new ApiError(500, `Something went wrong.`)
     }
+    // console.log(blog)
+
+    if (!blog || (!isPublished(blog) && !canSeeDraft(blog, user))) {
+        throw new ApiError(404, "Blog not found.");
+    }
+
+    return toBlogDetail(blog);
 }
 
 const resolveFilterOptions = async ({query, user}) => {
@@ -563,19 +620,6 @@ const resolveFilterOptions = async ({query, user}) => {
 
 }
 
-const toBlogCard = (row) =>({
-  id: row.id,
-  title: row.title,
-  slug: row.slug,
-  excerpt: row.excerpt ?? "",
-  coverUrl: row.cover_url ?? null,
-  readTime: row.read_time ?? null,
-  status: row.status,
-  publishedAt: row.published_at ?? null,
-  createdAt: row.created_at ?? null,
-  category: row.category.id != null ? { id: row.category.id, name: row.category.name } : null,
-  author: { id: row.author.id, name: row.author.name },
-});
 
 export const getBlogsService = async ({query, user}) => {
     const { page = 1, limit = 10 } = query;

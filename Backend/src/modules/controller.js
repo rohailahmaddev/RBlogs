@@ -2,7 +2,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { listPostsQuerySchema } from "../validator/post.validations.js";
-import { addBlogPostService, forgotPasswordService, getAllUserService, getBlogsService, loginUserService, logoutUserService, resendVerificationEmailService, resetPasswordService, updateBlogPostService, userRegisterService, verifyEmailService } from "./service.js";
+import { addBlogPostService, deleteBlogPostService, forgotPasswordService, getAllUserService, getBlogByIdService, getBlogsService, loginUserService, logoutUserService, resendVerificationEmailService, resetPasswordService, updateBlogPostService, userRegisterService, verifyEmailService } from "./service.js";
 
 export const registerUserController = asyncHandler(async (req, res) => {
     const { name, email, password, bio, role } = req.body;
@@ -147,4 +147,18 @@ export const getBlogsController = asyncHandler(async (req, res) => {
     return res
     .status(200)
     .json(new ApiResponse(200, "Blogs fetched successfully.", blogs))   
+})
+
+export const getBlogByIdController = asyncHandler(async(req, res) =>{
+    const blog = await getBlogByIdService(req);
+
+    //to store published blog in cache
+    res.set(
+        "Cache-Control",
+            blog.status === "published" ? "public, max-age=60, stale-while-revalidate=300" : "private, no-store"
+    )
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, "Blog fetched successfully.", blog))
 })

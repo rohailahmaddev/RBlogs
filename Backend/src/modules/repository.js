@@ -190,6 +190,12 @@ export const getBlogs = async({categoryId, authorId, status, search, page, limit
     return blogs;
 }
 
+export const deleteBlogPost = async(blogId) => {
+    await prisma.posts.delete({
+        where:{id:blogId}
+    })
+}
+
 
 //category
 export const getCategory = async(categoryId) => {
