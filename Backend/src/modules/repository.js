@@ -150,7 +150,45 @@ export const updateBlogById = async({ blogId, data }) => {
     })
 }
 
-export const getBlogs = async({ pageNumber, limit: limitNumber, categoryId, searchTitle })
+export const getBlogs = async({categoryId, authorId, status, search, page, limit, offset}) => {
+    const where = {
+        ...(categoryId && { category_id: categoryId }),
+        ...(authorId && { author_id: authorId }),
+        ...(status && { status: status }),
+        ...(search && {
+            OR: [
+                {title:{contains: search}},
+                {excerpt:{contains: search}},
+            ]
+        })
+    }
+
+    const orderBy = 
+    status === "draft" ?[ { created_at: "desc" }, { id: "desc" } ] : [{ published_at: "desc" } , { id: "desc" }];
+
+    const blogs = await prisma.posts.findMany({
+        where,
+        orderBy,
+        skip: offset,
+        take: limit,
+        select: {
+            id: true,
+            title: true,
+            slug: true,
+            excerpt: true,
+            coverUrl: true,
+            readTime: true,
+            status: true,
+            publishedAt: true,
+            createdAt: true,
+            category: { select: { id: true, name: true } },
+            author: { select: { id: true, name: true } },
+        },
+
+    });
+     
+    return blogs;
+}
 
 
 //category

@@ -535,26 +535,74 @@ export const getBlogByIdService = async (req) => {
     }
 }
 
-export const getBlogsService = async (req) => {
-    const { page =1 , limit = 10, categoryId, searchTitle } = req.query;
-    
-    const pageNumber = Number(page);
-    const limitNumber = Number(limit);
+const resolveFilterOptions = async ({query, user}) => {
+    const { category, author, status, search } = query;
+    const base = { categoryId: category, search };
 
-    if (!Number.isInteger(pageNumber) || pageNumber <= 0) {
-        throw new ApiError(400, "Invalid page number.");
+    if (user?.role === ROLES.ADMIN) {
+        return { ...base, authorId: author, status };
     }
 
-    if (!Number.isInteger(limitNumber) || limitNumber <= 0) {
-        throw new ApiError(400, "Invalid limit number.");
+    if (status !== "draft") {
+        return { ...base, authorId: author, status: "published" };
     }
 
+    if(!user) {
+        throw new ApiError(401, "Unauthorized. Please login to view draft posts.");
+    }
+
+    if (user?.role !== ROLES.PUBLISHER) {
+        throw new ApiError(403, "Forbidden. Only publishers can view draft posts.");
+    }
+
+    if (author !== undefined && author !== user.id) {
+        throw new ApiError(403, "Forbidden. You can only view your own draft posts.");
+    }
+
+    return { ...base, authorId: user.id, status: "draft" };
+
+}
+
+const toBlogCard = (row) => ({
+  id: row.id,
+  title: row.title,
+  slug: row.slug,
+  excerpt: row.excerpt ?? "",
+  coverUrl: row.cover_url ?? null,
+  readTime: row.read_time ?? null,
+  status: row.status,
+  publishedAt: row.published_at ?? null,
+  createdAt: row.created_at ?? null,
+  category: row.category_id != null ? { id: row.category_id, name: row.category_name } : null,
+  author: { id: row.author_id, name: row.author_name },
+});
+
+export const getBlogsService = async ({query, user}) => {
+    const { page = 1, limit = 10 } = query;
+    const filter = await resolveFilterOptions({query, user});
+
+    let result;
     try {
-        const blogs = await getBlogs({ page: pageNumber, limit: limitNumber, categoryId, searchTitle });
-        return blogs;
+        result = await getBlogs({...filter, pageNumber: Number(page), limit: Number(limit), offset: (Number(page) -1) * Number(limit)});
     } catch (error) {
         console.error("getBlogsService failed:", error);
         throw new ApiError(500, `Something went wrong.`)
     }
 
+    const rows = result?.rows ?? [];
+    const totalCount = Number(result?.total??0)
+    const totalPage = Math.ceil(totalCount / Number(limit));
+
+    return {
+        items: rows.map(toBlogCard),
+        pagination: {
+            rows,
+            totalCount,
+            totalPage,
+            currentPage: Number(page),
+            limit: Number(limit),
+            hasNext: page < totalPage,
+            hasPrev: page > 1,
+        }
+    }
 }

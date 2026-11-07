@@ -1,5 +1,6 @@
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { listPostsQuerySchema } from "../validator/post.validations.js";
 import { addBlogPostService, forgotPasswordService, getAllUserService, loginUserService, logoutUserService, resendVerificationEmailService, resetPasswordService, updateBlogPostService, userRegisterService, verifyEmailService } from "./service.js";
 
 export const registerUserController = asyncHandler(async (req, res) => {
@@ -134,7 +135,13 @@ export const deleteBlogController = asyncHandler(async (req, res) => {
 })
 
 export const getBlogsController = asyncHandler(async (req, res) => {
-    const blogs = await getBlogsService(req)
+    const parsed = listPostsQuerySchema.safeParse(req.query);
+
+    if (!parsed.success) {
+        throw new ApiError(400, parsed.error.issues.map((i) => i.message).join(", "));
+    }
+
+    const blogs = await getBlogsService({query:parsed.data, user:req.user})
 
     return res
     .status(200)

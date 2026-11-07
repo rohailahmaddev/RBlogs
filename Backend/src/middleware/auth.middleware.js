@@ -48,6 +48,39 @@ export const verifyJWT = asyncHandler( async(req, res, next) => {
     }
 })
 
+//optionalAuth
+export const optionalAuth = asyncHandler( async(req, res, next) => {
+    const token = getAccessToken(req) 
+  
+    if (!token) {
+      return next();
+    }
+  
+    try {
+    
+      const decoded = jwt.verify(token, env.ACCESS_TOKEN_SECRET)
+
+      const user = await getUserById(decoded.id);
+
+      if (!user) throw new ApiError(401, "User no longer exists. Please login again.");
+
+      // Only what routes need. Never attach the whole row (it has the password hash).
+      req.user = { id: user.id, name: user.name, email: user.email, role: user.role };
+      // req.user = decoded 
+      next()        
+
+    } catch (error) {
+      if(error instanceof ApiError) throw error
+      console.error(error)
+      throw new ApiError(
+        401,
+        error.name === "TokenExpiredError"
+          ? "Session expired. Please login again."
+          : "Invalid token. Please login again."
+      );
+    }
+})
+
 //verify admin
 export const verifyAdmin = (req, res, next) => {
     const token = getAccessToken(req)
