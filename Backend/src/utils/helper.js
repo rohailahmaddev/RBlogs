@@ -221,15 +221,15 @@ export function extractText(node){
   return "";
 }
 
-export function calculateReadTime(content, wpm = 200) {
-  const text = extractText(content)
-    .replace(/<[^>]*>/g, " ")  
-    .replace(/&nbsp;/g, " ")
-    .trim();
+// export function calculateReadTime(content, wpm = 200) {
+//   const text = extractText(content)
+//     .replace(/<[^>]*>/g, " ")  
+//     .replace(/&nbsp;/g, " ")
+//     .trim();
 
-  const words = text ? text.split(/\s+/).length : 0;
-  return Math.max(1, Math.ceil(words / wpm));
-}
+//   const words = text ? text.split(/\s+/).length : 0;
+//   return Math.max(1, Math.ceil(words / wpm));
+// }
 
 export const createSlug = (title) => {
   return title

@@ -9,18 +9,18 @@
 * 🟢 You can import this file directly.
 */
 
-export const ROLE = {
+export const user_role = {
   ADMIN: 'ADMIN',
   PUBLISHER: 'PUBLISHER',
   READER: 'READER'
 } as const
 
-export type ROLE = (typeof ROLE)[keyof typeof ROLE]
+export type user_role = (typeof user_role)[keyof typeof user_role]
 
 
-export const PostStatus = {
+export const posts_status = {
   draft: 'draft',
   published: 'published'
 } as const
 
-export type PostStatus = (typeof PostStatus)[keyof typeof PostStatus]
+export type posts_status = (typeof posts_status)[keyof typeof posts_status]

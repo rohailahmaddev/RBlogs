@@ -23,7 +23,7 @@ import router from "./routes/index.route.js"
 import { errorHandler } from "./middleware/errorHandler.middleware.js";
 
 app.use("/api/v1/users", router)
-app.use("/api/v1/posts", router)
+app.use("/api/v1/posts",router)
 
 app.use(errorHandler)
 export default app;

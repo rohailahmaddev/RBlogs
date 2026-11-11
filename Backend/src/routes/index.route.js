@@ -55,7 +55,7 @@ router.route("/create-post").post(
   addBlogPostController
 )
 
-router.route("/update-post/:id").put(
+router.route("/update-post/:id").patch(
   verifyJWT,
   authorizeRole(ROLES.PUBLISHER, ROLES.ADMIN),
   upload.single("file"),
@@ -69,7 +69,7 @@ router.route("/delete-post/:id").delete(
   deleteBlogController
 )
 
-router.route("/get-blog/:id").get(
+router.route("/get-post/:id").get(
   optionalAuth,
   getBlogByIdController
 )

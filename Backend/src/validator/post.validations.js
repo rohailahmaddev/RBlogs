@@ -4,25 +4,25 @@ import { extractText } from "../utils/helper.js";
 const MAX_CONTENT_BYTES = 500 * 1024; // 500 KB of editor JSON
 
 // multipart/form-data sends everything as strings, so JSON must be parsed first
-const jsonContent = z
-  .preprocess((val) => {
-    if (typeof val !== "string") return val;
-    try {
-      return JSON.parse(val);
-    } catch {
-      return null; // fails the object/array check below
-    }
-  }, z.union([z.record(z.string(), z.any()), z.array(z.any())], {
-    error: "Content must be valid JSON",
-  }))
-  .refine(
-    (c) => JSON.stringify(c).length <= MAX_CONTENT_BYTES,
-    "Content is too large"
-  )
-  .refine(
-    (c) => extractText(c).trim().length > 0,
-    "Content cannot be empty"
-  );
+// const jsonContent = z
+//   .preprocess((val) => {
+//     if (typeof val !== "string") return val;
+//     try {
+//       return JSON.parse(val);
+//     } catch {
+//       return null; // fails the object/array check below
+//     }
+//   }, z.union([z.record(z.string(), z.any()), z.array(z.any())], {
+//     error: "Content must be valid JSON",
+//   }))
+//   .refine(
+//     (c) => JSON.stringify(c).length <= MAX_CONTENT_BYTES,
+//     "Content is too large"
+//   )
+//   .refine(
+//     (c) => extractText(c).trim().length > 0,
+//     "Content cannot be empty"
+//   );
 
 // "true"/"false" strings from form data -> boolean
 const formBoolean = z.preprocess(
@@ -46,7 +46,10 @@ const postBase = z.object({
     .optional()
     .transform((v) => (v ? v : undefined)),
 
-  content: jsonContent,
+  content: z.string({ error: "Please provide content" })
+     .trim()
+     .min(1, "Please provide content")
+     .max(200000, "Content is too long"),
 
   // Maps to category_id in the DB
   categoryId: z.coerce
@@ -64,13 +67,20 @@ export const createPostSchema = postBase.extend({
   status: postBase.shape.status.default("draft"),
 });
 
+const stripEmptyFields = (body) =>
+  Object.fromEntries(
+    Object.entries(body ?? {}).filter(([, v]) => !(typeof v === "string" && v.trim() === ""))
+  );
+
 // ---------- Update (PATCH) ----------
-export const updatePostSchema = postBase
+export const updatePostSchema =z.preprocess(
+  stripEmptyFields,
+  postBase
   .partial()
   .extend({
     // true = delete the existing cover image without uploading a new one
     removeCover: formBoolean.optional(),
-  })
+  }));
   // .refine(
   //   (data) => Object.values(data).some((v) => v !== undefined),
   //   "Provide at least one field to update"

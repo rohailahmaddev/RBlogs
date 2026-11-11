@@ -4,10 +4,11 @@
 //   1. Put ADMIN_EMAIL and ADMIN_PASSWORD in .env
 //   2. npx prisma db seed
 
-import { hashPassword } from "../src/utils/helper";
-import { prisma } from "../src/config/database";
-import { env } from "../src/config/env";
-
+import { hashPassword } from "../src/utils/helper.js";
+import { prisma } from "../src/config/database.js";
+import { env } from "../src/config/env.js";
+//reader12
+//publisher
 async function main() {
   const email = env.ADMIN_EMAIL?.trim().toLowerCase();
   const password = env.ADMIN_PASSWORD;

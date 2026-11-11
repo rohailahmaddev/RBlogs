@@ -1,12 +1,13 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { POSTS } from "../../api/data";
+// import { POSTS } from "../../api/data";
 import usePostFilters from "./UserPostFilter";
 import SearchBar from "./Search";
 import PostCard, { PostCardSkeleton } from "./PostCard";
 import Pagination from "./Pagination";
 import { SORT_OPTIONS } from "../../utility/FilterPost";
 import SelectField from "./SelectField";
+import { useBlogs } from "./useBlogs";
 
 function FilterChip({ label, onRemove }) {
   return (
@@ -30,13 +31,23 @@ function FilterChip({ label, onRemove }) {
  * <Blogs />                              -> uses the sample data
  * <Blogs posts={apiPosts} loading={x} /> -> plug in your API later
  */
-export default function Blogs({ posts = POSTS, loading = false }) {
-  const f = usePostFilters(posts);
+export default function Blogs() {
+  const f = usePostFilters();
+  const {data, loading} = useBlogs(f.apiParams)
   const resultsRef = useRef(null);
 
   useEffect(() => {
     document.title = "All posts | RBlogs";
   }, []);
+
+  console.log(data)
+  // useEffect(() => {
+  //   if (pagination && pagination.total > 0 && f.page > pagination.totalPages) {
+  //     f.setPage(pagination.totalPages);
+  //   }
+  //     // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [pagination?.totalPages, pagination?.total, f.page]);
+  
 
   function goToPage(p) {
     f.setPage(p);
@@ -47,6 +58,8 @@ export default function Blogs({ posts = POSTS, loading = false }) {
     { value: "All", label: "All authors" },
     ...f.authors.map((a) => ({ value: a, label: a })),
   ];
+
+  if(!loading) <h1>loading.....</h1>
 
   return (
     <>

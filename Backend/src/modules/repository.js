@@ -144,6 +144,8 @@ export const deleteBlogById = async(id) => {
 }
 
 export const updateBlogById = async({ blogId, data }) => {
+    console.log("blogid",blogId)
+    console.log("data",data);
     return await prisma.posts.update({
         where:{id:blogId},
         data: data
@@ -166,7 +168,8 @@ export const getBlogs = async({categoryId, authorId, status, search, page, limit
     const orderBy = 
     status === "draft" ?[ { created_at: "desc" }, { id: "desc" } ] : [{ published_at: "desc" } , { id: "desc" }];
 
-    const blogs = await prisma.posts.findMany({
+    const [rows,total] = await prisma.$transaction([
+    prisma.posts.findMany({
         where,
         orderBy,
         skip: offset,
@@ -184,10 +187,11 @@ export const getBlogs = async({categoryId, authorId, status, search, page, limit
             category: { select: { id: true, name: true } },
             author: { select: { id: true, name: true } },
         },
-
-    });
+    }),
+     prisma.posts.count({ where }),
+    ]);
      
-    return blogs;
+    return {rows, total};
 }
 
 export const deleteBlogPost = async(blogId) => {

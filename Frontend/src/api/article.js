@@ -111,3 +111,12 @@ const [state, dispatch] = useReducer(reducer, { items: [] });`,
 
 export const DEFAULT_AUTHOR_BIO =
   "Writer and developer sharing practical lessons from building things on the web.";
+
+export const getBlogPosts = async({query,path}) => {
+  const res = await fetch(`${import.meta.env.VITE_API_POST_URL}/${path}/${query}`,{
+    method:"GET",
+
+
+
+  })
+}

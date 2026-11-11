@@ -8,9 +8,9 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/User.ts'
-export type * from './models/Categories.ts'
-export type * from './models/Posts.ts'
 export type * from './models/subscriptions.ts'
-export type * from './models/ContactMessage.ts'
+export type * from './models/categories.ts'
+export type * from './models/contactmessage.ts'
+export type * from './models/posts.ts'
+export type * from './models/user.ts'
 export type * from './commonInputTypes.ts'

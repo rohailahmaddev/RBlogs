@@ -1,9 +1,12 @@
 import fs from "node:fs";
-import { ApiError } from "../utils/ApiError";
+import { ApiError } from "../utils/ApiError.js";
 
 export const validateSchema = (schema) => {
     return (req, res, next) => {
         // Express 5: req.body is undefined when nothing was sent
+
+        
+
         const result = schema.safeParse(req.body ?? {});
 
         if (!result.success) {

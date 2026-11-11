@@ -1,6 +1,10 @@
 import { z } from "zod";
-import "dotenv/config";
+import dotenv from "dotenv";
 // import { requiredString } from "../utils/helper.js";
+
+dotenv.config({
+  path:"../.env"
+})
 
 const envSchema = z.object({
   // Application
@@ -20,31 +24,27 @@ const envSchema = z.object({
     .default("*"),
 
   // Database
-  DATABASE_NAME: z
+  MYSQL_DATABASE: z
     .string()
     .min(1, "DATABASE_NAME is required"),
 
-  DATABASE_HOST: z
+  MYSQL_HOST: z
     .string()
     .min(1, "DATABASE_HOST is required"),
 
-  DATABASE_PORT: z
+  MYSQL_PORT: z
     .coerce
     .number()
     .int()
     .positive()
     .default(3306),
 
-  DATABASE_USER: z
+  MYSQL_USER: z
     .string()
     .min(1, "DATABASE_USER is required"),
 
-  // DATABASE_PASSWORD: z
-  //   .string(),
-
-  DATABASE_URL: z
-    .string()
-    .url("DATABASE_URL must be a valid URL"),
+  MYSQL_PASSWORD: z
+    .string(),
 
   // JWT
   ACCESS_TOKEN_SECRET: z

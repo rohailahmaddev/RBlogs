@@ -4,7 +4,7 @@
 // biome-ignore-all lint: generated file
 // @ts-nocheck 
 /*
- * This file exports the `Posts` model and its related types.
+ * This file exports the `posts` model and its related types.
  *
  * 🟢 You can import this file directly.
  */
@@ -13,10 +13,10 @@ import type * as $Enums from "../enums.ts"
 import type * as Prisma from "../internal/prismaNamespace.ts"
 
 /**
- * Model Posts
+ * Model posts
  * 
  */
-export type PostsModel = runtime.Types.Result.DefaultSelection<Prisma.$PostsPayload>
+export type postsModel = runtime.Types.Result.DefaultSelection<Prisma.$postsPayload>
 
 export type AggregatePosts = {
   _count: PostsCountAggregateOutputType | null
@@ -47,14 +47,15 @@ export type PostsMinAggregateOutputType = {
   title: string | null
   slug: string | null
   excerpt: string | null
+  content: string | null
   cover_url: string | null
-  public_id: string | null
-  status: $Enums.PostStatus | null
+  status: $Enums.posts_status | null
   read_time: number | null
   published_at: Date | null
-  notify_at: Date | null
   updated_at: Date | null
   created_at: Date | null
+  notify_at: Date | null
+  public_id: string | null
 }
 
 export type PostsMaxAggregateOutputType = {
@@ -64,14 +65,15 @@ export type PostsMaxAggregateOutputType = {
   title: string | null
   slug: string | null
   excerpt: string | null
+  content: string | null
   cover_url: string | null
-  public_id: string | null
-  status: $Enums.PostStatus | null
+  status: $Enums.posts_status | null
   read_time: number | null
   published_at: Date | null
-  notify_at: Date | null
   updated_at: Date | null
   created_at: Date | null
+  notify_at: Date | null
+  public_id: string | null
 }
 
 export type PostsCountAggregateOutputType = {
@@ -83,13 +85,13 @@ export type PostsCountAggregateOutputType = {
   excerpt: number
   content: number
   cover_url: number
-  public_id: number
   status: number
   read_time: number
   published_at: number
-  notify_at: number
   updated_at: number
   created_at: number
+  notify_at: number
+  public_id: number
   _all: number
 }
 
@@ -115,14 +117,15 @@ export type PostsMinAggregateInputType = {
   title?: true
   slug?: true
   excerpt?: true
+  content?: true
   cover_url?: true
-  public_id?: true
   status?: true
   read_time?: true
   published_at?: true
-  notify_at?: true
   updated_at?: true
   created_at?: true
+  notify_at?: true
+  public_id?: true
 }
 
 export type PostsMaxAggregateInputType = {
@@ -132,14 +135,15 @@ export type PostsMaxAggregateInputType = {
   title?: true
   slug?: true
   excerpt?: true
+  content?: true
   cover_url?: true
-  public_id?: true
   status?: true
   read_time?: true
   published_at?: true
-  notify_at?: true
   updated_at?: true
   created_at?: true
+  notify_at?: true
+  public_id?: true
 }
 
 export type PostsCountAggregateInputType = {
@@ -151,49 +155,49 @@ export type PostsCountAggregateInputType = {
   excerpt?: true
   content?: true
   cover_url?: true
-  public_id?: true
   status?: true
   read_time?: true
   published_at?: true
-  notify_at?: true
   updated_at?: true
   created_at?: true
+  notify_at?: true
+  public_id?: true
   _all?: true
 }
 
 export type PostsAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Filter which Posts to aggregate.
+   * Filter which posts to aggregate.
    */
-  where?: Prisma.PostsWhereInput
+  where?: Prisma.postsWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of Posts to fetch.
+   * Determine the order of posts to fetch.
    */
-  orderBy?: Prisma.PostsOrderByWithRelationInput | Prisma.PostsOrderByWithRelationInput[]
+  orderBy?: Prisma.postsOrderByWithRelationInput | Prisma.postsOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
    * Sets the start position
    */
-  cursor?: Prisma.PostsWhereUniqueInput
+  cursor?: Prisma.postsWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` Posts from the position of the cursor.
+   * Take `±n` posts from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` Posts.
+   * Skip the first `n` posts.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Count returned Posts
+   * Count returned posts
   **/
   _count?: true | PostsCountAggregateInputType
   /**
@@ -233,11 +237,11 @@ export type GetPostsAggregateType<T extends PostsAggregateArgs> = {
 
 
 
-export type PostsGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.PostsWhereInput
-  orderBy?: Prisma.PostsOrderByWithAggregationInput | Prisma.PostsOrderByWithAggregationInput[]
+export type postsGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.postsWhereInput
+  orderBy?: Prisma.postsOrderByWithAggregationInput | Prisma.postsOrderByWithAggregationInput[]
   by: Prisma.PostsScalarFieldEnum[] | Prisma.PostsScalarFieldEnum
-  having?: Prisma.PostsScalarWhereWithAggregatesInput
+  having?: Prisma.postsScalarWhereWithAggregatesInput
   take?: number
   skip?: number
   _count?: PostsCountAggregateInputType | true
@@ -254,15 +258,15 @@ export type PostsGroupByOutputType = {
   title: string
   slug: string
   excerpt: string
-  content: runtime.JsonValue
+  content: string
   cover_url: string | null
-  public_id: string | null
-  status: $Enums.PostStatus
+  status: $Enums.posts_status
   read_time: number
   published_at: Date
-  notify_at: Date | null
-  updated_at: Date
+  updated_at: Date | null
   created_at: Date
+  notify_at: Date | null
+  public_id: string | null
   _count: PostsCountAggregateOutputType | null
   _avg: PostsAvgAggregateOutputType | null
   _sum: PostsSumAggregateOutputType | null
@@ -270,7 +274,7 @@ export type PostsGroupByOutputType = {
   _max: PostsMaxAggregateOutputType | null
 }
 
-export type GetPostsGroupByPayload<T extends PostsGroupByArgs> = Prisma.PrismaPromise<
+export type GetPostsGroupByPayload<T extends postsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<PostsGroupByOutputType, T['by']> &
       {
@@ -285,30 +289,30 @@ export type GetPostsGroupByPayload<T extends PostsGroupByArgs> = Prisma.PrismaPr
 
 
 
-export type PostsWhereInput = {
-  AND?: Prisma.PostsWhereInput | Prisma.PostsWhereInput[]
-  OR?: Prisma.PostsWhereInput[]
-  NOT?: Prisma.PostsWhereInput | Prisma.PostsWhereInput[]
-  id?: Prisma.IntFilter<"Posts"> | number
-  author_id?: Prisma.IntFilter<"Posts"> | number
-  category_id?: Prisma.IntFilter<"Posts"> | number
-  title?: Prisma.StringFilter<"Posts"> | string
-  slug?: Prisma.StringFilter<"Posts"> | string
-  excerpt?: Prisma.StringFilter<"Posts"> | string
-  content?: Prisma.JsonFilter<"Posts">
-  cover_url?: Prisma.StringNullableFilter<"Posts"> | string | null
-  public_id?: Prisma.StringNullableFilter<"Posts"> | string | null
-  status?: Prisma.EnumPostStatusFilter<"Posts"> | $Enums.PostStatus
-  read_time?: Prisma.IntFilter<"Posts"> | number
-  published_at?: Prisma.DateTimeFilter<"Posts"> | Date | string
-  notify_at?: Prisma.DateTimeNullableFilter<"Posts"> | Date | string | null
-  updated_at?: Prisma.DateTimeFilter<"Posts"> | Date | string
-  created_at?: Prisma.DateTimeFilter<"Posts"> | Date | string
-  category?: Prisma.XOR<Prisma.CategoriesScalarRelationFilter, Prisma.CategoriesWhereInput>
-  author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+export type postsWhereInput = {
+  AND?: Prisma.postsWhereInput | Prisma.postsWhereInput[]
+  OR?: Prisma.postsWhereInput[]
+  NOT?: Prisma.postsWhereInput | Prisma.postsWhereInput[]
+  id?: Prisma.IntFilter<"posts"> | number
+  author_id?: Prisma.IntFilter<"posts"> | number
+  category_id?: Prisma.IntFilter<"posts"> | number
+  title?: Prisma.StringFilter<"posts"> | string
+  slug?: Prisma.StringFilter<"posts"> | string
+  excerpt?: Prisma.StringFilter<"posts"> | string
+  content?: Prisma.StringFilter<"posts"> | string
+  cover_url?: Prisma.StringNullableFilter<"posts"> | string | null
+  status?: Prisma.Enumposts_statusFilter<"posts"> | $Enums.posts_status
+  read_time?: Prisma.IntFilter<"posts"> | number
+  published_at?: Prisma.DateTimeFilter<"posts"> | Date | string
+  updated_at?: Prisma.DateTimeNullableFilter<"posts"> | Date | string | null
+  created_at?: Prisma.DateTimeFilter<"posts"> | Date | string
+  notify_at?: Prisma.DateTimeNullableFilter<"posts"> | Date | string | null
+  public_id?: Prisma.StringNullableFilter<"posts"> | string | null
+  author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.userWhereInput>
+  category?: Prisma.XOR<Prisma.CategoriesScalarRelationFilter, Prisma.categoriesWhereInput>
 }
 
-export type PostsOrderByWithRelationInput = {
+export type postsOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   author_id?: Prisma.SortOrder
   category_id?: Prisma.SortOrder
@@ -317,42 +321,42 @@ export type PostsOrderByWithRelationInput = {
   excerpt?: Prisma.SortOrder
   content?: Prisma.SortOrder
   cover_url?: Prisma.SortOrderInput | Prisma.SortOrder
-  public_id?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   read_time?: Prisma.SortOrder
   published_at?: Prisma.SortOrder
-  notify_at?: Prisma.SortOrderInput | Prisma.SortOrder
-  updated_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
-  category?: Prisma.CategoriesOrderByWithRelationInput
-  author?: Prisma.UserOrderByWithRelationInput
-  _relevance?: Prisma.PostsOrderByRelevanceInput
+  notify_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  public_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  author?: Prisma.userOrderByWithRelationInput
+  category?: Prisma.categoriesOrderByWithRelationInput
+  _relevance?: Prisma.postsOrderByRelevanceInput
 }
 
-export type PostsWhereUniqueInput = Prisma.AtLeast<{
+export type postsWhereUniqueInput = Prisma.AtLeast<{
   id?: number
   slug?: string
-  AND?: Prisma.PostsWhereInput | Prisma.PostsWhereInput[]
-  OR?: Prisma.PostsWhereInput[]
-  NOT?: Prisma.PostsWhereInput | Prisma.PostsWhereInput[]
-  author_id?: Prisma.IntFilter<"Posts"> | number
-  category_id?: Prisma.IntFilter<"Posts"> | number
-  title?: Prisma.StringFilter<"Posts"> | string
-  excerpt?: Prisma.StringFilter<"Posts"> | string
-  content?: Prisma.JsonFilter<"Posts">
-  cover_url?: Prisma.StringNullableFilter<"Posts"> | string | null
-  public_id?: Prisma.StringNullableFilter<"Posts"> | string | null
-  status?: Prisma.EnumPostStatusFilter<"Posts"> | $Enums.PostStatus
-  read_time?: Prisma.IntFilter<"Posts"> | number
-  published_at?: Prisma.DateTimeFilter<"Posts"> | Date | string
-  notify_at?: Prisma.DateTimeNullableFilter<"Posts"> | Date | string | null
-  updated_at?: Prisma.DateTimeFilter<"Posts"> | Date | string
-  created_at?: Prisma.DateTimeFilter<"Posts"> | Date | string
-  category?: Prisma.XOR<Prisma.CategoriesScalarRelationFilter, Prisma.CategoriesWhereInput>
-  author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  AND?: Prisma.postsWhereInput | Prisma.postsWhereInput[]
+  OR?: Prisma.postsWhereInput[]
+  NOT?: Prisma.postsWhereInput | Prisma.postsWhereInput[]
+  author_id?: Prisma.IntFilter<"posts"> | number
+  category_id?: Prisma.IntFilter<"posts"> | number
+  title?: Prisma.StringFilter<"posts"> | string
+  excerpt?: Prisma.StringFilter<"posts"> | string
+  content?: Prisma.StringFilter<"posts"> | string
+  cover_url?: Prisma.StringNullableFilter<"posts"> | string | null
+  status?: Prisma.Enumposts_statusFilter<"posts"> | $Enums.posts_status
+  read_time?: Prisma.IntFilter<"posts"> | number
+  published_at?: Prisma.DateTimeFilter<"posts"> | Date | string
+  updated_at?: Prisma.DateTimeNullableFilter<"posts"> | Date | string | null
+  created_at?: Prisma.DateTimeFilter<"posts"> | Date | string
+  notify_at?: Prisma.DateTimeNullableFilter<"posts"> | Date | string | null
+  public_id?: Prisma.StringNullableFilter<"posts"> | string | null
+  author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.userWhereInput>
+  category?: Prisma.XOR<Prisma.CategoriesScalarRelationFilter, Prisma.categoriesWhereInput>
 }, "id" | "slug">
 
-export type PostsOrderByWithAggregationInput = {
+export type postsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   author_id?: Prisma.SortOrder
   category_id?: Prisma.SortOrder
@@ -361,179 +365,179 @@ export type PostsOrderByWithAggregationInput = {
   excerpt?: Prisma.SortOrder
   content?: Prisma.SortOrder
   cover_url?: Prisma.SortOrderInput | Prisma.SortOrder
-  public_id?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   read_time?: Prisma.SortOrder
   published_at?: Prisma.SortOrder
-  notify_at?: Prisma.SortOrderInput | Prisma.SortOrder
-  updated_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
-  _count?: Prisma.PostsCountOrderByAggregateInput
-  _avg?: Prisma.PostsAvgOrderByAggregateInput
-  _max?: Prisma.PostsMaxOrderByAggregateInput
-  _min?: Prisma.PostsMinOrderByAggregateInput
-  _sum?: Prisma.PostsSumOrderByAggregateInput
+  notify_at?: Prisma.SortOrderInput | Prisma.SortOrder
+  public_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  _count?: Prisma.postsCountOrderByAggregateInput
+  _avg?: Prisma.postsAvgOrderByAggregateInput
+  _max?: Prisma.postsMaxOrderByAggregateInput
+  _min?: Prisma.postsMinOrderByAggregateInput
+  _sum?: Prisma.postsSumOrderByAggregateInput
 }
 
-export type PostsScalarWhereWithAggregatesInput = {
-  AND?: Prisma.PostsScalarWhereWithAggregatesInput | Prisma.PostsScalarWhereWithAggregatesInput[]
-  OR?: Prisma.PostsScalarWhereWithAggregatesInput[]
-  NOT?: Prisma.PostsScalarWhereWithAggregatesInput | Prisma.PostsScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Posts"> | number
-  author_id?: Prisma.IntWithAggregatesFilter<"Posts"> | number
-  category_id?: Prisma.IntWithAggregatesFilter<"Posts"> | number
-  title?: Prisma.StringWithAggregatesFilter<"Posts"> | string
-  slug?: Prisma.StringWithAggregatesFilter<"Posts"> | string
-  excerpt?: Prisma.StringWithAggregatesFilter<"Posts"> | string
-  content?: Prisma.JsonWithAggregatesFilter<"Posts">
-  cover_url?: Prisma.StringNullableWithAggregatesFilter<"Posts"> | string | null
-  public_id?: Prisma.StringNullableWithAggregatesFilter<"Posts"> | string | null
-  status?: Prisma.EnumPostStatusWithAggregatesFilter<"Posts"> | $Enums.PostStatus
-  read_time?: Prisma.IntWithAggregatesFilter<"Posts"> | number
-  published_at?: Prisma.DateTimeWithAggregatesFilter<"Posts"> | Date | string
-  notify_at?: Prisma.DateTimeNullableWithAggregatesFilter<"Posts"> | Date | string | null
-  updated_at?: Prisma.DateTimeWithAggregatesFilter<"Posts"> | Date | string
-  created_at?: Prisma.DateTimeWithAggregatesFilter<"Posts"> | Date | string
+export type postsScalarWhereWithAggregatesInput = {
+  AND?: Prisma.postsScalarWhereWithAggregatesInput | Prisma.postsScalarWhereWithAggregatesInput[]
+  OR?: Prisma.postsScalarWhereWithAggregatesInput[]
+  NOT?: Prisma.postsScalarWhereWithAggregatesInput | Prisma.postsScalarWhereWithAggregatesInput[]
+  id?: Prisma.IntWithAggregatesFilter<"posts"> | number
+  author_id?: Prisma.IntWithAggregatesFilter<"posts"> | number
+  category_id?: Prisma.IntWithAggregatesFilter<"posts"> | number
+  title?: Prisma.StringWithAggregatesFilter<"posts"> | string
+  slug?: Prisma.StringWithAggregatesFilter<"posts"> | string
+  excerpt?: Prisma.StringWithAggregatesFilter<"posts"> | string
+  content?: Prisma.StringWithAggregatesFilter<"posts"> | string
+  cover_url?: Prisma.StringNullableWithAggregatesFilter<"posts"> | string | null
+  status?: Prisma.Enumposts_statusWithAggregatesFilter<"posts"> | $Enums.posts_status
+  read_time?: Prisma.IntWithAggregatesFilter<"posts"> | number
+  published_at?: Prisma.DateTimeWithAggregatesFilter<"posts"> | Date | string
+  updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"posts"> | Date | string | null
+  created_at?: Prisma.DateTimeWithAggregatesFilter<"posts"> | Date | string
+  notify_at?: Prisma.DateTimeNullableWithAggregatesFilter<"posts"> | Date | string | null
+  public_id?: Prisma.StringNullableWithAggregatesFilter<"posts"> | string | null
 }
 
-export type PostsCreateInput = {
+export type postsCreateInput = {
   title: string
   slug: string
   excerpt: string
-  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  content: string
   cover_url?: string | null
-  public_id?: string | null
-  status?: $Enums.PostStatus
+  status?: $Enums.posts_status
   read_time?: number
   published_at?: Date | string
-  notify_at?: Date | string | null
-  updated_at?: Date | string
+  updated_at?: Date | string | null
   created_at?: Date | string
-  category: Prisma.CategoriesCreateNestedOneWithoutPostsInput
-  author: Prisma.UserCreateNestedOneWithoutPostsInput
+  notify_at?: Date | string | null
+  public_id?: string | null
+  author: Prisma.userCreateNestedOneWithoutPostsInput
+  category: Prisma.categoriesCreateNestedOneWithoutPostsInput
 }
 
-export type PostsUncheckedCreateInput = {
+export type postsUncheckedCreateInput = {
   id?: number
   author_id: number
   category_id: number
   title: string
   slug: string
   excerpt: string
-  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  content: string
   cover_url?: string | null
-  public_id?: string | null
-  status?: $Enums.PostStatus
+  status?: $Enums.posts_status
   read_time?: number
   published_at?: Date | string
-  notify_at?: Date | string | null
-  updated_at?: Date | string
+  updated_at?: Date | string | null
   created_at?: Date | string
+  notify_at?: Date | string | null
+  public_id?: string | null
 }
 
-export type PostsUpdateInput = {
+export type postsUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   excerpt?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  content?: Prisma.StringFieldUpdateOperationsInput | string
   cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  status?: Prisma.Enumposts_statusFieldUpdateOperationsInput | $Enums.posts_status
   read_time?: Prisma.IntFieldUpdateOperationsInput | number
   published_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  category?: Prisma.CategoriesUpdateOneRequiredWithoutPostsNestedInput
-  author?: Prisma.UserUpdateOneRequiredWithoutPostsNestedInput
+  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  author?: Prisma.userUpdateOneRequiredWithoutPostsNestedInput
+  category?: Prisma.categoriesUpdateOneRequiredWithoutPostsNestedInput
 }
 
-export type PostsUncheckedUpdateInput = {
+export type postsUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   author_id?: Prisma.IntFieldUpdateOperationsInput | number
   category_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   excerpt?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  content?: Prisma.StringFieldUpdateOperationsInput | string
   cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  status?: Prisma.Enumposts_statusFieldUpdateOperationsInput | $Enums.posts_status
   read_time?: Prisma.IntFieldUpdateOperationsInput | number
   published_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
-export type PostsCreateManyInput = {
+export type postsCreateManyInput = {
   id?: number
   author_id: number
   category_id: number
   title: string
   slug: string
   excerpt: string
-  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  content: string
   cover_url?: string | null
-  public_id?: string | null
-  status?: $Enums.PostStatus
+  status?: $Enums.posts_status
   read_time?: number
   published_at?: Date | string
-  notify_at?: Date | string | null
-  updated_at?: Date | string
+  updated_at?: Date | string | null
   created_at?: Date | string
+  notify_at?: Date | string | null
+  public_id?: string | null
 }
 
-export type PostsUpdateManyMutationInput = {
+export type postsUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   excerpt?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  content?: Prisma.StringFieldUpdateOperationsInput | string
   cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  status?: Prisma.Enumposts_statusFieldUpdateOperationsInput | $Enums.posts_status
   read_time?: Prisma.IntFieldUpdateOperationsInput | number
   published_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
-export type PostsUncheckedUpdateManyInput = {
+export type postsUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   author_id?: Prisma.IntFieldUpdateOperationsInput | number
   category_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   excerpt?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  content?: Prisma.StringFieldUpdateOperationsInput | string
   cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  status?: Prisma.Enumposts_statusFieldUpdateOperationsInput | $Enums.posts_status
   read_time?: Prisma.IntFieldUpdateOperationsInput | number
   published_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type PostsListRelationFilter = {
-  every?: Prisma.PostsWhereInput
-  some?: Prisma.PostsWhereInput
-  none?: Prisma.PostsWhereInput
+  every?: Prisma.postsWhereInput
+  some?: Prisma.postsWhereInput
+  none?: Prisma.postsWhereInput
 }
 
-export type PostsOrderByRelationAggregateInput = {
+export type postsOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type PostsOrderByRelevanceInput = {
-  fields: Prisma.PostsOrderByRelevanceFieldEnum | Prisma.PostsOrderByRelevanceFieldEnum[]
+export type postsOrderByRelevanceInput = {
+  fields: Prisma.postsOrderByRelevanceFieldEnum | Prisma.postsOrderByRelevanceFieldEnum[]
   sort: Prisma.SortOrder
   search: string
 }
 
-export type PostsCountOrderByAggregateInput = {
+export type postsCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   author_id?: Prisma.SortOrder
   category_id?: Prisma.SortOrder
@@ -542,427 +546,437 @@ export type PostsCountOrderByAggregateInput = {
   excerpt?: Prisma.SortOrder
   content?: Prisma.SortOrder
   cover_url?: Prisma.SortOrder
-  public_id?: Prisma.SortOrder
   status?: Prisma.SortOrder
   read_time?: Prisma.SortOrder
   published_at?: Prisma.SortOrder
-  notify_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  notify_at?: Prisma.SortOrder
+  public_id?: Prisma.SortOrder
 }
 
-export type PostsAvgOrderByAggregateInput = {
+export type postsAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   author_id?: Prisma.SortOrder
   category_id?: Prisma.SortOrder
   read_time?: Prisma.SortOrder
 }
 
-export type PostsMaxOrderByAggregateInput = {
+export type postsMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   author_id?: Prisma.SortOrder
   category_id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   excerpt?: Prisma.SortOrder
+  content?: Prisma.SortOrder
   cover_url?: Prisma.SortOrder
-  public_id?: Prisma.SortOrder
   status?: Prisma.SortOrder
   read_time?: Prisma.SortOrder
   published_at?: Prisma.SortOrder
-  notify_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  notify_at?: Prisma.SortOrder
+  public_id?: Prisma.SortOrder
 }
 
-export type PostsMinOrderByAggregateInput = {
+export type postsMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   author_id?: Prisma.SortOrder
   category_id?: Prisma.SortOrder
   title?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   excerpt?: Prisma.SortOrder
+  content?: Prisma.SortOrder
   cover_url?: Prisma.SortOrder
-  public_id?: Prisma.SortOrder
   status?: Prisma.SortOrder
   read_time?: Prisma.SortOrder
   published_at?: Prisma.SortOrder
-  notify_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  notify_at?: Prisma.SortOrder
+  public_id?: Prisma.SortOrder
 }
 
-export type PostsSumOrderByAggregateInput = {
+export type postsSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   author_id?: Prisma.SortOrder
   category_id?: Prisma.SortOrder
   read_time?: Prisma.SortOrder
 }
 
-export type PostsCreateNestedManyWithoutAuthorInput = {
-  create?: Prisma.XOR<Prisma.PostsCreateWithoutAuthorInput, Prisma.PostsUncheckedCreateWithoutAuthorInput> | Prisma.PostsCreateWithoutAuthorInput[] | Prisma.PostsUncheckedCreateWithoutAuthorInput[]
-  connectOrCreate?: Prisma.PostsCreateOrConnectWithoutAuthorInput | Prisma.PostsCreateOrConnectWithoutAuthorInput[]
-  createMany?: Prisma.PostsCreateManyAuthorInputEnvelope
-  connect?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
+export type postsCreateNestedManyWithoutCategoryInput = {
+  create?: Prisma.XOR<Prisma.postsCreateWithoutCategoryInput, Prisma.postsUncheckedCreateWithoutCategoryInput> | Prisma.postsCreateWithoutCategoryInput[] | Prisma.postsUncheckedCreateWithoutCategoryInput[]
+  connectOrCreate?: Prisma.postsCreateOrConnectWithoutCategoryInput | Prisma.postsCreateOrConnectWithoutCategoryInput[]
+  createMany?: Prisma.postsCreateManyCategoryInputEnvelope
+  connect?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
 }
 
-export type PostsUncheckedCreateNestedManyWithoutAuthorInput = {
-  create?: Prisma.XOR<Prisma.PostsCreateWithoutAuthorInput, Prisma.PostsUncheckedCreateWithoutAuthorInput> | Prisma.PostsCreateWithoutAuthorInput[] | Prisma.PostsUncheckedCreateWithoutAuthorInput[]
-  connectOrCreate?: Prisma.PostsCreateOrConnectWithoutAuthorInput | Prisma.PostsCreateOrConnectWithoutAuthorInput[]
-  createMany?: Prisma.PostsCreateManyAuthorInputEnvelope
-  connect?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
+export type postsUncheckedCreateNestedManyWithoutCategoryInput = {
+  create?: Prisma.XOR<Prisma.postsCreateWithoutCategoryInput, Prisma.postsUncheckedCreateWithoutCategoryInput> | Prisma.postsCreateWithoutCategoryInput[] | Prisma.postsUncheckedCreateWithoutCategoryInput[]
+  connectOrCreate?: Prisma.postsCreateOrConnectWithoutCategoryInput | Prisma.postsCreateOrConnectWithoutCategoryInput[]
+  createMany?: Prisma.postsCreateManyCategoryInputEnvelope
+  connect?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
 }
 
-export type PostsUpdateManyWithoutAuthorNestedInput = {
-  create?: Prisma.XOR<Prisma.PostsCreateWithoutAuthorInput, Prisma.PostsUncheckedCreateWithoutAuthorInput> | Prisma.PostsCreateWithoutAuthorInput[] | Prisma.PostsUncheckedCreateWithoutAuthorInput[]
-  connectOrCreate?: Prisma.PostsCreateOrConnectWithoutAuthorInput | Prisma.PostsCreateOrConnectWithoutAuthorInput[]
-  upsert?: Prisma.PostsUpsertWithWhereUniqueWithoutAuthorInput | Prisma.PostsUpsertWithWhereUniqueWithoutAuthorInput[]
-  createMany?: Prisma.PostsCreateManyAuthorInputEnvelope
-  set?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
-  disconnect?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
-  delete?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
-  connect?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
-  update?: Prisma.PostsUpdateWithWhereUniqueWithoutAuthorInput | Prisma.PostsUpdateWithWhereUniqueWithoutAuthorInput[]
-  updateMany?: Prisma.PostsUpdateManyWithWhereWithoutAuthorInput | Prisma.PostsUpdateManyWithWhereWithoutAuthorInput[]
-  deleteMany?: Prisma.PostsScalarWhereInput | Prisma.PostsScalarWhereInput[]
+export type postsUpdateManyWithoutCategoryNestedInput = {
+  create?: Prisma.XOR<Prisma.postsCreateWithoutCategoryInput, Prisma.postsUncheckedCreateWithoutCategoryInput> | Prisma.postsCreateWithoutCategoryInput[] | Prisma.postsUncheckedCreateWithoutCategoryInput[]
+  connectOrCreate?: Prisma.postsCreateOrConnectWithoutCategoryInput | Prisma.postsCreateOrConnectWithoutCategoryInput[]
+  upsert?: Prisma.postsUpsertWithWhereUniqueWithoutCategoryInput | Prisma.postsUpsertWithWhereUniqueWithoutCategoryInput[]
+  createMany?: Prisma.postsCreateManyCategoryInputEnvelope
+  set?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
+  disconnect?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
+  delete?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
+  connect?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
+  update?: Prisma.postsUpdateWithWhereUniqueWithoutCategoryInput | Prisma.postsUpdateWithWhereUniqueWithoutCategoryInput[]
+  updateMany?: Prisma.postsUpdateManyWithWhereWithoutCategoryInput | Prisma.postsUpdateManyWithWhereWithoutCategoryInput[]
+  deleteMany?: Prisma.postsScalarWhereInput | Prisma.postsScalarWhereInput[]
 }
 
-export type PostsUncheckedUpdateManyWithoutAuthorNestedInput = {
-  create?: Prisma.XOR<Prisma.PostsCreateWithoutAuthorInput, Prisma.PostsUncheckedCreateWithoutAuthorInput> | Prisma.PostsCreateWithoutAuthorInput[] | Prisma.PostsUncheckedCreateWithoutAuthorInput[]
-  connectOrCreate?: Prisma.PostsCreateOrConnectWithoutAuthorInput | Prisma.PostsCreateOrConnectWithoutAuthorInput[]
-  upsert?: Prisma.PostsUpsertWithWhereUniqueWithoutAuthorInput | Prisma.PostsUpsertWithWhereUniqueWithoutAuthorInput[]
-  createMany?: Prisma.PostsCreateManyAuthorInputEnvelope
-  set?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
-  disconnect?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
-  delete?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
-  connect?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
-  update?: Prisma.PostsUpdateWithWhereUniqueWithoutAuthorInput | Prisma.PostsUpdateWithWhereUniqueWithoutAuthorInput[]
-  updateMany?: Prisma.PostsUpdateManyWithWhereWithoutAuthorInput | Prisma.PostsUpdateManyWithWhereWithoutAuthorInput[]
-  deleteMany?: Prisma.PostsScalarWhereInput | Prisma.PostsScalarWhereInput[]
+export type postsUncheckedUpdateManyWithoutCategoryNestedInput = {
+  create?: Prisma.XOR<Prisma.postsCreateWithoutCategoryInput, Prisma.postsUncheckedCreateWithoutCategoryInput> | Prisma.postsCreateWithoutCategoryInput[] | Prisma.postsUncheckedCreateWithoutCategoryInput[]
+  connectOrCreate?: Prisma.postsCreateOrConnectWithoutCategoryInput | Prisma.postsCreateOrConnectWithoutCategoryInput[]
+  upsert?: Prisma.postsUpsertWithWhereUniqueWithoutCategoryInput | Prisma.postsUpsertWithWhereUniqueWithoutCategoryInput[]
+  createMany?: Prisma.postsCreateManyCategoryInputEnvelope
+  set?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
+  disconnect?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
+  delete?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
+  connect?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
+  update?: Prisma.postsUpdateWithWhereUniqueWithoutCategoryInput | Prisma.postsUpdateWithWhereUniqueWithoutCategoryInput[]
+  updateMany?: Prisma.postsUpdateManyWithWhereWithoutCategoryInput | Prisma.postsUpdateManyWithWhereWithoutCategoryInput[]
+  deleteMany?: Prisma.postsScalarWhereInput | Prisma.postsScalarWhereInput[]
 }
 
-export type PostsCreateNestedManyWithoutCategoryInput = {
-  create?: Prisma.XOR<Prisma.PostsCreateWithoutCategoryInput, Prisma.PostsUncheckedCreateWithoutCategoryInput> | Prisma.PostsCreateWithoutCategoryInput[] | Prisma.PostsUncheckedCreateWithoutCategoryInput[]
-  connectOrCreate?: Prisma.PostsCreateOrConnectWithoutCategoryInput | Prisma.PostsCreateOrConnectWithoutCategoryInput[]
-  createMany?: Prisma.PostsCreateManyCategoryInputEnvelope
-  connect?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
 }
 
-export type PostsUncheckedCreateNestedManyWithoutCategoryInput = {
-  create?: Prisma.XOR<Prisma.PostsCreateWithoutCategoryInput, Prisma.PostsUncheckedCreateWithoutCategoryInput> | Prisma.PostsCreateWithoutCategoryInput[] | Prisma.PostsUncheckedCreateWithoutCategoryInput[]
-  connectOrCreate?: Prisma.PostsCreateOrConnectWithoutCategoryInput | Prisma.PostsCreateOrConnectWithoutCategoryInput[]
-  createMany?: Prisma.PostsCreateManyCategoryInputEnvelope
-  connect?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
+export type Enumposts_statusFieldUpdateOperationsInput = {
+  set?: $Enums.posts_status
 }
 
-export type PostsUpdateManyWithoutCategoryNestedInput = {
-  create?: Prisma.XOR<Prisma.PostsCreateWithoutCategoryInput, Prisma.PostsUncheckedCreateWithoutCategoryInput> | Prisma.PostsCreateWithoutCategoryInput[] | Prisma.PostsUncheckedCreateWithoutCategoryInput[]
-  connectOrCreate?: Prisma.PostsCreateOrConnectWithoutCategoryInput | Prisma.PostsCreateOrConnectWithoutCategoryInput[]
-  upsert?: Prisma.PostsUpsertWithWhereUniqueWithoutCategoryInput | Prisma.PostsUpsertWithWhereUniqueWithoutCategoryInput[]
-  createMany?: Prisma.PostsCreateManyCategoryInputEnvelope
-  set?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
-  disconnect?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
-  delete?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
-  connect?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
-  update?: Prisma.PostsUpdateWithWhereUniqueWithoutCategoryInput | Prisma.PostsUpdateWithWhereUniqueWithoutCategoryInput[]
-  updateMany?: Prisma.PostsUpdateManyWithWhereWithoutCategoryInput | Prisma.PostsUpdateManyWithWhereWithoutCategoryInput[]
-  deleteMany?: Prisma.PostsScalarWhereInput | Prisma.PostsScalarWhereInput[]
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
-export type PostsUncheckedUpdateManyWithoutCategoryNestedInput = {
-  create?: Prisma.XOR<Prisma.PostsCreateWithoutCategoryInput, Prisma.PostsUncheckedCreateWithoutCategoryInput> | Prisma.PostsCreateWithoutCategoryInput[] | Prisma.PostsUncheckedCreateWithoutCategoryInput[]
-  connectOrCreate?: Prisma.PostsCreateOrConnectWithoutCategoryInput | Prisma.PostsCreateOrConnectWithoutCategoryInput[]
-  upsert?: Prisma.PostsUpsertWithWhereUniqueWithoutCategoryInput | Prisma.PostsUpsertWithWhereUniqueWithoutCategoryInput[]
-  createMany?: Prisma.PostsCreateManyCategoryInputEnvelope
-  set?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
-  disconnect?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
-  delete?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
-  connect?: Prisma.PostsWhereUniqueInput | Prisma.PostsWhereUniqueInput[]
-  update?: Prisma.PostsUpdateWithWhereUniqueWithoutCategoryInput | Prisma.PostsUpdateWithWhereUniqueWithoutCategoryInput[]
-  updateMany?: Prisma.PostsUpdateManyWithWhereWithoutCategoryInput | Prisma.PostsUpdateManyWithWhereWithoutCategoryInput[]
-  deleteMany?: Prisma.PostsScalarWhereInput | Prisma.PostsScalarWhereInput[]
+export type postsCreateNestedManyWithoutAuthorInput = {
+  create?: Prisma.XOR<Prisma.postsCreateWithoutAuthorInput, Prisma.postsUncheckedCreateWithoutAuthorInput> | Prisma.postsCreateWithoutAuthorInput[] | Prisma.postsUncheckedCreateWithoutAuthorInput[]
+  connectOrCreate?: Prisma.postsCreateOrConnectWithoutAuthorInput | Prisma.postsCreateOrConnectWithoutAuthorInput[]
+  createMany?: Prisma.postsCreateManyAuthorInputEnvelope
+  connect?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
 }
 
-export type EnumPostStatusFieldUpdateOperationsInput = {
-  set?: $Enums.PostStatus
+export type postsUncheckedCreateNestedManyWithoutAuthorInput = {
+  create?: Prisma.XOR<Prisma.postsCreateWithoutAuthorInput, Prisma.postsUncheckedCreateWithoutAuthorInput> | Prisma.postsCreateWithoutAuthorInput[] | Prisma.postsUncheckedCreateWithoutAuthorInput[]
+  connectOrCreate?: Prisma.postsCreateOrConnectWithoutAuthorInput | Prisma.postsCreateOrConnectWithoutAuthorInput[]
+  createMany?: Prisma.postsCreateManyAuthorInputEnvelope
+  connect?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
 }
 
-export type PostsCreateWithoutAuthorInput = {
+export type postsUpdateManyWithoutAuthorNestedInput = {
+  create?: Prisma.XOR<Prisma.postsCreateWithoutAuthorInput, Prisma.postsUncheckedCreateWithoutAuthorInput> | Prisma.postsCreateWithoutAuthorInput[] | Prisma.postsUncheckedCreateWithoutAuthorInput[]
+  connectOrCreate?: Prisma.postsCreateOrConnectWithoutAuthorInput | Prisma.postsCreateOrConnectWithoutAuthorInput[]
+  upsert?: Prisma.postsUpsertWithWhereUniqueWithoutAuthorInput | Prisma.postsUpsertWithWhereUniqueWithoutAuthorInput[]
+  createMany?: Prisma.postsCreateManyAuthorInputEnvelope
+  set?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
+  disconnect?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
+  delete?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
+  connect?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
+  update?: Prisma.postsUpdateWithWhereUniqueWithoutAuthorInput | Prisma.postsUpdateWithWhereUniqueWithoutAuthorInput[]
+  updateMany?: Prisma.postsUpdateManyWithWhereWithoutAuthorInput | Prisma.postsUpdateManyWithWhereWithoutAuthorInput[]
+  deleteMany?: Prisma.postsScalarWhereInput | Prisma.postsScalarWhereInput[]
+}
+
+export type postsUncheckedUpdateManyWithoutAuthorNestedInput = {
+  create?: Prisma.XOR<Prisma.postsCreateWithoutAuthorInput, Prisma.postsUncheckedCreateWithoutAuthorInput> | Prisma.postsCreateWithoutAuthorInput[] | Prisma.postsUncheckedCreateWithoutAuthorInput[]
+  connectOrCreate?: Prisma.postsCreateOrConnectWithoutAuthorInput | Prisma.postsCreateOrConnectWithoutAuthorInput[]
+  upsert?: Prisma.postsUpsertWithWhereUniqueWithoutAuthorInput | Prisma.postsUpsertWithWhereUniqueWithoutAuthorInput[]
+  createMany?: Prisma.postsCreateManyAuthorInputEnvelope
+  set?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
+  disconnect?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
+  delete?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
+  connect?: Prisma.postsWhereUniqueInput | Prisma.postsWhereUniqueInput[]
+  update?: Prisma.postsUpdateWithWhereUniqueWithoutAuthorInput | Prisma.postsUpdateWithWhereUniqueWithoutAuthorInput[]
+  updateMany?: Prisma.postsUpdateManyWithWhereWithoutAuthorInput | Prisma.postsUpdateManyWithWhereWithoutAuthorInput[]
+  deleteMany?: Prisma.postsScalarWhereInput | Prisma.postsScalarWhereInput[]
+}
+
+export type postsCreateWithoutCategoryInput = {
   title: string
   slug: string
   excerpt: string
-  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  content: string
   cover_url?: string | null
-  public_id?: string | null
-  status?: $Enums.PostStatus
+  status?: $Enums.posts_status
   read_time?: number
   published_at?: Date | string
-  notify_at?: Date | string | null
-  updated_at?: Date | string
+  updated_at?: Date | string | null
   created_at?: Date | string
-  category: Prisma.CategoriesCreateNestedOneWithoutPostsInput
-}
-
-export type PostsUncheckedCreateWithoutAuthorInput = {
-  id?: number
-  category_id: number
-  title: string
-  slug: string
-  excerpt: string
-  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  cover_url?: string | null
+  notify_at?: Date | string | null
   public_id?: string | null
-  status?: $Enums.PostStatus
-  read_time?: number
-  published_at?: Date | string
-  notify_at?: Date | string | null
-  updated_at?: Date | string
-  created_at?: Date | string
+  author: Prisma.userCreateNestedOneWithoutPostsInput
 }
 
-export type PostsCreateOrConnectWithoutAuthorInput = {
-  where: Prisma.PostsWhereUniqueInput
-  create: Prisma.XOR<Prisma.PostsCreateWithoutAuthorInput, Prisma.PostsUncheckedCreateWithoutAuthorInput>
-}
-
-export type PostsCreateManyAuthorInputEnvelope = {
-  data: Prisma.PostsCreateManyAuthorInput | Prisma.PostsCreateManyAuthorInput[]
-  skipDuplicates?: boolean
-}
-
-export type PostsUpsertWithWhereUniqueWithoutAuthorInput = {
-  where: Prisma.PostsWhereUniqueInput
-  update: Prisma.XOR<Prisma.PostsUpdateWithoutAuthorInput, Prisma.PostsUncheckedUpdateWithoutAuthorInput>
-  create: Prisma.XOR<Prisma.PostsCreateWithoutAuthorInput, Prisma.PostsUncheckedCreateWithoutAuthorInput>
-}
-
-export type PostsUpdateWithWhereUniqueWithoutAuthorInput = {
-  where: Prisma.PostsWhereUniqueInput
-  data: Prisma.XOR<Prisma.PostsUpdateWithoutAuthorInput, Prisma.PostsUncheckedUpdateWithoutAuthorInput>
-}
-
-export type PostsUpdateManyWithWhereWithoutAuthorInput = {
-  where: Prisma.PostsScalarWhereInput
-  data: Prisma.XOR<Prisma.PostsUpdateManyMutationInput, Prisma.PostsUncheckedUpdateManyWithoutAuthorInput>
-}
-
-export type PostsScalarWhereInput = {
-  AND?: Prisma.PostsScalarWhereInput | Prisma.PostsScalarWhereInput[]
-  OR?: Prisma.PostsScalarWhereInput[]
-  NOT?: Prisma.PostsScalarWhereInput | Prisma.PostsScalarWhereInput[]
-  id?: Prisma.IntFilter<"Posts"> | number
-  author_id?: Prisma.IntFilter<"Posts"> | number
-  category_id?: Prisma.IntFilter<"Posts"> | number
-  title?: Prisma.StringFilter<"Posts"> | string
-  slug?: Prisma.StringFilter<"Posts"> | string
-  excerpt?: Prisma.StringFilter<"Posts"> | string
-  content?: Prisma.JsonFilter<"Posts">
-  cover_url?: Prisma.StringNullableFilter<"Posts"> | string | null
-  public_id?: Prisma.StringNullableFilter<"Posts"> | string | null
-  status?: Prisma.EnumPostStatusFilter<"Posts"> | $Enums.PostStatus
-  read_time?: Prisma.IntFilter<"Posts"> | number
-  published_at?: Prisma.DateTimeFilter<"Posts"> | Date | string
-  notify_at?: Prisma.DateTimeNullableFilter<"Posts"> | Date | string | null
-  updated_at?: Prisma.DateTimeFilter<"Posts"> | Date | string
-  created_at?: Prisma.DateTimeFilter<"Posts"> | Date | string
-}
-
-export type PostsCreateWithoutCategoryInput = {
-  title: string
-  slug: string
-  excerpt: string
-  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  cover_url?: string | null
-  public_id?: string | null
-  status?: $Enums.PostStatus
-  read_time?: number
-  published_at?: Date | string
-  notify_at?: Date | string | null
-  updated_at?: Date | string
-  created_at?: Date | string
-  author: Prisma.UserCreateNestedOneWithoutPostsInput
-}
-
-export type PostsUncheckedCreateWithoutCategoryInput = {
+export type postsUncheckedCreateWithoutCategoryInput = {
   id?: number
   author_id: number
   title: string
   slug: string
   excerpt: string
-  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  content: string
   cover_url?: string | null
-  public_id?: string | null
-  status?: $Enums.PostStatus
+  status?: $Enums.posts_status
   read_time?: number
   published_at?: Date | string
-  notify_at?: Date | string | null
-  updated_at?: Date | string
+  updated_at?: Date | string | null
   created_at?: Date | string
+  notify_at?: Date | string | null
+  public_id?: string | null
 }
 
-export type PostsCreateOrConnectWithoutCategoryInput = {
-  where: Prisma.PostsWhereUniqueInput
-  create: Prisma.XOR<Prisma.PostsCreateWithoutCategoryInput, Prisma.PostsUncheckedCreateWithoutCategoryInput>
+export type postsCreateOrConnectWithoutCategoryInput = {
+  where: Prisma.postsWhereUniqueInput
+  create: Prisma.XOR<Prisma.postsCreateWithoutCategoryInput, Prisma.postsUncheckedCreateWithoutCategoryInput>
 }
 
-export type PostsCreateManyCategoryInputEnvelope = {
-  data: Prisma.PostsCreateManyCategoryInput | Prisma.PostsCreateManyCategoryInput[]
+export type postsCreateManyCategoryInputEnvelope = {
+  data: Prisma.postsCreateManyCategoryInput | Prisma.postsCreateManyCategoryInput[]
   skipDuplicates?: boolean
 }
 
-export type PostsUpsertWithWhereUniqueWithoutCategoryInput = {
-  where: Prisma.PostsWhereUniqueInput
-  update: Prisma.XOR<Prisma.PostsUpdateWithoutCategoryInput, Prisma.PostsUncheckedUpdateWithoutCategoryInput>
-  create: Prisma.XOR<Prisma.PostsCreateWithoutCategoryInput, Prisma.PostsUncheckedCreateWithoutCategoryInput>
+export type postsUpsertWithWhereUniqueWithoutCategoryInput = {
+  where: Prisma.postsWhereUniqueInput
+  update: Prisma.XOR<Prisma.postsUpdateWithoutCategoryInput, Prisma.postsUncheckedUpdateWithoutCategoryInput>
+  create: Prisma.XOR<Prisma.postsCreateWithoutCategoryInput, Prisma.postsUncheckedCreateWithoutCategoryInput>
 }
 
-export type PostsUpdateWithWhereUniqueWithoutCategoryInput = {
-  where: Prisma.PostsWhereUniqueInput
-  data: Prisma.XOR<Prisma.PostsUpdateWithoutCategoryInput, Prisma.PostsUncheckedUpdateWithoutCategoryInput>
+export type postsUpdateWithWhereUniqueWithoutCategoryInput = {
+  where: Prisma.postsWhereUniqueInput
+  data: Prisma.XOR<Prisma.postsUpdateWithoutCategoryInput, Prisma.postsUncheckedUpdateWithoutCategoryInput>
 }
 
-export type PostsUpdateManyWithWhereWithoutCategoryInput = {
-  where: Prisma.PostsScalarWhereInput
-  data: Prisma.XOR<Prisma.PostsUpdateManyMutationInput, Prisma.PostsUncheckedUpdateManyWithoutCategoryInput>
+export type postsUpdateManyWithWhereWithoutCategoryInput = {
+  where: Prisma.postsScalarWhereInput
+  data: Prisma.XOR<Prisma.postsUpdateManyMutationInput, Prisma.postsUncheckedUpdateManyWithoutCategoryInput>
 }
 
-export type PostsCreateManyAuthorInput = {
+export type postsScalarWhereInput = {
+  AND?: Prisma.postsScalarWhereInput | Prisma.postsScalarWhereInput[]
+  OR?: Prisma.postsScalarWhereInput[]
+  NOT?: Prisma.postsScalarWhereInput | Prisma.postsScalarWhereInput[]
+  id?: Prisma.IntFilter<"posts"> | number
+  author_id?: Prisma.IntFilter<"posts"> | number
+  category_id?: Prisma.IntFilter<"posts"> | number
+  title?: Prisma.StringFilter<"posts"> | string
+  slug?: Prisma.StringFilter<"posts"> | string
+  excerpt?: Prisma.StringFilter<"posts"> | string
+  content?: Prisma.StringFilter<"posts"> | string
+  cover_url?: Prisma.StringNullableFilter<"posts"> | string | null
+  status?: Prisma.Enumposts_statusFilter<"posts"> | $Enums.posts_status
+  read_time?: Prisma.IntFilter<"posts"> | number
+  published_at?: Prisma.DateTimeFilter<"posts"> | Date | string
+  updated_at?: Prisma.DateTimeNullableFilter<"posts"> | Date | string | null
+  created_at?: Prisma.DateTimeFilter<"posts"> | Date | string
+  notify_at?: Prisma.DateTimeNullableFilter<"posts"> | Date | string | null
+  public_id?: Prisma.StringNullableFilter<"posts"> | string | null
+}
+
+export type postsCreateWithoutAuthorInput = {
+  title: string
+  slug: string
+  excerpt: string
+  content: string
+  cover_url?: string | null
+  status?: $Enums.posts_status
+  read_time?: number
+  published_at?: Date | string
+  updated_at?: Date | string | null
+  created_at?: Date | string
+  notify_at?: Date | string | null
+  public_id?: string | null
+  category: Prisma.categoriesCreateNestedOneWithoutPostsInput
+}
+
+export type postsUncheckedCreateWithoutAuthorInput = {
   id?: number
   category_id: number
   title: string
   slug: string
   excerpt: string
-  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  content: string
   cover_url?: string | null
-  public_id?: string | null
-  status?: $Enums.PostStatus
+  status?: $Enums.posts_status
   read_time?: number
   published_at?: Date | string
-  notify_at?: Date | string | null
-  updated_at?: Date | string
+  updated_at?: Date | string | null
   created_at?: Date | string
+  notify_at?: Date | string | null
+  public_id?: string | null
 }
 
-export type PostsUpdateWithoutAuthorInput = {
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
-  read_time?: Prisma.IntFieldUpdateOperationsInput | number
-  published_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  category?: Prisma.CategoriesUpdateOneRequiredWithoutPostsNestedInput
+export type postsCreateOrConnectWithoutAuthorInput = {
+  where: Prisma.postsWhereUniqueInput
+  create: Prisma.XOR<Prisma.postsCreateWithoutAuthorInput, Prisma.postsUncheckedCreateWithoutAuthorInput>
 }
 
-export type PostsUncheckedUpdateWithoutAuthorInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  category_id?: Prisma.IntFieldUpdateOperationsInput | number
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
-  read_time?: Prisma.IntFieldUpdateOperationsInput | number
-  published_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+export type postsCreateManyAuthorInputEnvelope = {
+  data: Prisma.postsCreateManyAuthorInput | Prisma.postsCreateManyAuthorInput[]
+  skipDuplicates?: boolean
 }
 
-export type PostsUncheckedUpdateManyWithoutAuthorInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
-  category_id?: Prisma.IntFieldUpdateOperationsInput | number
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
-  read_time?: Prisma.IntFieldUpdateOperationsInput | number
-  published_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+export type postsUpsertWithWhereUniqueWithoutAuthorInput = {
+  where: Prisma.postsWhereUniqueInput
+  update: Prisma.XOR<Prisma.postsUpdateWithoutAuthorInput, Prisma.postsUncheckedUpdateWithoutAuthorInput>
+  create: Prisma.XOR<Prisma.postsCreateWithoutAuthorInput, Prisma.postsUncheckedCreateWithoutAuthorInput>
 }
 
-export type PostsCreateManyCategoryInput = {
+export type postsUpdateWithWhereUniqueWithoutAuthorInput = {
+  where: Prisma.postsWhereUniqueInput
+  data: Prisma.XOR<Prisma.postsUpdateWithoutAuthorInput, Prisma.postsUncheckedUpdateWithoutAuthorInput>
+}
+
+export type postsUpdateManyWithWhereWithoutAuthorInput = {
+  where: Prisma.postsScalarWhereInput
+  data: Prisma.XOR<Prisma.postsUpdateManyMutationInput, Prisma.postsUncheckedUpdateManyWithoutAuthorInput>
+}
+
+export type postsCreateManyCategoryInput = {
   id?: number
   author_id: number
   title: string
   slug: string
   excerpt: string
-  content: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  content: string
   cover_url?: string | null
-  public_id?: string | null
-  status?: $Enums.PostStatus
+  status?: $Enums.posts_status
   read_time?: number
   published_at?: Date | string
-  notify_at?: Date | string | null
-  updated_at?: Date | string
+  updated_at?: Date | string | null
   created_at?: Date | string
+  notify_at?: Date | string | null
+  public_id?: string | null
 }
 
-export type PostsUpdateWithoutCategoryInput = {
+export type postsUpdateWithoutCategoryInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   excerpt?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  content?: Prisma.StringFieldUpdateOperationsInput | string
   cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  status?: Prisma.Enumposts_statusFieldUpdateOperationsInput | $Enums.posts_status
   read_time?: Prisma.IntFieldUpdateOperationsInput | number
   published_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  author?: Prisma.UserUpdateOneRequiredWithoutPostsNestedInput
+  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  author?: Prisma.userUpdateOneRequiredWithoutPostsNestedInput
 }
 
-export type PostsUncheckedUpdateWithoutCategoryInput = {
+export type postsUncheckedUpdateWithoutCategoryInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   author_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   excerpt?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  content?: Prisma.StringFieldUpdateOperationsInput | string
   cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  status?: Prisma.Enumposts_statusFieldUpdateOperationsInput | $Enums.posts_status
   read_time?: Prisma.IntFieldUpdateOperationsInput | number
   published_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
-export type PostsUncheckedUpdateManyWithoutCategoryInput = {
+export type postsUncheckedUpdateManyWithoutCategoryInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   author_id?: Prisma.IntFieldUpdateOperationsInput | number
   title?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   excerpt?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  content?: Prisma.StringFieldUpdateOperationsInput | string
   cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+  status?: Prisma.Enumposts_statusFieldUpdateOperationsInput | $Enums.posts_status
   read_time?: Prisma.IntFieldUpdateOperationsInput | number
   published_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type postsCreateManyAuthorInput = {
+  id?: number
+  category_id: number
+  title: string
+  slug: string
+  excerpt: string
+  content: string
+  cover_url?: string | null
+  status?: $Enums.posts_status
+  read_time?: number
+  published_at?: Date | string
+  updated_at?: Date | string | null
+  created_at?: Date | string
+  notify_at?: Date | string | null
+  public_id?: string | null
+}
+
+export type postsUpdateWithoutAuthorInput = {
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.Enumposts_statusFieldUpdateOperationsInput | $Enums.posts_status
+  read_time?: Prisma.IntFieldUpdateOperationsInput | number
+  published_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.categoriesUpdateOneRequiredWithoutPostsNestedInput
+}
+
+export type postsUncheckedUpdateWithoutAuthorInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  category_id?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.Enumposts_statusFieldUpdateOperationsInput | $Enums.posts_status
+  read_time?: Prisma.IntFieldUpdateOperationsInput | number
+  published_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type postsUncheckedUpdateManyWithoutAuthorInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  category_id?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  excerpt?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  cover_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.Enumposts_statusFieldUpdateOperationsInput | $Enums.posts_status
+  read_time?: Prisma.IntFieldUpdateOperationsInput | number
+  published_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notify_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  public_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
 
-export type PostsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+export type postsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   author_id?: boolean
   category_id?: boolean
@@ -971,20 +985,20 @@ export type PostsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   excerpt?: boolean
   content?: boolean
   cover_url?: boolean
-  public_id?: boolean
   status?: boolean
   read_time?: boolean
   published_at?: boolean
-  notify_at?: boolean
   updated_at?: boolean
   created_at?: boolean
-  category?: boolean | Prisma.CategoriesDefaultArgs<ExtArgs>
-  author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  notify_at?: boolean
+  public_id?: boolean
+  author?: boolean | Prisma.userDefaultArgs<ExtArgs>
+  category?: boolean | Prisma.categoriesDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["posts"]>
 
 
 
-export type PostsSelectScalar = {
+export type postsSelectScalar = {
   id?: boolean
   author_id?: boolean
   category_id?: boolean
@@ -993,26 +1007,26 @@ export type PostsSelectScalar = {
   excerpt?: boolean
   content?: boolean
   cover_url?: boolean
-  public_id?: boolean
   status?: boolean
   read_time?: boolean
   published_at?: boolean
-  notify_at?: boolean
   updated_at?: boolean
   created_at?: boolean
+  notify_at?: boolean
+  public_id?: boolean
 }
 
-export type PostsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "author_id" | "category_id" | "title" | "slug" | "excerpt" | "content" | "cover_url" | "public_id" | "status" | "read_time" | "published_at" | "notify_at" | "updated_at" | "created_at", ExtArgs["result"]["posts"]>
-export type PostsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  category?: boolean | Prisma.CategoriesDefaultArgs<ExtArgs>
-  author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+export type postsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "author_id" | "category_id" | "title" | "slug" | "excerpt" | "content" | "cover_url" | "status" | "read_time" | "published_at" | "updated_at" | "created_at" | "notify_at" | "public_id", ExtArgs["result"]["posts"]>
+export type postsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  author?: boolean | Prisma.userDefaultArgs<ExtArgs>
+  category?: boolean | Prisma.categoriesDefaultArgs<ExtArgs>
 }
 
-export type $PostsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  name: "Posts"
+export type $postsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  name: "posts"
   objects: {
-    category: Prisma.$CategoriesPayload<ExtArgs>
-    author: Prisma.$UserPayload<ExtArgs>
+    author: Prisma.$userPayload<ExtArgs>
+    category: Prisma.$categoriesPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1021,31 +1035,31 @@ export type $PostsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     title: string
     slug: string
     excerpt: string
-    content: runtime.JsonValue
+    content: string
     cover_url: string | null
-    public_id: string | null
-    status: $Enums.PostStatus
+    status: $Enums.posts_status
     read_time: number
     published_at: Date
-    notify_at: Date | null
-    updated_at: Date
+    updated_at: Date | null
     created_at: Date
+    notify_at: Date | null
+    public_id: string | null
   }, ExtArgs["result"]["posts"]>
   composites: {}
 }
 
-export type PostsGetPayload<S extends boolean | null | undefined | PostsDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$PostsPayload, S>
+export type postsGetPayload<S extends boolean | null | undefined | postsDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$postsPayload, S>
 
-export type PostsCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
-  Omit<PostsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+export type postsCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> =
+  Omit<postsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
     select?: PostsCountAggregateInputType | true
   }
 
-export interface PostsDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Posts'], meta: { name: 'Posts' } }
+export interface postsDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['posts'], meta: { name: 'posts' } }
   /**
    * Find zero or one Posts that matches the filter.
-   * @param {PostsFindUniqueArgs} args - Arguments to find a Posts
+   * @param {postsFindUniqueArgs} args - Arguments to find a Posts
    * @example
    * // Get one Posts
    * const posts = await prisma.posts.findUnique({
@@ -1054,12 +1068,12 @@ export interface PostsDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    *   }
    * })
    */
-  findUnique<T extends PostsFindUniqueArgs>(args: Prisma.SelectSubset<T, PostsFindUniqueArgs<ExtArgs>>): Prisma.Prisma__PostsClient<runtime.Types.Result.GetResult<Prisma.$PostsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  findUnique<T extends postsFindUniqueArgs>(args: Prisma.SelectSubset<T, postsFindUniqueArgs<ExtArgs>>): Prisma.Prisma__postsClient<runtime.Types.Result.GetResult<Prisma.$postsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find one Posts that matches the filter or throw an error with `error.code='P2025'`
    * if no matches were found.
-   * @param {PostsFindUniqueOrThrowArgs} args - Arguments to find a Posts
+   * @param {postsFindUniqueOrThrowArgs} args - Arguments to find a Posts
    * @example
    * // Get one Posts
    * const posts = await prisma.posts.findUniqueOrThrow({
@@ -1068,13 +1082,13 @@ export interface PostsDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    *   }
    * })
    */
-  findUniqueOrThrow<T extends PostsFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, PostsFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__PostsClient<runtime.Types.Result.GetResult<Prisma.$PostsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  findUniqueOrThrow<T extends postsFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, postsFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__postsClient<runtime.Types.Result.GetResult<Prisma.$postsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find the first Posts that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {PostsFindFirstArgs} args - Arguments to find a Posts
+   * @param {postsFindFirstArgs} args - Arguments to find a Posts
    * @example
    * // Get one Posts
    * const posts = await prisma.posts.findFirst({
@@ -1083,14 +1097,14 @@ export interface PostsDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    *   }
    * })
    */
-  findFirst<T extends PostsFindFirstArgs>(args?: Prisma.SelectSubset<T, PostsFindFirstArgs<ExtArgs>>): Prisma.Prisma__PostsClient<runtime.Types.Result.GetResult<Prisma.$PostsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  findFirst<T extends postsFindFirstArgs>(args?: Prisma.SelectSubset<T, postsFindFirstArgs<ExtArgs>>): Prisma.Prisma__postsClient<runtime.Types.Result.GetResult<Prisma.$postsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find the first Posts that matches the filter or
    * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {PostsFindFirstOrThrowArgs} args - Arguments to find a Posts
+   * @param {postsFindFirstOrThrowArgs} args - Arguments to find a Posts
    * @example
    * // Get one Posts
    * const posts = await prisma.posts.findFirstOrThrow({
@@ -1099,13 +1113,13 @@ export interface PostsDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    *   }
    * })
    */
-  findFirstOrThrow<T extends PostsFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, PostsFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__PostsClient<runtime.Types.Result.GetResult<Prisma.$PostsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  findFirstOrThrow<T extends postsFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, postsFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__postsClient<runtime.Types.Result.GetResult<Prisma.$postsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Find zero or more Posts that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {PostsFindManyArgs} args - Arguments to filter and select certain fields only.
+   * @param {postsFindManyArgs} args - Arguments to filter and select certain fields only.
    * @example
    * // Get all Posts
    * const posts = await prisma.posts.findMany()
@@ -1117,11 +1131,11 @@ export interface PostsDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    * const postsWithIdOnly = await prisma.posts.findMany({ select: { id: true } })
    * 
    */
-  findMany<T extends PostsFindManyArgs>(args?: Prisma.SelectSubset<T, PostsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+  findMany<T extends postsFindManyArgs>(args?: Prisma.SelectSubset<T, postsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$postsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
   /**
    * Create a Posts.
-   * @param {PostsCreateArgs} args - Arguments to create a Posts.
+   * @param {postsCreateArgs} args - Arguments to create a Posts.
    * @example
    * // Create one Posts
    * const Posts = await prisma.posts.create({
@@ -1131,11 +1145,11 @@ export interface PostsDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    * })
    * 
    */
-  create<T extends PostsCreateArgs>(args: Prisma.SelectSubset<T, PostsCreateArgs<ExtArgs>>): Prisma.Prisma__PostsClient<runtime.Types.Result.GetResult<Prisma.$PostsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  create<T extends postsCreateArgs>(args: Prisma.SelectSubset<T, postsCreateArgs<ExtArgs>>): Prisma.Prisma__postsClient<runtime.Types.Result.GetResult<Prisma.$postsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Create many Posts.
-   * @param {PostsCreateManyArgs} args - Arguments to create many Posts.
+   * @param {postsCreateManyArgs} args - Arguments to create many Posts.
    * @example
    * // Create many Posts
    * const posts = await prisma.posts.createMany({
@@ -1145,11 +1159,11 @@ export interface PostsDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    * })
    *     
    */
-  createMany<T extends PostsCreateManyArgs>(args?: Prisma.SelectSubset<T, PostsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  createMany<T extends postsCreateManyArgs>(args?: Prisma.SelectSubset<T, postsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Delete a Posts.
-   * @param {PostsDeleteArgs} args - Arguments to delete one Posts.
+   * @param {postsDeleteArgs} args - Arguments to delete one Posts.
    * @example
    * // Delete one Posts
    * const Posts = await prisma.posts.delete({
@@ -1159,11 +1173,11 @@ export interface PostsDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    * })
    * 
    */
-  delete<T extends PostsDeleteArgs>(args: Prisma.SelectSubset<T, PostsDeleteArgs<ExtArgs>>): Prisma.Prisma__PostsClient<runtime.Types.Result.GetResult<Prisma.$PostsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  delete<T extends postsDeleteArgs>(args: Prisma.SelectSubset<T, postsDeleteArgs<ExtArgs>>): Prisma.Prisma__postsClient<runtime.Types.Result.GetResult<Prisma.$postsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Update one Posts.
-   * @param {PostsUpdateArgs} args - Arguments to update one Posts.
+   * @param {postsUpdateArgs} args - Arguments to update one Posts.
    * @example
    * // Update one Posts
    * const posts = await prisma.posts.update({
@@ -1176,11 +1190,11 @@ export interface PostsDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    * })
    * 
    */
-  update<T extends PostsUpdateArgs>(args: Prisma.SelectSubset<T, PostsUpdateArgs<ExtArgs>>): Prisma.Prisma__PostsClient<runtime.Types.Result.GetResult<Prisma.$PostsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  update<T extends postsUpdateArgs>(args: Prisma.SelectSubset<T, postsUpdateArgs<ExtArgs>>): Prisma.Prisma__postsClient<runtime.Types.Result.GetResult<Prisma.$postsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
   /**
    * Delete zero or more Posts.
-   * @param {PostsDeleteManyArgs} args - Arguments to filter Posts to delete.
+   * @param {postsDeleteManyArgs} args - Arguments to filter Posts to delete.
    * @example
    * // Delete a few Posts
    * const { count } = await prisma.posts.deleteMany({
@@ -1190,13 +1204,13 @@ export interface PostsDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    * })
    * 
    */
-  deleteMany<T extends PostsDeleteManyArgs>(args?: Prisma.SelectSubset<T, PostsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  deleteMany<T extends postsDeleteManyArgs>(args?: Prisma.SelectSubset<T, postsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Update zero or more Posts.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {PostsUpdateManyArgs} args - Arguments to update one or more rows.
+   * @param {postsUpdateManyArgs} args - Arguments to update one or more rows.
    * @example
    * // Update many Posts
    * const posts = await prisma.posts.updateMany({
@@ -1209,11 +1223,11 @@ export interface PostsDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    * })
    * 
    */
-  updateMany<T extends PostsUpdateManyArgs>(args: Prisma.SelectSubset<T, PostsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
+  updateMany<T extends postsUpdateManyArgs>(args: Prisma.SelectSubset<T, postsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>
 
   /**
    * Create or update one Posts.
-   * @param {PostsUpsertArgs} args - Arguments to update or create a Posts.
+   * @param {postsUpsertArgs} args - Arguments to update or create a Posts.
    * @example
    * // Update or create a Posts
    * const posts = await prisma.posts.upsert({
@@ -1228,14 +1242,14 @@ export interface PostsDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    *   }
    * })
    */
-  upsert<T extends PostsUpsertArgs>(args: Prisma.SelectSubset<T, PostsUpsertArgs<ExtArgs>>): Prisma.Prisma__PostsClient<runtime.Types.Result.GetResult<Prisma.$PostsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+  upsert<T extends postsUpsertArgs>(args: Prisma.SelectSubset<T, postsUpsertArgs<ExtArgs>>): Prisma.Prisma__postsClient<runtime.Types.Result.GetResult<Prisma.$postsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
   /**
    * Count the number of Posts.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {PostsCountArgs} args - Arguments to filter Posts to count.
+   * @param {postsCountArgs} args - Arguments to filter Posts to count.
    * @example
    * // Count the number of Posts
    * const count = await prisma.posts.count({
@@ -1244,8 +1258,8 @@ export interface PostsDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    *   }
    * })
   **/
-  count<T extends PostsCountArgs>(
-    args?: Prisma.Subset<T, PostsCountArgs>,
+  count<T extends postsCountArgs>(
+    args?: Prisma.Subset<T, postsCountArgs>,
   ): Prisma.PrismaPromise<
     T extends runtime.Types.Utils.Record<'select', any>
       ? T['select'] extends true
@@ -1284,7 +1298,7 @@ export interface PostsDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    * Group by Posts.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {PostsGroupByArgs} args - Group by arguments.
+   * @param {postsGroupByArgs} args - Group by arguments.
    * @example
    * // Group by city, order by createdAt, get count
    * const result = await prisma.user.groupBy({
@@ -1299,14 +1313,14 @@ export interface PostsDelegate<ExtArgs extends runtime.Types.Extensions.Internal
    * 
   **/
   groupBy<
-    T extends PostsGroupByArgs,
+    T extends postsGroupByArgs,
     HasSelectOrTake extends Prisma.Or<
       Prisma.Extends<'skip', Prisma.Keys<T>>,
       Prisma.Extends<'take', Prisma.Keys<T>>
     >,
     OrderByArg extends Prisma.True extends HasSelectOrTake
-      ? { orderBy: PostsGroupByArgs['orderBy'] }
-      : { orderBy?: PostsGroupByArgs['orderBy'] },
+      ? { orderBy: postsGroupByArgs['orderBy'] }
+      : { orderBy?: postsGroupByArgs['orderBy'] },
     OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>,
     ByFields extends Prisma.MaybeTupleToUnion<T['by']>,
     ByValid extends Prisma.Has<ByFields, OrderFields>,
@@ -1355,23 +1369,23 @@ export interface PostsDelegate<ExtArgs extends runtime.Types.Extensions.Internal
           ? never
           : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
       }[OrderFields]
-  >(args: Prisma.SubsetIntersection<T, PostsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPostsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  >(args: Prisma.SubsetIntersection<T, postsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPostsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
 /**
- * Fields of the Posts model
+ * Fields of the posts model
  */
-readonly fields: PostsFieldRefs;
+readonly fields: postsFieldRefs;
 }
 
 /**
- * The delegate class that acts as a "Promise-like" for Posts.
+ * The delegate class that acts as a "Promise-like" for posts.
  * Why is this prefixed with `Prisma__`?
  * Because we want to prevent naming conflicts as mentioned in
  * https://github.com/prisma/prisma-client-js/issues/707
  */
-export interface Prisma__PostsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+export interface Prisma__postsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  category<T extends Prisma.CategoriesDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CategoriesDefaultArgs<ExtArgs>>): Prisma.Prisma__CategoriesClient<runtime.Types.Result.GetResult<Prisma.$CategoriesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  author<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  author<T extends Prisma.userDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.userDefaultArgs<ExtArgs>>): Prisma.Prisma__userClient<runtime.Types.Result.GetResult<Prisma.$userPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  category<T extends Prisma.categoriesDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.categoriesDefaultArgs<ExtArgs>>): Prisma.Prisma__categoriesClient<runtime.Types.Result.GetResult<Prisma.$categoriesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1398,385 +1412,385 @@ export interface Prisma__PostsClient<T, Null = never, ExtArgs extends runtime.Ty
 
 
 /**
- * Fields of the Posts model
+ * Fields of the posts model
  */
-export interface PostsFieldRefs {
-  readonly id: Prisma.FieldRef<"Posts", 'Int'>
-  readonly author_id: Prisma.FieldRef<"Posts", 'Int'>
-  readonly category_id: Prisma.FieldRef<"Posts", 'Int'>
-  readonly title: Prisma.FieldRef<"Posts", 'String'>
-  readonly slug: Prisma.FieldRef<"Posts", 'String'>
-  readonly excerpt: Prisma.FieldRef<"Posts", 'String'>
-  readonly content: Prisma.FieldRef<"Posts", 'Json'>
-  readonly cover_url: Prisma.FieldRef<"Posts", 'String'>
-  readonly public_id: Prisma.FieldRef<"Posts", 'String'>
-  readonly status: Prisma.FieldRef<"Posts", 'PostStatus'>
-  readonly read_time: Prisma.FieldRef<"Posts", 'Int'>
-  readonly published_at: Prisma.FieldRef<"Posts", 'DateTime'>
-  readonly notify_at: Prisma.FieldRef<"Posts", 'DateTime'>
-  readonly updated_at: Prisma.FieldRef<"Posts", 'DateTime'>
-  readonly created_at: Prisma.FieldRef<"Posts", 'DateTime'>
+export interface postsFieldRefs {
+  readonly id: Prisma.FieldRef<"posts", 'Int'>
+  readonly author_id: Prisma.FieldRef<"posts", 'Int'>
+  readonly category_id: Prisma.FieldRef<"posts", 'Int'>
+  readonly title: Prisma.FieldRef<"posts", 'String'>
+  readonly slug: Prisma.FieldRef<"posts", 'String'>
+  readonly excerpt: Prisma.FieldRef<"posts", 'String'>
+  readonly content: Prisma.FieldRef<"posts", 'String'>
+  readonly cover_url: Prisma.FieldRef<"posts", 'String'>
+  readonly status: Prisma.FieldRef<"posts", 'posts_status'>
+  readonly read_time: Prisma.FieldRef<"posts", 'Int'>
+  readonly published_at: Prisma.FieldRef<"posts", 'DateTime'>
+  readonly updated_at: Prisma.FieldRef<"posts", 'DateTime'>
+  readonly created_at: Prisma.FieldRef<"posts", 'DateTime'>
+  readonly notify_at: Prisma.FieldRef<"posts", 'DateTime'>
+  readonly public_id: Prisma.FieldRef<"posts", 'String'>
 }
     
 
 // Custom InputTypes
 /**
- * Posts findUnique
+ * posts findUnique
  */
-export type PostsFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type postsFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Posts
+   * Select specific fields to fetch from the posts
    */
-  select?: Prisma.PostsSelect<ExtArgs> | null
+  select?: Prisma.postsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Posts
+   * Omit specific fields from the posts
    */
-  omit?: Prisma.PostsOmit<ExtArgs> | null
+  omit?: Prisma.postsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.PostsInclude<ExtArgs> | null
+  include?: Prisma.postsInclude<ExtArgs> | null
   /**
-   * Filter, which Posts to fetch.
+   * Filter, which posts to fetch.
    */
-  where: Prisma.PostsWhereUniqueInput
+  where: Prisma.postsWhereUniqueInput
 }
 
 /**
- * Posts findUniqueOrThrow
+ * posts findUniqueOrThrow
  */
-export type PostsFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type postsFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Posts
+   * Select specific fields to fetch from the posts
    */
-  select?: Prisma.PostsSelect<ExtArgs> | null
+  select?: Prisma.postsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Posts
+   * Omit specific fields from the posts
    */
-  omit?: Prisma.PostsOmit<ExtArgs> | null
+  omit?: Prisma.postsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.PostsInclude<ExtArgs> | null
+  include?: Prisma.postsInclude<ExtArgs> | null
   /**
-   * Filter, which Posts to fetch.
+   * Filter, which posts to fetch.
    */
-  where: Prisma.PostsWhereUniqueInput
+  where: Prisma.postsWhereUniqueInput
 }
 
 /**
- * Posts findFirst
+ * posts findFirst
  */
-export type PostsFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type postsFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Posts
+   * Select specific fields to fetch from the posts
    */
-  select?: Prisma.PostsSelect<ExtArgs> | null
+  select?: Prisma.postsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Posts
+   * Omit specific fields from the posts
    */
-  omit?: Prisma.PostsOmit<ExtArgs> | null
+  omit?: Prisma.postsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.PostsInclude<ExtArgs> | null
+  include?: Prisma.postsInclude<ExtArgs> | null
   /**
-   * Filter, which Posts to fetch.
+   * Filter, which posts to fetch.
    */
-  where?: Prisma.PostsWhereInput
+  where?: Prisma.postsWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of Posts to fetch.
+   * Determine the order of posts to fetch.
    */
-  orderBy?: Prisma.PostsOrderByWithRelationInput | Prisma.PostsOrderByWithRelationInput[]
+  orderBy?: Prisma.postsOrderByWithRelationInput | Prisma.postsOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for searching for Posts.
+   * Sets the position for searching for posts.
    */
-  cursor?: Prisma.PostsWhereUniqueInput
+  cursor?: Prisma.postsWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` Posts from the position of the cursor.
+   * Take `±n` posts from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` Posts.
+   * Skip the first `n` posts.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of Posts.
+   * Filter by unique combinations of posts.
    */
   distinct?: Prisma.PostsScalarFieldEnum | Prisma.PostsScalarFieldEnum[]
 }
 
 /**
- * Posts findFirstOrThrow
+ * posts findFirstOrThrow
  */
-export type PostsFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type postsFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Posts
+   * Select specific fields to fetch from the posts
    */
-  select?: Prisma.PostsSelect<ExtArgs> | null
+  select?: Prisma.postsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Posts
+   * Omit specific fields from the posts
    */
-  omit?: Prisma.PostsOmit<ExtArgs> | null
+  omit?: Prisma.postsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.PostsInclude<ExtArgs> | null
+  include?: Prisma.postsInclude<ExtArgs> | null
   /**
-   * Filter, which Posts to fetch.
+   * Filter, which posts to fetch.
    */
-  where?: Prisma.PostsWhereInput
+  where?: Prisma.postsWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of Posts to fetch.
+   * Determine the order of posts to fetch.
    */
-  orderBy?: Prisma.PostsOrderByWithRelationInput | Prisma.PostsOrderByWithRelationInput[]
+  orderBy?: Prisma.postsOrderByWithRelationInput | Prisma.postsOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for searching for Posts.
+   * Sets the position for searching for posts.
    */
-  cursor?: Prisma.PostsWhereUniqueInput
+  cursor?: Prisma.postsWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` Posts from the position of the cursor.
+   * Take `±n` posts from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` Posts.
+   * Skip the first `n` posts.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of Posts.
+   * Filter by unique combinations of posts.
    */
   distinct?: Prisma.PostsScalarFieldEnum | Prisma.PostsScalarFieldEnum[]
 }
 
 /**
- * Posts findMany
+ * posts findMany
  */
-export type PostsFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type postsFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Posts
+   * Select specific fields to fetch from the posts
    */
-  select?: Prisma.PostsSelect<ExtArgs> | null
+  select?: Prisma.postsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Posts
+   * Omit specific fields from the posts
    */
-  omit?: Prisma.PostsOmit<ExtArgs> | null
+  omit?: Prisma.postsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.PostsInclude<ExtArgs> | null
+  include?: Prisma.postsInclude<ExtArgs> | null
   /**
-   * Filter, which Posts to fetch.
+   * Filter, which posts to fetch.
    */
-  where?: Prisma.PostsWhereInput
+  where?: Prisma.postsWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    * 
-   * Determine the order of Posts to fetch.
+   * Determine the order of posts to fetch.
    */
-  orderBy?: Prisma.PostsOrderByWithRelationInput | Prisma.PostsOrderByWithRelationInput[]
+  orderBy?: Prisma.postsOrderByWithRelationInput | Prisma.postsOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    * 
-   * Sets the position for listing Posts.
+   * Sets the position for listing posts.
    */
-  cursor?: Prisma.PostsWhereUniqueInput
+  cursor?: Prisma.postsWhereUniqueInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Take `±n` Posts from the position of the cursor.
+   * Take `±n` posts from the position of the cursor.
    */
   take?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    * 
-   * Skip the first `n` Posts.
+   * Skip the first `n` posts.
    */
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    * 
-   * Filter by unique combinations of Posts.
+   * Filter by unique combinations of posts.
    */
   distinct?: Prisma.PostsScalarFieldEnum | Prisma.PostsScalarFieldEnum[]
 }
 
 /**
- * Posts create
+ * posts create
  */
-export type PostsCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type postsCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Posts
+   * Select specific fields to fetch from the posts
    */
-  select?: Prisma.PostsSelect<ExtArgs> | null
+  select?: Prisma.postsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Posts
+   * Omit specific fields from the posts
    */
-  omit?: Prisma.PostsOmit<ExtArgs> | null
+  omit?: Prisma.postsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.PostsInclude<ExtArgs> | null
+  include?: Prisma.postsInclude<ExtArgs> | null
   /**
-   * The data needed to create a Posts.
+   * The data needed to create a posts.
    */
-  data: Prisma.XOR<Prisma.PostsCreateInput, Prisma.PostsUncheckedCreateInput>
+  data: Prisma.XOR<Prisma.postsCreateInput, Prisma.postsUncheckedCreateInput>
 }
 
 /**
- * Posts createMany
+ * posts createMany
  */
-export type PostsCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type postsCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * The data used to create many Posts.
+   * The data used to create many posts.
    */
-  data: Prisma.PostsCreateManyInput | Prisma.PostsCreateManyInput[]
+  data: Prisma.postsCreateManyInput | Prisma.postsCreateManyInput[]
   skipDuplicates?: boolean
 }
 
 /**
- * Posts update
+ * posts update
  */
-export type PostsUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type postsUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Posts
+   * Select specific fields to fetch from the posts
    */
-  select?: Prisma.PostsSelect<ExtArgs> | null
+  select?: Prisma.postsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Posts
+   * Omit specific fields from the posts
    */
-  omit?: Prisma.PostsOmit<ExtArgs> | null
+  omit?: Prisma.postsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.PostsInclude<ExtArgs> | null
+  include?: Prisma.postsInclude<ExtArgs> | null
   /**
-   * The data needed to update a Posts.
+   * The data needed to update a posts.
    */
-  data: Prisma.XOR<Prisma.PostsUpdateInput, Prisma.PostsUncheckedUpdateInput>
+  data: Prisma.XOR<Prisma.postsUpdateInput, Prisma.postsUncheckedUpdateInput>
   /**
-   * Choose, which Posts to update.
+   * Choose, which posts to update.
    */
-  where: Prisma.PostsWhereUniqueInput
+  where: Prisma.postsWhereUniqueInput
 }
 
 /**
- * Posts updateMany
+ * posts updateMany
  */
-export type PostsUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type postsUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * The data used to update Posts.
+   * The data used to update posts.
    */
-  data: Prisma.XOR<Prisma.PostsUpdateManyMutationInput, Prisma.PostsUncheckedUpdateManyInput>
+  data: Prisma.XOR<Prisma.postsUpdateManyMutationInput, Prisma.postsUncheckedUpdateManyInput>
   /**
-   * Filter which Posts to update
+   * Filter which posts to update
    */
-  where?: Prisma.PostsWhereInput
+  where?: Prisma.postsWhereInput
   /**
-   * Limit how many Posts to update.
+   * Limit how many posts to update.
    */
   limit?: number
 }
 
 /**
- * Posts upsert
+ * posts upsert
  */
-export type PostsUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type postsUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Posts
+   * Select specific fields to fetch from the posts
    */
-  select?: Prisma.PostsSelect<ExtArgs> | null
+  select?: Prisma.postsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Posts
+   * Omit specific fields from the posts
    */
-  omit?: Prisma.PostsOmit<ExtArgs> | null
+  omit?: Prisma.postsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.PostsInclude<ExtArgs> | null
+  include?: Prisma.postsInclude<ExtArgs> | null
   /**
-   * The filter to search for the Posts to update in case it exists.
+   * The filter to search for the posts to update in case it exists.
    */
-  where: Prisma.PostsWhereUniqueInput
+  where: Prisma.postsWhereUniqueInput
   /**
-   * In case the Posts found by the `where` argument doesn't exist, create a new Posts with this data.
+   * In case the posts found by the `where` argument doesn't exist, create a new posts with this data.
    */
-  create: Prisma.XOR<Prisma.PostsCreateInput, Prisma.PostsUncheckedCreateInput>
+  create: Prisma.XOR<Prisma.postsCreateInput, Prisma.postsUncheckedCreateInput>
   /**
-   * In case the Posts was found with the provided `where` argument, update it with this data.
+   * In case the posts was found with the provided `where` argument, update it with this data.
    */
-  update: Prisma.XOR<Prisma.PostsUpdateInput, Prisma.PostsUncheckedUpdateInput>
+  update: Prisma.XOR<Prisma.postsUpdateInput, Prisma.postsUncheckedUpdateInput>
 }
 
 /**
- * Posts delete
+ * posts delete
  */
-export type PostsDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type postsDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Posts
+   * Select specific fields to fetch from the posts
    */
-  select?: Prisma.PostsSelect<ExtArgs> | null
+  select?: Prisma.postsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Posts
+   * Omit specific fields from the posts
    */
-  omit?: Prisma.PostsOmit<ExtArgs> | null
+  omit?: Prisma.postsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.PostsInclude<ExtArgs> | null
+  include?: Prisma.postsInclude<ExtArgs> | null
   /**
-   * Filter which Posts to delete.
+   * Filter which posts to delete.
    */
-  where: Prisma.PostsWhereUniqueInput
+  where: Prisma.postsWhereUniqueInput
 }
 
 /**
- * Posts deleteMany
+ * posts deleteMany
  */
-export type PostsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type postsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Filter which Posts to delete
+   * Filter which posts to delete
    */
-  where?: Prisma.PostsWhereInput
+  where?: Prisma.postsWhereInput
   /**
-   * Limit how many Posts to delete.
+   * Limit how many posts to delete.
    */
   limit?: number
 }
 
 /**
- * Posts without action
+ * posts without action
  */
-export type PostsDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type postsDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Posts
+   * Select specific fields to fetch from the posts
    */
-  select?: Prisma.PostsSelect<ExtArgs> | null
+  select?: Prisma.postsSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Posts
+   * Omit specific fields from the posts
    */
-  omit?: Prisma.PostsOmit<ExtArgs> | null
+  omit?: Prisma.postsOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.PostsInclude<ExtArgs> | null
+  include?: Prisma.postsInclude<ExtArgs> | null
 }

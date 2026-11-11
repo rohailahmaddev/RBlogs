@@ -4,11 +4,11 @@ import fs from "node:fs/promises";
 import { sendFogotPasswordEmail, sendVerificationEmail } from "../infrastructure/email/email.services.js";
 import { deleteFromCloudinary, uploadOnCloudinary } from "../infrastructure/storage/cloudinary.storage.js";
 import { ApiError } from "../utils/ApiError.js";
-import { calculateReadTime, comparePassword, createSlug, extractText, generateExcerpt, getAccessAndRefreshToken, getErrorMessage, hashPassword, hashToken, isDuplicateError } from "../utils/helper.js";
+import { comparePassword, createSlug, extractText, generateExcerpt, getAccessAndRefreshToken, getErrorMessage, hashPassword, hashToken, isDuplicateError } from "../utils/helper.js";
 import { getTemporaryToken } from "../utils/jwt.js";
 import { ROLES, SELF_REGISTER_ROLES } from "../utils/contants.js";
 import { clearForgotPasswordToken, createBlogs, createUser, deleteBlogPost, getBlogById, getBlogs, getCategory, getUserByEmailRepo, getUserByResetPasswordToken, logoutUser, updateBlogById, updateForgotPasswordToken, updateUserPasswordById, updateVerificationEmailTokenRepo, verifyEmailRepo } from "./repository.js";
-import { boolean } from "zod";
+import { getPlainText, getReadTime, sanitizeContent } from "../utils/sanitizeContent.js";
 
 const sendEmailService = async (user, req) => {
     const { unHashedToken, hashedToken, tokenExpiry } = getTemporaryToken()
@@ -310,7 +310,7 @@ const POST_STATUSES = {
 }
 
 export const addBlogPostService = async (req) => {
-    const { title, excerpt, content, categoryId, status = "draft" } = req.body;
+    const { title, excerpt, content:rawContent, categoryId, status = "draft" } = req.body;
     const userId = req?.user.id;
     const fileLocalPath = req?.file?.path;
 
@@ -328,9 +328,14 @@ export const addBlogPostService = async (req) => {
             coverImage = await uploadImage(fileLocalPath)
         }
 
-        const excerptContent = excerpt || generateExcerpt(extractText(content));
-        const read_time = calculateReadTime(content);
+        const excerptContent = excerpt || generateExcerpt(extractText(rawContent));
         const baseSlug = createSlug(title) || "untitled";
+
+        //get clean content
+        const cleanContent = sanitizeContent(rawContent); // removes scripts and unsafe HTML
+        if (!getPlainText(cleanContent)) throw new ApiError(400, "Content cannot be empty.");
+        const content = cleanContent;
+        const read_time = getReadTime(cleanContent);
 
         for (let attempt = 0; attempt < MAX_SLUG_ATTEMPTS; attempt++) {
             const slug = attempt === 0 ? baseSlug : `${baseSlug}-${crypto.randomBytes(3).toString("hex")}`;
@@ -379,6 +384,7 @@ export const updateBlogPostService = async ({ blogId: rawId, user, body, file })
     try {
         let blogId = Number(rawId);
 
+        console.log(blogId)
         if (!Number.isInteger(blogId) || blogId <= 0) {
             throw new ApiError(400, "Invalid blog id.");
         }
@@ -418,7 +424,12 @@ export const updateBlogPostService = async ({ blogId: rawId, user, body, file })
         let data = {};
         if (title !== undefined) data.title = title;
         if (rawExcerpt !== undefined) data.excerpt = rawExcerpt;
-        if (content !== undefined) data.content = content;
+        if (content !== undefined) {
+        const cleanContent = sanitizeContent(content); // removes scripts and unsafe HTML
+        if (!getPlainText(cleanContent)) throw new ApiError(400, "Content cannot be empty.");
+        data.content = cleanContent;
+        data.readTime = getReadTime(cleanContent);
+        }
         if (categoryId !== undefined) data.category_id = Number(categoryId);
 
         if(content && rawExcerpt === undefined) {
@@ -456,7 +467,7 @@ export const updateBlogPostService = async ({ blogId: rawId, user, body, file })
 
         let updatedBlog;
         try {
-            updatedBlog = await updateBlogById(blogId, data); 
+            updatedBlog = await updateBlogById({blogId, data}); 
         } catch (error) {
             console.error("updateBlogPost failed:", error);
 
@@ -628,6 +639,7 @@ export const getBlogsService = async ({query, user}) => {
     let result;
     try {
         result = await getBlogs({...filter, pageNumber: Number(page), limit: Number(limit), offset: (Number(page) -1) * Number(limit)});
+        console.log(result)
     } catch (error) {
         console.error("getBlogsService failed:", error);
         throw new ApiError(500, `Something went wrong.`)

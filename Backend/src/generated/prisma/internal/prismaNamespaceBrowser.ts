@@ -51,11 +51,11 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  User: 'User',
-  Categories: 'Categories',
-  Posts: 'Posts',
   subscriptions: 'subscriptions',
-  ContactMessage: 'ContactMessage'
+  categories: 'categories',
+  contactmessage: 'contactmessage',
+  posts: 'posts',
+  user: 'user'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -74,25 +74,14 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
-export const UserScalarFieldEnum = {
+export const SubscriptionsScalarFieldEnum = {
   id: 'id',
-  name: 'name',
-  email: 'email',
-  password: 'password',
-  role: 'role',
-  avatar_url: 'avatar_url',
-  bio: 'bio',
-  is_verified: 'is_verified',
-  verify_token: 'verify_token',
-  verify_token_expiry: 'verify_token_expiry',
-  reset_token: 'reset_token',
-  reset_token_expiry: 'reset_token_expiry',
-  refresh_token: 'refresh_token',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
+  subscriber_id: 'subscriber_id',
+  publisher_id: 'publisher_id',
+  created_at: 'created_at'
 } as const
 
-export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+export type SubscriptionsScalarFieldEnum = (typeof SubscriptionsScalarFieldEnum)[keyof typeof SubscriptionsScalarFieldEnum]
 
 
 export const CategoriesScalarFieldEnum = {
@@ -105,6 +94,19 @@ export const CategoriesScalarFieldEnum = {
 export type CategoriesScalarFieldEnum = (typeof CategoriesScalarFieldEnum)[keyof typeof CategoriesScalarFieldEnum]
 
 
+export const ContactmessageScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  subject: 'subject',
+  message: 'message',
+  is_read: 'is_read',
+  created_at: 'created_at'
+} as const
+
+export type ContactmessageScalarFieldEnum = (typeof ContactmessageScalarFieldEnum)[keyof typeof ContactmessageScalarFieldEnum]
+
+
 export const PostsScalarFieldEnum = {
   id: 'id',
   author_id: 'author_id',
@@ -114,39 +116,37 @@ export const PostsScalarFieldEnum = {
   excerpt: 'excerpt',
   content: 'content',
   cover_url: 'cover_url',
-  public_id: 'public_id',
   status: 'status',
   read_time: 'read_time',
   published_at: 'published_at',
-  notify_at: 'notify_at',
   updated_at: 'updated_at',
-  created_at: 'created_at'
+  created_at: 'created_at',
+  notify_at: 'notify_at',
+  public_id: 'public_id'
 } as const
 
 export type PostsScalarFieldEnum = (typeof PostsScalarFieldEnum)[keyof typeof PostsScalarFieldEnum]
 
 
-export const SubscriptionsScalarFieldEnum = {
-  id: 'id',
-  subscriber_id: 'subscriber_id',
-  publisher_id: 'publisher_id',
-  created_at: 'created_at'
-} as const
-
-export type SubscriptionsScalarFieldEnum = (typeof SubscriptionsScalarFieldEnum)[keyof typeof SubscriptionsScalarFieldEnum]
-
-
-export const ContactMessageScalarFieldEnum = {
+export const UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
-  subject: 'subject',
-  message: 'message',
-  isRead: 'isRead',
-  createdAt: 'createdAt'
+  password: 'password',
+  role: 'role',
+  avatar_url: 'avatar_url',
+  bio: 'bio',
+  verify_token: 'verify_token',
+  verify_token_expiry: 'verify_token_expiry',
+  reset_token: 'reset_token',
+  reset_token_expiry: 'reset_token_expiry',
+  refresh_token: 'refresh_token',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  is_verified: 'is_verified'
 } as const
 
-export type ContactMessageScalarFieldEnum = (typeof ContactMessageScalarFieldEnum)[keyof typeof ContactMessageScalarFieldEnum]
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -157,11 +157,22 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-export const JsonNullValueInput = {
-  JsonNull: JsonNull
+export const categoriesOrderByRelevanceFieldEnum = {
+  name: 'name',
+  slug: 'slug'
 } as const
 
-export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+export type categoriesOrderByRelevanceFieldEnum = (typeof categoriesOrderByRelevanceFieldEnum)[keyof typeof categoriesOrderByRelevanceFieldEnum]
+
+
+export const contactmessageOrderByRelevanceFieldEnum = {
+  name: 'name',
+  email: 'email',
+  subject: 'subject',
+  message: 'message'
+} as const
+
+export type contactmessageOrderByRelevanceFieldEnum = (typeof contactmessageOrderByRelevanceFieldEnum)[keyof typeof contactmessageOrderByRelevanceFieldEnum]
 
 
 export const NullsOrder = {
@@ -172,7 +183,19 @@ export const NullsOrder = {
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
-export const UserOrderByRelevanceFieldEnum = {
+export const postsOrderByRelevanceFieldEnum = {
+  title: 'title',
+  slug: 'slug',
+  excerpt: 'excerpt',
+  content: 'content',
+  cover_url: 'cover_url',
+  public_id: 'public_id'
+} as const
+
+export type postsOrderByRelevanceFieldEnum = (typeof postsOrderByRelevanceFieldEnum)[keyof typeof postsOrderByRelevanceFieldEnum]
+
+
+export const userOrderByRelevanceFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password',
@@ -183,51 +206,5 @@ export const UserOrderByRelevanceFieldEnum = {
   refresh_token: 'refresh_token'
 } as const
 
-export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
-
-
-export const CategoriesOrderByRelevanceFieldEnum = {
-  name: 'name',
-  slug: 'slug'
-} as const
-
-export type CategoriesOrderByRelevanceFieldEnum = (typeof CategoriesOrderByRelevanceFieldEnum)[keyof typeof CategoriesOrderByRelevanceFieldEnum]
-
-
-export const JsonNullValueFilter = {
-  DbNull: DbNull,
-  JsonNull: JsonNull,
-  AnyNull: AnyNull
-} as const
-
-export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
-
-
-export const QueryMode = {
-  default: 'default',
-  insensitive: 'insensitive'
-} as const
-
-export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
-
-
-export const PostsOrderByRelevanceFieldEnum = {
-  title: 'title',
-  slug: 'slug',
-  excerpt: 'excerpt',
-  cover_url: 'cover_url',
-  public_id: 'public_id'
-} as const
-
-export type PostsOrderByRelevanceFieldEnum = (typeof PostsOrderByRelevanceFieldEnum)[keyof typeof PostsOrderByRelevanceFieldEnum]
-
-
-export const ContactMessageOrderByRelevanceFieldEnum = {
-  name: 'name',
-  email: 'email',
-  subject: 'subject',
-  message: 'message'
-} as const
-
-export type ContactMessageOrderByRelevanceFieldEnum = (typeof ContactMessageOrderByRelevanceFieldEnum)[keyof typeof ContactMessageOrderByRelevanceFieldEnum]
+export type userOrderByRelevanceFieldEnum = (typeof userOrderByRelevanceFieldEnum)[keyof typeof userOrderByRelevanceFieldEnum]
 
