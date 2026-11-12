@@ -87,5 +87,6 @@ export const errorHandler = ( err, req, res, next ) => {
     // Only leak stack trace in development
     ...(env.NODE_ENV === "development" && { stack: error.stack }),
   };
+  console.log(response)
   return res.status(error.statusCode).json(response);
 };

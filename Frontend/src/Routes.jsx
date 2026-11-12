@@ -8,7 +8,6 @@ import { BlogDetail } from "./pages/BlogDetail";
 import { Contact } from "./pages/Contact";
 
 export const Router = () => {
-  console.log("Router.jsx");
   const router = createBrowserRouter([
     {
       path: "/",

@@ -98,7 +98,8 @@ export const listPostsQuerySchema = z.object({
   category: z.coerce.number().int().positive().optional(),
   author: z.coerce.number().int().positive().optional(),
   status: z.enum(["draft", "published"]).optional(),
-  search: z.string().trim().min(1).max(100).optional(),
+  sort:z.enum(["newest", "oldest", "shortest", "longest"]).optional(),
+  search: z.string().trim().max(100).optional(),
 });
 
 // export type CreatePostInput = z.infer<typeof createPostSchema>;

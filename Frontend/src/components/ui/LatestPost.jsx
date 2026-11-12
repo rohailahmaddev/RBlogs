@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { POSTS } from "../../api/data";
+// import { POSTS } from "../../api/data";
 import PostCard, { PostCardSkeleton } from "./PostCard";
 
 const MAX_POSTS = 7; // 1 featured + 6 cards
@@ -9,17 +9,18 @@ const MAX_POSTS = 7; // 1 featured + 6 cards
  * Props let you plug in real data later without touching the layout:
  *   <LatestPosts posts={data} loading={isLoading} />
  */
-export function LatestPosts({ posts = POSTS, loading = false }) {
+export function LatestPosts({ posts, loading = false }) {
     const [active, setActive] = useState("All");
 
     const categories = useMemo(
-        () => ["All", ...new Set(posts.map((p) => p.category))],
+        () => ["All", ...new Set(posts?.map((p) => p.category))],
         [posts]
     );
 
     const visible = useMemo(() => {
-        const list = active === "All" ? posts : posts.filter((p) => p.category === active);
-        return list.slice(0, MAX_POSTS);
+        const list = active === "All" ? posts : posts?.filter((p) => p?.category === active);
+        // return list?.slice(0, MAX_POSTS);
+        return (list ?? []).slice(0, MAX_POSTS);
     }, [posts, active]);
 
     const [featured, ...rest] = visible;
@@ -69,7 +70,7 @@ export function LatestPosts({ posts = POSTS, loading = false }) {
                     aria-label="Filter posts by category"
                     className="-mx-4 mt-8 flex gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
                 >
-                    {categories.map((c) => {
+                    {categories?.map((c) => {
                         const on = c === active;
                         return (
                             <button
@@ -117,7 +118,7 @@ export function LatestPosts({ posts = POSTS, loading = false }) {
                             <PostCard post={featured} variant="featured" />
                             {rest.length > 0 && (
                                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-                                    {rest.map((p) => (
+                                    {rest?.map((p) => (
                                         <PostCard key={p.id} post={p} />
                                     ))}
                                 </div>

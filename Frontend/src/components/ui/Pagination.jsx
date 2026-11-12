@@ -36,7 +36,7 @@ export default function Pagination({ page, totalPages, onChange }) {
           </span>
         ) : (
           <button
-            key={p}
+            key={i}
             type="button"
             onClick={() => onChange(p)}
             aria-current={p === page ? "page" : undefined}

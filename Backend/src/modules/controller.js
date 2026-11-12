@@ -144,6 +144,7 @@ export const getBlogsController = asyncHandler(async (req, res) => {
 
     const blogs = await getBlogsService({query:parsed.data, user:req.user})
 
+    console.log("blogs",blogs)
     return res
     .status(200)
     .json(new ApiResponse(200, "Blogs fetched successfully.", blogs))   

@@ -6,6 +6,7 @@ import { formatDate } from "../../utility/DateFormater";
    that echoes the three lines from the RBlogs logo. */
 
 function Meta({ post }) {
+    console.log("sdfjapsodifjapos",post)
     return (
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-slate-500 dark:text-slate-400">
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-semibold text-white">
@@ -13,7 +14,7 @@ function Meta({ post }) {
             </span>
             <span className="font-medium text-slate-700 dark:text-slate-200">{post.author.name}</span>
             <span aria-hidden="true">·</span>
-            <time dateTime={post.date}>{formatDate(post.date)}</time>
+            <time dateTime={post.createdAt}>{formatDate(post.createdAt)}</time>
             <span aria-hidden="true">·</span>
             <span>{post.readTime} min read</span>
         </div>
@@ -38,9 +39,10 @@ function Arrow() {
 }
 
 function Category({ children }) {
+    console.log("children",children)
     return (
         <span className="inline-block rounded-md bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 dark:bg-blue-500/15 dark:text-blue-300">
-            {children}
+            {children.name}
         </span>
     );
 }
@@ -49,6 +51,9 @@ export default function PostCard({ post, variant = "default" }) {
     const href = `/blogs/${post.slug}`;
     // Stretched link: the title link covers the whole card, so the card is
     // clickable but screen readers still hear a single, clear link.
+
+    console.log("Post Card : ", post);
+
     const titleLink = (
         <Link
             to={href}

@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-// import { POSTS } from "../../api/data";
 import usePostFilters from "./UserPostFilter";
 import SearchBar from "./Search";
 import PostCard, { PostCardSkeleton } from "./PostCard";
@@ -9,7 +8,41 @@ import { SORT_OPTIONS } from "../../utility/FilterPost";
 import SelectField from "./SelectField";
 import { useBlogs } from "./useBlogs";
 
+const CATEGORIES = [
+  {
+    id: 1,
+    name: "Technology",
+    slug: "technology",
+  },
+  {
+    id: 2,
+    name: "Web Development",
+    slug: "web-development",
+  },
+  {
+    id: 3,
+    name: "Artificial Intelligence",
+    slug: "artificial-intelligence",
+  },
+  {
+    id: 4,
+    name: "Programming",
+    slug: "programming",
+  },
+  {
+    id: 5,
+    name: "Cybersecurity",
+    slug: "cybersecurity",
+  },
+  {
+    id: 6,
+    name: "Software Engineering",
+    slug: "software-engineering",
+  },
+];
+
 function FilterChip({ label, onRemove }) {
+  console.log("label:",label,onRemove)
   return (
     <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 py-1 pl-3 pr-1.5 text-sm font-medium text-blue-700 dark:bg-blue-500/15 dark:text-blue-300">
       {label}
@@ -27,26 +60,28 @@ function FilterChip({ label, onRemove }) {
   );
 }
 
-/**
- * <Blogs />                              -> uses the sample data
- * <Blogs posts={apiPosts} loading={x} /> -> plug in your API later
- */
 export default function Blogs() {
   const f = usePostFilters();
-  const {data, loading} = useBlogs(f.apiParams)
+  const {data, error, loading, refetch} = useBlogs(f.apiParams)
   const resultsRef = useRef(null);
 
+  const blogs = data?.items ?? [];
+  const pagination = data?.pagination;
+  const firstLoad = loading && !data; // nothing to show yet -> skeleton
+  const refreshing = loading && Boolean(data); // new results loading -> dim the old ones
   useEffect(() => {
     document.title = "All posts | RBlogs";
   }, []);
 
-  console.log(data)
-  // useEffect(() => {
-  //   if (pagination && pagination.total > 0 && f.page > pagination.totalPages) {
-  //     f.setPage(pagination.totalPages);
-  //   }
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [pagination?.totalPages, pagination?.total, f.page]);
+
+  
+
+  useEffect(() => {
+    if (pagination && pagination.total > 0 && f.page > pagination.totalPages) {
+      f.setPage(pagination.totalPages);
+    }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pagination?.totalPages, pagination?.total, f.page]);
   
 
   function goToPage(p) {
@@ -54,161 +89,318 @@ export default function Blogs() {
     resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  const authorOptions = [
-    { value: "All", label: "All authors" },
-    ...f.authors.map((a) => ({ value: a, label: a })),
-  ];
+  // const authorOptions = [
+  //   { value: "All", label: "All authors" },
+  //   ...f.authors.map((a) => ({ value: a, label: a })),
+  // ];
 
-  if(!loading) <h1>loading.....</h1>
+  if(loading) <h1>loading.....</h1>
 
-  return (
-    <>
-      {/* Page header + controls */}
-      <section className="bg-white pb-10 pt-14 dark:bg-slate-900 sm:pt-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="font-['Newsreader',serif] text-4xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
-            All posts
-          </h1>
-          <p className="mt-3 max-w-2xl text-lg text-slate-600 dark:text-slate-300">
-            Search the whole archive, or narrow it down by topic and author.
-          </p>
-
-          {/* Search + selects */}
-          <div className="mt-8 flex flex-col gap-3 lg:flex-row">
-            <SearchBar value={f.q} onChange={f.setQuery} />
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <SelectField
-                label="Filter by author"
-                value={f.author}
-                onChange={f.setAuthor}
-                options={authorOptions}
-              />
-              <SelectField
-                label="Sort posts"
-                value={f.sort}
-                onChange={f.setSort}
-                options={SORT_OPTIONS}
-              />
+    const categoryName = CATEGORIES.find((c) => c.slug === f.category)?.name ?? f.category;
+    const start = pagination ? (pagination.page - 1) * pagination.limit + 1 : 0;
+    const end = start + blogs.length - 1;
+  
+    return (
+      <>
+        {/* Header + controls */}
+        <section className="bg-white pb-10 pt-14 dark:bg-slate-900 sm:pt-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <h1 className="font-['Newsreader',serif] text-4xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+              All posts
+            </h1>
+            <p className="mt-3 max-w-2xl text-lg text-slate-600 dark:text-slate-300">
+              Search the whole archive by title, topic or author name.
+            </p>
+  
+            <div className="mt-8 flex flex-col gap-3 lg:flex-row">
+              <SearchBar value={f.q} onChange={f.setQuery} />
+              <SelectField label="Sort posts" value={f.sort} onChange={f.setSort} options={SORT_OPTIONS} />
+            </div>
+  
+            <div
+              role="group"
+              aria-label="Filter posts by category"
+              className="-mx-4 mt-5 flex gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
+            >
+              {[{ name: "All", slug: "All" }, ...CATEGORIES].map((c) => {
+                const on = c.slug === f.category;
+                return (
+                  <button
+                    key={c.slug}
+                    type="button"
+                    onClick={() => f.setCategory(c.slug)}
+                    aria-pressed={on}
+                    className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+                      on
+                        ? "bg-blue-600 text-white shadow-md shadow-blue-600/25"
+                        : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                    }`}
+                  >
+                    {c.name}
+                  </button>
+                );
+              })}
             </div>
           </div>
-
-          {/* Category pills */}
-          <div
-            role="group"
-            aria-label="Filter posts by category"
-            className="-mx-4 mt-5 flex gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
-          >
-            {["All", ...f.categories].map((c) => {
-              const on = c === f.category;
-              return (
+        </section>
+  
+        {/* Results */}
+        <section
+          ref={resultsRef}
+          aria-label="Search results"
+          className="scroll-mt-20 bg-slate-50 py-10 dark:bg-slate-950 sm:py-14 lg:pb-24"
+        >
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            {/* Summary + active filters */}
+            {pagination && !error && (
+              <div className="mb-8 flex flex-wrap items-center gap-x-4 gap-y-3">
+                <p role="status" aria-live="polite" className="text-sm text-slate-600 dark:text-slate-300">
+                  {pagination.total === 0
+                    ? "No posts found"
+                    : `Showing ${start}–${end} of ${pagination.total} ${pagination.total === 1 ? "post" : "posts"}`}
+                </p>
+  
+                {f.hasFilters && (
+                  <>
+                    <ul className="flex flex-wrap items-center gap-2">
+                      {f.q && (
+                        <li>
+                          <FilterChip label={`“${f.q}”`} onRemove={() => f.setQuery("")} />
+                        </li>
+                      )}
+                      {f.category !== "All" && (
+                        <li>
+                          <FilterChip label={categoryName} onRemove={() => f.setCategory("All")} />
+                        </li>
+                      )}
+                    </ul>
+                    <button
+                      type="button"
+                      onClick={f.clearAll}
+                      className="text-sm font-semibold text-blue-600 hover:text-blue-700 focus:outline-none focus-visible:underline dark:text-blue-400 dark:hover:text-blue-300"
+                    >
+                      Clear all
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+  
+            {error ? (
+              /* Error state */
+              <div role="alert" className="rounded-3xl border border-red-200 bg-white px-6 py-14 text-center dark:border-red-500/30 dark:bg-slate-900">
+                <p className="font-['Newsreader',serif] text-2xl font-semibold text-slate-900 dark:text-white">
+                  We couldn't load the posts
+                </p>
+                <p className="mx-auto mt-2 max-w-md text-slate-600 dark:text-slate-300">{error.message}</p>
                 <button
-                  key={c}
                   type="button"
-                  onClick={() => f.setCategory(c)}
-                  aria-pressed={on}
-                  className={`shrink-0 cursor-pointer rounded-full px-4 py-1.5 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
-                    on
-                      ? "bg-blue-600 text-white shadow-md shadow-blue-600/25"
-                      : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
-                  }`}
+                  onClick={refetch}
+                  className="mt-6 rounded-full bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
                 >
-                  {c}
+                  Try again
                 </button>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Results */}
-      <section
-        ref={resultsRef}
-        aria-label="Search results"
-        className="scroll-mt-20 bg-slate-50 py-10 dark:bg-slate-950 sm:py-14 lg:pb-24"
-      >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Summary + active filters */}
-          {!loading && (
-            <div className="mb-8 flex flex-wrap items-center gap-x-4 gap-y-3">
-              <p role="status" aria-live="polite" className="text-sm text-slate-600 dark:text-slate-300">
-                {f.total === 0
-                  ? "No posts found"
-                  : `Showing ${f.items.length} of ${f.total} ${f.total === 1 ? "post" : "posts"}`}
-              </p>
-
-              {f.hasFilters && (
-                <>
-                  <ul className="flex flex-wrap items-center gap-2">
-                    {f.q && (
-                      <li>
-                        <FilterChip label={`“${f.q}”`} onRemove={() => f.setQuery("")} />
-                      </li>
-                    )}
-                    {f.category !== "All" && (
-                      <li>
-                        <FilterChip label={f.category} onRemove={() => f.setCategory("All")} />
-                      </li>
-                    )}
-                    {f.author !== "All" && (
-                      <li>
-                        <FilterChip label={f.author} onRemove={() => f.setAuthor("All")} />
-                      </li>
-                    )}
-                  </ul>
+              </div>
+            ) : firstLoad ? (
+              /* First load: skeleton cards */
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+                {Array.from({ length: 6 }, (_, i) => (
+                  <PostCardSkeleton key={i} />
+                ))}
+              </div>
+            ) : blogs.length === 0 ? (
+              /* Nothing matched */
+              <div className="rounded-3xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center dark:border-slate-700 dark:bg-slate-900">
+                <p className="font-['Newsreader',serif] text-2xl font-semibold text-slate-900 dark:text-white">
+                  Nothing matches your search
+                </p>
+                <p className="mx-auto mt-2 max-w-md text-slate-600 dark:text-slate-300">
+                  Try different keywords, or remove a filter.
+                </p>
+                <div className="mt-6 flex flex-wrap justify-center gap-3">
                   <button
                     type="button"
                     onClick={f.clearAll}
-                    className="text-sm font-semibold text-blue-600 hover:text-blue-700 focus:outline-none focus-visible:underline dark:text-blue-400 dark:hover:text-blue-300"
+                    className="rounded-full bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
                   >
-                    Clear all
+                    Clear all filters
                   </button>
-                </>
-              )}
-            </div>
-          )}
+                  <Link
+                    to="/write"
+                    className="rounded-full border border-slate-300 px-6 py-2.5 text-sm font-semibold text-slate-900 transition hover:border-blue-500 hover:text-blue-600 dark:border-slate-600 dark:text-white dark:hover:border-blue-400 dark:hover:text-blue-400"
+                  >
+                    Write about it
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div
+                  aria-busy={refreshing}
+                  className={`grid gap-6 transition-opacity sm:grid-cols-2 lg:grid-cols-3 lg:gap-8 ${
+                    refreshing ? "opacity-60" : "opacity-100"
+                  }`}
+                >
+                  {blogs.map((post) => (
+                    <PostCard key={post.id} post={post} query={f.q} />
+                  ))}
+                </div>
+                <Pagination page={pagination.page} totalPages={pagination.totalPages} onChange={goToPage} />
+              </>
+            )}
+          </div>
+        </section>
+      </>
+    );
+f
+  // return (
+  //   <>
+  //     {/* Page header + controls */}
+  //     <section className="bg-white pb-10 pt-14 dark:bg-slate-900 sm:pt-20">
+  //       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  //         <h1 className="font-['Newsreader',serif] text-4xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+  //           All posts
+  //         </h1>
+  //         <p className="mt-3 max-w-2xl text-lg text-slate-600 dark:text-slate-300">
+  //           Search the whole archive, or narrow it down by topic and author.
+  //         </p>
 
-          {loading ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-              {Array.from({ length: 6 }, (_, i) => (
-                <PostCardSkeleton key={i} />
-              ))}
-            </div>
-          ) : f.total === 0 ? (
-            <div className="rounded-3xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center dark:border-slate-700 dark:bg-slate-900">
-              <p className="font-['Newsreader',serif] text-2xl font-semibold text-slate-900 dark:text-white">
-                Nothing matches your search
-              </p>
-              <p className="mx-auto mt-2 max-w-md text-slate-600 dark:text-slate-300">
-                Try different keywords, check the spelling, or remove a filter.
-              </p>
-              <div className="mt-6 flex flex-wrap justify-center gap-3">
-                <button
-                  type="button"
-                  onClick={f.clearAll}
-                  className="rounded-full bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
-                >
-                  Clear all filters
-                </button>
-                <Link
-                  to="/write"
-                  className="rounded-full border border-slate-300 px-6 py-2.5 text-sm font-semibold text-slate-900 transition hover:border-blue-500 hover:text-blue-600 dark:border-slate-600 dark:text-white dark:hover:border-blue-400 dark:hover:text-blue-400"
-                >
-                  Write about it
-                </Link>
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-                {f.items.map((p) => (
-                  <PostCard key={p.id} post={p} query={f.q} />
-                ))}
-              </div>
-              <Pagination page={f.page} totalPages={f.totalPages} onChange={goToPage} />
-            </>
-          )}
-        </div>
-      </section>
-    </>
-  );
+  //         {/* Search + selects */}
+  //         <div className="mt-8 flex flex-col gap-3 lg:flex-row">
+  //           <SearchBar value={f.q} onChange={f.setQuery} />
+  //           <div className="flex flex-col gap-3 sm:flex-row">
+  //             <SelectField
+  //               label="Filter by author"
+  //               value={f.author}
+  //               onChange={f.setAuthor}
+  //               options={authorOptions}
+  //             />
+  //             <SelectField
+  //               label="Sort posts"
+  //               value={f.sort}
+  //               onChange={f.setSort}
+  //               options={SORT_OPTIONS}
+  //             />
+  //           </div>
+  //         </div>
+
+  //         {/* Category pills */}
+  //         <div
+  //           role="group"
+  //           aria-label="Filter posts by category"
+  //           className="-mx-4 mt-5 flex gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
+  //         >
+  //           {["All", ...f.categories].map((c) => {
+  //             const on = c === f.category;
+  //             return (
+  //               <button
+  //                 key={c}
+  //                 type="button"
+  //                 onClick={() => f.setCategory(c)}
+  //                 aria-pressed={on}
+  //                 className={`shrink-0 cursor-pointer rounded-full px-4 py-1.5 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+  //                   on
+  //                     ? "bg-blue-600 text-white shadow-md shadow-blue-600/25"
+  //                     : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+  //                 }`}
+  //               >
+  //                 {c}
+  //               </button>
+  //             );
+  //           })}
+  //         </div>
+  //       </div>
+  //     </section>
+
+  //     {/* Results */}
+  //     <section
+  //       ref={resultsRef}
+  //       aria-label="Search results"
+  //       className="scroll-mt-20 bg-slate-50 py-10 dark:bg-slate-950 sm:py-14 lg:pb-24"
+  //     >
+  //       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  //         {/* Summary + active filters */}
+  //         {!loading && (
+  //           <div className="mb-8 flex flex-wrap items-center gap-x-4 gap-y-3">
+  //             <p role="status" aria-live="polite" className="text-sm text-slate-600 dark:text-slate-300">
+  //               {f.total === 0
+  //                 ? "No posts found"
+  //                 : `Showing ${f.items.length} of ${f.total} ${f.total === 1 ? "post" : "posts"}`}
+  //             </p>
+
+  //             {f.hasFilters && (
+  //               <>
+  //                 <ul className="flex flex-wrap items-center gap-2">
+  //                   {f.q && (
+  //                     <li>
+  //                       <FilterChip label={`“${f.q}”`} onRemove={() => f.setQuery("")} />
+  //                     </li>
+  //                   )}
+  //                   {f.category !== "All" && (
+  //                     <li>
+  //                       <FilterChip label={f.category} onRemove={() => f.setCategory("All")} />
+  //                     </li>
+  //                   )}
+  //                   {f.author !== "All" && (
+  //                     <li>
+  //                       <FilterChip label={f.author} onRemove={() => f.setAuthor("All")} />
+  //                     </li>
+  //                   )}
+  //                 </ul>
+  //                 <button
+  //                   type="button"
+  //                   onClick={f.clearAll}
+  //                   className="text-sm font-semibold text-blue-600 hover:text-blue-700 focus:outline-none focus-visible:underline dark:text-blue-400 dark:hover:text-blue-300"
+  //                 >
+  //                   Clear all
+  //                 </button>
+  //               </>
+  //             )}
+  //           </div>
+  //         )}
+
+  //         {loading ? (
+  //           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+  //             {Array.from({ length: 6 }, (_, i) => (
+  //               <PostCardSkeleton key={i} />
+  //             ))}
+  //           </div>
+  //         ) : f.total === 0 ? (
+  //           <div className="rounded-3xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center dark:border-slate-700 dark:bg-slate-900">
+  //             <p className="font-['Newsreader',serif] text-2xl font-semibold text-slate-900 dark:text-white">
+  //               Nothing matches your search
+  //             </p>
+  //             <p className="mx-auto mt-2 max-w-md text-slate-600 dark:text-slate-300">
+  //               Try different keywords, check the spelling, or remove a filter.
+  //             </p>
+  //             <div className="mt-6 flex flex-wrap justify-center gap-3">
+  //               <button
+  //                 type="button"
+  //                 onClick={f.clearAll}
+  //                 className="rounded-full bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+  //               >
+  //                 Clear all filters
+  //               </button>
+  //               <Link
+  //                 to="/write"
+  //                 className="rounded-full border border-slate-300 px-6 py-2.5 text-sm font-semibold text-slate-900 transition hover:border-blue-500 hover:text-blue-600 dark:border-slate-600 dark:text-white dark:hover:border-blue-400 dark:hover:text-blue-400"
+  //               >
+  //                 Write about it
+  //               </Link>
+  //             </div>
+  //           </div>
+  //         ) : (
+  //           <>
+  //             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+  //               {f.items.map((p) => (
+  //                 <PostCard key={p.id} post={p} query={f.q} />
+  //               ))}
+  //             </div>
+  //             <Pagination page={f.page} totalPages={f.totalPages} onChange={goToPage} />
+  //           </>
+  //         )}
+  //       </div>
+  //     </section>
+  //   </>
+  // );
 }

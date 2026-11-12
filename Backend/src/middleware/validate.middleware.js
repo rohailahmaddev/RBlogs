@@ -14,6 +14,7 @@ export const validateSchema = (schema) => {
             // delete it so invalid requests don't leave files behind
             if (req.file?.path) fs.unlink(req.file.path, () => {});
 
+            console.log("result",result)
             return res.status(400).json({
                 success: false,
                 // First problem, e.g. "Please provide email"

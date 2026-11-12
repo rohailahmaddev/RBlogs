@@ -152,7 +152,7 @@ export const updateBlogById = async({ blogId, data }) => {
     })
 }
 
-export const getBlogs = async({categoryId, authorId, status, search, page, limit, offset}) => {
+export const getBlogs = async({categoryId, authorId, status, sort, search, page, limit, offset}) => {
     const where = {
         ...(categoryId && { category_id: categoryId }),
         ...(authorId && { author_id: authorId }),
@@ -165,8 +165,17 @@ export const getBlogs = async({categoryId, authorId, status, search, page, limit
         })
     }
 
-    const orderBy = 
-    status === "draft" ?[ { created_at: "desc" }, { id: "desc" } ] : [{ published_at: "desc" } , { id: "desc" }];
+    const ORDER_BY = {
+    newest: [{ published_at: "desc" }, { id: "desc" }],
+    oldest: [{ published_at: "asc" }, { id: "asc" }],
+    shortest: [{ read_time: "asc" }, { published_at: "desc" }],
+    longest: [{ read_time: "desc" }, { published_at: "desc" }],
+    };
+
+    const orderBy = ORDER_BY[sort] ?? ORDER_BY.newest;
+
+    // const orderBy = 
+    // status === "draft" ?[ { created_at: "desc" }, { id: "desc" } ] : [{ published_at: "desc" } , { id: "desc" }];
 
     const [rows,total] = await prisma.$transaction([
     prisma.posts.findMany({

@@ -1,0 +1,26 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "frontend of rblogs website",
+  "keywords": [
+    "rblogs"
+  ],
+  "license": "ISC",
+  "author": "Rohail Ahmad",
+  "type": "module",
+  "main": "eslint.config.js",
+  "scripts": {
+    "dev": "vite"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "axios": "^1.21.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router-dom": "^7.18.4",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.3.0"
+  }
+}

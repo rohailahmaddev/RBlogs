@@ -39,11 +39,10 @@ export default function usePostFilters() {
     () => ({ search, category: category === "All" ? undefined : category, sort, page, limit: PAGE_SIZE }),
     [search, category, sort, page]
   );
-
   return {
     search,
     category,
-    // sort,
+    sort,
     page,
     apiParams,
     hasFilters: Boolean(search || category !== "All"),

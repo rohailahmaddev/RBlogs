@@ -9,6 +9,7 @@ import { getTemporaryToken } from "../utils/jwt.js";
 import { ROLES, SELF_REGISTER_ROLES } from "../utils/contants.js";
 import { clearForgotPasswordToken, createBlogs, createUser, deleteBlogPost, getBlogById, getBlogs, getCategory, getUserByEmailRepo, getUserByResetPasswordToken, logoutUser, updateBlogById, updateForgotPasswordToken, updateUserPasswordById, updateVerificationEmailTokenRepo, verifyEmailRepo } from "./repository.js";
 import { getPlainText, getReadTime, sanitizeContent } from "../utils/sanitizeContent.js";
+import { get } from "node:http";
 
 const sendEmailService = async (user, req) => {
     const { unHashedToken, hashedToken, tokenExpiry } = getTemporaryToken()
@@ -604,8 +605,8 @@ export const getBlogByIdService = async (req) => {
 }
 
 const resolveFilterOptions = async ({query, user}) => {
-    const { category, author, status, search } = query;
-    const base = { categoryId: category, search };
+    const { category, author, status, search, sort } = query;
+    const base = { categoryId: category, search, sort };
 
     if (user?.role === ROLES.ADMIN) {
         return { ...base, authorId: author, status };
@@ -639,7 +640,6 @@ export const getBlogsService = async ({query, user}) => {
     let result;
     try {
         result = await getBlogs({...filter, pageNumber: Number(page), limit: Number(limit), offset: (Number(page) -1) * Number(limit)});
-        console.log(result)
     } catch (error) {
         console.error("getBlogsService failed:", error);
         throw new ApiError(500, `Something went wrong.`)

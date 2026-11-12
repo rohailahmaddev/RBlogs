@@ -2,7 +2,9 @@ import { useContext } from "react";
 import { Data } from "../../context/context";
 
 export function Cover({ post, className = "" }) {
+    console.log(post)
     const { COVER_TONES } = useContext(Data)
+
     if (post.cover) {
         return (
             <img
@@ -25,7 +27,7 @@ export function Cover({ post, className = "" }) {
                 <div className="h-2 w-10 rounded-full bg-white/15" />
             </div>
             <span className="font-['Newsreader',serif] text-xl font-semibold text-white/90">
-                {post.category}
+                {post.category.name}
             </span>
         </div>
     );

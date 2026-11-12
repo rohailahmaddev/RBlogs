@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
-import { POSTS } from "../../api/data";
-import { ARTICLES, DEFAULT_AUTHOR_BIO } from "../../api/article";
 import ReadingProgress from "../article/ReadingProgress";
 import { Cover } from "./PostCoverImage";
 import ArticleBody, { getHeadings } from "../article/ArticleBody";
@@ -12,11 +10,6 @@ import { formatDate } from "../../utility/DateFormater";
 
 
 const categorySlug = (name) => name.toLowerCase().replace(/\s+/g, "-");
-
-// const formatDate = (iso) =>
-//   new Intl.DateTimeFormat("en", { month: "long", day: "numeric", year: "numeric" }).format(
-//     new Date(iso)
-//   );
 
 function NotFound() {
   return (
