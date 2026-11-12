@@ -2,7 +2,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { listPostsQuerySchema } from "../validator/post.validations.js";
-import { addBlogPostService, deleteBlogPostService, forgotPasswordService, getBlogByIdService, getBlogsService, loginUserService, logoutUserService, resendVerificationEmailService, resetPasswordService, updateBlogPostService, userRegisterService, verifyEmailService } from "./service.js";
+import { addBlogPostService, deleteBlogPostService, forgotPasswordService, getBlogByIdService, getBlogCategoriesService, getBlogsService, loginUserService, logoutUserService, resendVerificationEmailService, resetPasswordService, updateBlogPostService, userRegisterService, verifyEmailService } from "./service.js";
 
 export const registerUserController = asyncHandler(async (req, res) => {
     const { name, email, password, bio, role } = req.body;
@@ -144,7 +144,6 @@ export const getBlogsController = asyncHandler(async (req, res) => {
 
     const blogs = await getBlogsService({query:parsed.data, user:req.user})
 
-    console.log("blogs",blogs)
     return res
     .status(200)
     .json(new ApiResponse(200, "Blogs fetched successfully.", blogs))   
@@ -162,4 +161,12 @@ export const getBlogByIdController = asyncHandler(async(req, res) =>{
     return res
     .status(200)
     .json(new ApiResponse(200, "Blog fetched successfully.", blog))
+})
+
+export const getBlogCategoriesController = asyncHandler(async(req, res) => {
+    const categories = await getBlogCategoriesService(req)
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, "Categories fetched successfully.",categories))
 })

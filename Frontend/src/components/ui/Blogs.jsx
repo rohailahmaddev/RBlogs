@@ -7,42 +7,9 @@ import Pagination from "./Pagination";
 import { SORT_OPTIONS } from "../../utility/FilterPost";
 import SelectField from "./SelectField";
 import { useBlogs } from "./useBlogs";
-
-const CATEGORIES = [
-  {
-    id: 1,
-    name: "Technology",
-    slug: "technology",
-  },
-  {
-    id: 2,
-    name: "Web Development",
-    slug: "web-development",
-  },
-  {
-    id: 3,
-    name: "Artificial Intelligence",
-    slug: "artificial-intelligence",
-  },
-  {
-    id: 4,
-    name: "Programming",
-    slug: "programming",
-  },
-  {
-    id: 5,
-    name: "Cybersecurity",
-    slug: "cybersecurity",
-  },
-  {
-    id: 6,
-    name: "Software Engineering",
-    slug: "software-engineering",
-  },
-];
+import { useCategory } from "./useCategories";
 
 function FilterChip({ label, onRemove }) {
-  console.log("label:",label,onRemove)
   return (
     <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 py-1 pl-3 pr-1.5 text-sm font-medium text-blue-700 dark:bg-blue-500/15 dark:text-blue-300">
       {label}
@@ -63,18 +30,17 @@ function FilterChip({ label, onRemove }) {
 export default function Blogs() {
   const f = usePostFilters();
   const {data, error, loading, refetch} = useBlogs(f.apiParams)
+  const {cdata:categories} = useCategory();
   const resultsRef = useRef(null);
 
   const blogs = data?.items ?? [];
   const pagination = data?.pagination;
   const firstLoad = loading && !data; // nothing to show yet -> skeleton
   const refreshing = loading && Boolean(data); // new results loading -> dim the old ones
+
   useEffect(() => {
     document.title = "All posts | RBlogs";
   }, []);
-
-
-  
 
   useEffect(() => {
     if (pagination && pagination.total > 0 && f.page > pagination.totalPages) {
@@ -89,17 +55,13 @@ export default function Blogs() {
     resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  // const authorOptions = [
-  //   { value: "All", label: "All authors" },
-  //   ...f.authors.map((a) => ({ value: a, label: a })),
-  // ];
-
-  if(loading) <h1>loading.....</h1>
-
-    const categoryName = CATEGORIES.find((c) => c.slug === f.category)?.name ?? f.category;
-    const start = pagination ? (pagination.page - 1) * pagination.limit + 1 : 0;
+    const categoryName = categories?.find((c) =>c.slug === f.category)?.name ?? f.category;
+    const start = pagination ? (pagination?.currentPage - 1) * pagination.limit + 1 : 0;
     const end = start + blogs.length - 1;
-  
+    const handleClear = () => {
+      f.setQuery("");
+      f.clearAll();
+    }
     return (
       <>
         {/* Header + controls */}
@@ -109,7 +71,7 @@ export default function Blogs() {
               All posts
             </h1>
             <p className="mt-3 max-w-2xl text-lg text-slate-600 dark:text-slate-300">
-              Search the whole archive by title, topic or author name.
+              Search the whole archive by title and topic.
             </p>
   
             <div className="mt-8 flex flex-col gap-3 lg:flex-row">
@@ -122,15 +84,15 @@ export default function Blogs() {
               aria-label="Filter posts by category"
               className="-mx-4 mt-5 flex gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
             >
-              {[{ name: "All", slug: "All" }, ...CATEGORIES].map((c) => {
+              {[{ name: "All", slug: "All" }, ...(categories ?? [])].map((c) => {
                 const on = c.slug === f.category;
                 return (
                   <button
                     key={c.slug}
                     type="button"
-                    onClick={() => f.setCategory(c.slug)}
+                    onClick={() => f.setCategory(c.id)}
                     aria-pressed={on}
-                    className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+                    className={`shrink-0 cursor-pointer rounded-full px-4 py-1.5 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                       on
                         ? "bg-blue-600 text-white shadow-md shadow-blue-600/25"
                         : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
@@ -155,9 +117,9 @@ export default function Blogs() {
             {pagination && !error && (
               <div className="mb-8 flex flex-wrap items-center gap-x-4 gap-y-3">
                 <p role="status" aria-live="polite" className="text-sm text-slate-600 dark:text-slate-300">
-                  {pagination.total === 0
+                  {pagination.totalPage === 0
                     ? "No posts found"
-                    : `Showing ${start}–${end} of ${pagination.total} ${pagination.total === 1 ? "post" : "posts"}`}
+                    : `Showing ${start}–${end} of ${pagination?.totalCount} ${pagination.totalPage === 1 ? "post" : "posts"}`}
                 </p>
   
                 {f.hasFilters && (
@@ -176,7 +138,7 @@ export default function Blogs() {
                     </ul>
                     <button
                       type="button"
-                      onClick={f.clearAll}
+                      onClick={handleClear}
                       className="text-sm font-semibold text-blue-600 hover:text-blue-700 focus:outline-none focus-visible:underline dark:text-blue-400 dark:hover:text-blue-300"
                     >
                       Clear all
@@ -221,13 +183,13 @@ export default function Blogs() {
                   <button
                     type="button"
                     onClick={f.clearAll}
-                    className="rounded-full bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+                    className="rounded-full cursor-pointer bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
                   >
                     Clear all filters
                   </button>
                   <Link
                     to="/write"
-                    className="rounded-full border border-slate-300 px-6 py-2.5 text-sm font-semibold text-slate-900 transition hover:border-blue-500 hover:text-blue-600 dark:border-slate-600 dark:text-white dark:hover:border-blue-400 dark:hover:text-blue-400"
+                    className="rounded-full cursor-pointer border border-slate-300 px-6 py-2.5 text-sm font-semibold text-slate-900 transition hover:border-blue-500 hover:text-blue-600 dark:border-slate-600 dark:text-white dark:hover:border-blue-400 dark:hover:text-blue-400"
                   >
                     Write about it
                   </Link>
@@ -245,7 +207,7 @@ export default function Blogs() {
                     <PostCard key={post.id} post={post} query={f.q} />
                   ))}
                 </div>
-                <Pagination page={pagination.page} totalPages={pagination.totalPages} onChange={goToPage} />
+                <Pagination page={pagination.currentPage} totalPages={pagination.totalPage} onChange={goToPage} />
               </>
             )}
           </div>

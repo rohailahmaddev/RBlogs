@@ -144,8 +144,6 @@ export const deleteBlogById = async(id) => {
 }
 
 export const updateBlogById = async({ blogId, data }) => {
-    console.log("blogid",blogId)
-    console.log("data",data);
     return await prisma.posts.update({
         where:{id:blogId},
         data: data
@@ -216,4 +214,19 @@ export const getCategory = async(categoryId) => {
         where:{id:categoryId}
     })
 }
+
+export const getAllCategories = async() => {
+    return await prisma.categories.findMany({
+        orderBy: {
+            name: "asc"
+        },
+        select: {
+            id: true,
+            name: true,
+            slug: true,
+            created_at: true
+        }
+    })
+}
+
 

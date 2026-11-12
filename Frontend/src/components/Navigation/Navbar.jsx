@@ -6,7 +6,7 @@ import ThemeToggle from "../ui/ToggleTheme";
 const NAV_LINKS = [
   { label: "Home", to: "/" },
   { label: "Blogs", to: "/blogs" },
-  { label: "Categories", to: "/categories" },
+  // { label: "Categories", to: "/categories" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
 ];

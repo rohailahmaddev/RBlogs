@@ -2,26 +2,31 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 // import { POSTS } from "../../api/data";
 import PostCard, { PostCardSkeleton } from "./PostCard";
+import usePostFilters from "./UserPostFilter";
+import { useBlogs } from "./useBlogs";
 
-const MAX_POSTS = 7; // 1 featured + 6 cards
+const MAX_POSTS = 4; // 1 featured +  3cards
 
 /**
  * Props let you plug in real data later without touching the layout:
  *   <LatestPosts posts={data} loading={isLoading} />
  */
-export function LatestPosts({ posts, loading = false }) {
+export function LatestPosts() {
+    const f = usePostFilters();
+    const {data, loading} = useBlogs(f.apiParams)
     const [active, setActive] = useState("All");
 
+    const blogs = data?.items ?? [];
+
     const categories = useMemo(
-        () => ["All", ...new Set(posts?.map((p) => p.category))],
-        [posts]
+        () => ["All", ...new Set(blogs?.map((p) => p.category.name))],
+        [blogs]
     );
 
     const visible = useMemo(() => {
-        const list = active === "All" ? posts : posts?.filter((p) => p?.category === active);
-        // return list?.slice(0, MAX_POSTS);
+        const list = active === "All" ? blogs : blogs?.filter((b) => b?.category.name === active);
         return (list ?? []).slice(0, MAX_POSTS);
-    }, [posts, active]);
+    }, [blogs, active]);
 
     const [featured, ...rest] = visible;
 

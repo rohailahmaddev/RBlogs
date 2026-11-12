@@ -7,7 +7,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { comparePassword, createSlug, extractText, generateExcerpt, getAccessAndRefreshToken, getErrorMessage, hashPassword, hashToken, isDuplicateError } from "../utils/helper.js";
 import { getTemporaryToken } from "../utils/jwt.js";
 import { ROLES, SELF_REGISTER_ROLES } from "../utils/contants.js";
-import { clearForgotPasswordToken, createBlogs, createUser, deleteBlogPost, getBlogById, getBlogs, getCategory, getUserByEmailRepo, getUserByResetPasswordToken, logoutUser, updateBlogById, updateForgotPasswordToken, updateUserPasswordById, updateVerificationEmailTokenRepo, verifyEmailRepo } from "./repository.js";
+import { clearForgotPasswordToken, createBlogs, createUser, deleteBlogPost, getAllCategories, getBlogById, getBlogs, getCategory, getUserByEmailRepo, getUserByResetPasswordToken, logoutUser, updateBlogById, updateForgotPasswordToken, updateUserPasswordById, updateVerificationEmailTokenRepo, verifyEmailRepo } from "./repository.js";
 import { getPlainText, getReadTime, sanitizeContent } from "../utils/sanitizeContent.js";
 import { get } from "node:http";
 
@@ -384,8 +384,6 @@ export const updateBlogPostService = async ({ blogId: rawId, user, body, file })
 
     try {
         let blogId = Number(rawId);
-
-        console.log(blogId)
         if (!Number.isInteger(blogId) || blogId <= 0) {
             throw new ApiError(400, "Invalid blog id.");
         }
@@ -595,7 +593,6 @@ export const getBlogByIdService = async (req) => {
         console.error("getBlogByIdService failed:", error);
         throw new ApiError(500, `Something went wrong.`)
     }
-    // console.log(blog)
 
     if (!blog || (!isPublished(blog) && !canSeeDraft(blog, user))) {
         throw new ApiError(404, "Blog not found.");
@@ -632,7 +629,6 @@ const resolveFilterOptions = async ({query, user}) => {
 
 }
 
-
 export const getBlogsService = async ({query, user}) => {
     const { page = 1, limit = 10 } = query;
     const filter = await resolveFilterOptions({query, user});
@@ -661,3 +657,21 @@ export const getBlogsService = async ({query, user}) => {
         }
     }
 }
+
+export const getBlogCategoriesService = async () => {
+    try {
+        const categories = await getAllCategories();
+
+        if(!categories) throw new ApiError(404, "No category found.")
+        
+        return categories;
+
+    } catch (error) {
+        console.error("getCategoriesService failed:", error);
+        if(error instanceof ApiError)  throw error
+        throw new ApiError(
+            500,
+            "Failed to fetch categories."
+        );
+    }
+};

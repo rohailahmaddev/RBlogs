@@ -15,7 +15,6 @@ export const useBlogs = (params) => {
         getBlogPosts(JSON.parse(key),{signal:controller.signal})
         .then((data) =>( setState({data:data, error:null, loading:false})))
         .catch((error) => {
-            console.log(error)
             if(error?.name === "AbortError") return; // replaced by a newer request
             setState((s) =>({...s, error:error?.name, loading:false}));
         })
@@ -23,7 +22,6 @@ export const useBlogs = (params) => {
         return () => controller.abort();
     }, [key, reloadCount])
 
-    console.log("3")
     const refetch = useCallback(() => setReloadCount((n) => (n+1)),[]);
 
     return {...state,refetch}

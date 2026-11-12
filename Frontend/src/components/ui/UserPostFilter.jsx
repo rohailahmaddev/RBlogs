@@ -45,11 +45,11 @@ export default function usePostFilters() {
     sort,
     page,
     apiParams,
-    hasFilters: Boolean(search || category !== "All"),
+    hasFilters: Boolean( search || category !== "All" || sort !== "newest"),
     setQuery: (v) => update({ search: v }, { replace: true }),
     setCategory: (v) => update({ category: v }),
     setSort: (v) => update({ sort: v }),
     setPage: (v) => update({ page: v }),
-    clearAll: () => setParams({}),
+    clearAll: () => setParams(new URLSearchParams(), { replace: true }),
   };
 }

@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { Data } from "../../context/context";
 
 export function Cover({ post, className = "" }) {
-    console.log(post)
     const { COVER_TONES } = useContext(Data)
 
     if (post.cover) {

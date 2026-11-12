@@ -3,7 +3,7 @@ import { Router } from "express"
 import { verifyJWT, verifyAdmin, authorizeRole, optionalAuth } from "../middleware/auth.middleware.js"
 import upload from "../middleware/multer.middleware.js";
 import { forgotPasswordSchema, loginSchema, registerSchema, resendVerificationEmailSchema, resetPasswordSchema } from "../validator/auth.validations.js";
-import { addBlogPostController, deleteBlogController, forgotPasswordController, getBlogByIdController, getBlogsController, loginUserController, logoutUserController, registerUserController, resendVerificationEmailController, resetPasswordController, updateBlogPostController, verifyEmailController } from "../modules/controller.js";
+import { addBlogPostController, deleteBlogController, forgotPasswordController, getBlogByIdController, getBlogCategoriesController, getBlogsController, loginUserController, logoutUserController, registerUserController, resendVerificationEmailController, resetPasswordController, updateBlogPostController, verifyEmailController } from "../modules/controller.js";
 import { validateSchema } from "../middleware/validate.middleware.js";
 import { ROLES } from "../utils/contants.js";
 import { createPostSchema, updatePostSchema } from "../validator/post.validations.js";
@@ -79,6 +79,11 @@ router.route("/get-posts").get(
   getBlogsController
 )
 
+//categories
+router.route("/categories").get(
+  optionalAuth,
+  getBlogCategoriesController
+);
 
 
 

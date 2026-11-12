@@ -1,12 +1,12 @@
-function pageList(page, total) {
-  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+function pageList(page, totalPages) {
+  if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
   const pages = [1];
   const start = Math.max(2, page - 1);
-  const end = Math.min(total - 1, page + 1);
+  const end = Math.min(totalPages - 1, page + 1);
   if (start > 2) pages.push("…");
   for (let i = start; i <= end; i++) pages.push(i);
-  if (end < total - 1) pages.push("…");
-  pages.push(total);
+  if (end < totalPages - 1) pages.push("…");
+  pages.push(totalPages);
   return pages;
 }
 
@@ -15,7 +15,6 @@ const base =
 
 export default function Pagination({ page, totalPages, onChange }) {
   if (totalPages <= 1) return null;
-
   return (
     <nav aria-label="Pagination" className="mt-12 flex items-center justify-center gap-1.5">
       <button

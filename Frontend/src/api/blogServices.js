@@ -5,6 +5,13 @@ export const getBlogPosts = async ({ search, category, author, page, limit } ={}
         params:{category, author, page, limit, search },
         signal:options.signal
     })
-    console.log("getBlogPosts:",res.data.data)
     return res.data.data
+}
+
+export const getBlogCategories = async(options={}) => {
+    const res = await api.get("/posts/categories",{
+        signal:options.signal
+    })
+
+    return res.data.data;
 }
