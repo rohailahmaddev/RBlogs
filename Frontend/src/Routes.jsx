@@ -6,6 +6,7 @@ import { About } from "./pages/About";
 import { Blogs } from "./pages/Blogs";
 import { BlogDetail } from "./pages/BlogDetail";
 import { Contact } from "./pages/Contact";
+import NotFound from "./components/layout/NotFound";
 
 export const Router = () => {
   const router = createBrowserRouter([
@@ -33,6 +34,10 @@ export const Router = () => {
           path: "/contact",
           element: <Contact />,
         },
+        {
+          path:"*",
+          element:<NotFound/>
+        }
       ],
     },
   ]);
