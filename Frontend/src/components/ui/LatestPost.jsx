@@ -7,13 +7,10 @@ import { useBlogs } from "./useBlogs";
 
 const MAX_POSTS = 4; // 1 featured +  3cards
 
-/**
- * Props let you plug in real data later without touching the layout:
- *   <LatestPosts posts={data} loading={isLoading} />
- */
 export function LatestPosts() {
     const f = usePostFilters();
-    const {data, loading} = useBlogs(f.apiParams)
+    const url = `posts/get-posts`
+    const {data, loading} = useBlogs({url,params:f.apiParams})
     const [active, setActive] = useState("All");
 
     const blogs = data?.items ?? [];

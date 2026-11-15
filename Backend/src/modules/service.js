@@ -7,7 +7,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { comparePassword, createSlug, extractText, generateExcerpt, getAccessAndRefreshToken, getErrorMessage, hashPassword, hashToken, isDuplicateError } from "../utils/helper.js";
 import { getTemporaryToken } from "../utils/jwt.js";
 import { ROLES, SELF_REGISTER_ROLES } from "../utils/contants.js";
-import { clearForgotPasswordToken, createBlogs, createUser, deleteBlogPost, getAllCategories, getBlogById, getBlogs, getCategory, getUserByEmailRepo, getUserByResetPasswordToken, logoutUser, updateBlogById, updateForgotPasswordToken, updateUserPasswordById, updateVerificationEmailTokenRepo, verifyEmailRepo } from "./repository.js";
+import { clearForgotPasswordToken, createBlogs, createUser, deleteBlogPost, getAllCategories, getBlogById, getBlogs, getCategory, getRelatedPosts, getUserByEmailRepo, getUserByResetPasswordToken, logoutUser, updateBlogById, updateForgotPasswordToken, updateUserPasswordById, updateVerificationEmailTokenRepo, verifyEmailRepo } from "./repository.js";
 import { getPlainText, getReadTime, sanitizeContent } from "../utils/sanitizeContent.js";
 import { get } from "node:http";
 
@@ -582,7 +582,7 @@ export const getBlogByIdService = async (req) => {
     const user = req.user;
     const blogId = Number(id);
 
-    if (!/^\d+$/.test(id) || !Number.isSafeInteger(blogId) || blogId <= 0) {
+    if (!/^\d+$/.test(blogId) || !Number.isSafeInteger(blogId) || blogId <= 0) {
         throw new ApiError(400, "Invalid blog id.");
     }
 
@@ -657,6 +657,31 @@ export const getBlogsService = async ({query, user}) => {
         }
     }
 }
+
+export const getRelatedPostService = async (req) => {
+  const { id } = req.params;
+
+  const postId = Number(id)
+  if (!/^\d+$/.test(postId) || !Number.isSafeInteger(postId) || postId <= 0) {
+    throw new ApiError(400, "Invalid blog id.");
+  }
+
+  let post;
+  try {
+    post = await getBlogById(postId)
+  } catch (error) {
+    throw new ApiError(404, "Blog not found.")
+  }
+
+  if (!post || post.status !== "published") {
+    throw new ApiError(404, "Post not found");
+  }
+
+  const relatedPosts = await getRelatedPosts(postId,post?.category?.id) ?? [];
+
+  return relatedPosts.map(toBlogCard);
+
+};
 
 export const getBlogCategoriesService = async () => {
     try {

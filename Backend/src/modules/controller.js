@@ -2,7 +2,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { listPostsQuerySchema } from "../validator/post.validations.js";
-import { addBlogPostService, deleteBlogPostService, forgotPasswordService, getBlogByIdService, getBlogCategoriesService, getBlogsService, loginUserService, logoutUserService, resendVerificationEmailService, resetPasswordService, updateBlogPostService, userRegisterService, verifyEmailService } from "./service.js";
+import { addBlogPostService, deleteBlogPostService, forgotPasswordService, getBlogByIdService, getBlogCategoriesService, getBlogsService, getRelatedPostService, loginUserService, logoutUserService, resendVerificationEmailService, resetPasswordService, updateBlogPostService, userRegisterService, verifyEmailService } from "./service.js";
 
 export const registerUserController = asyncHandler(async (req, res) => {
     const { name, email, password, bio, role } = req.body;
@@ -169,4 +169,12 @@ export const getBlogCategoriesController = asyncHandler(async(req, res) => {
     return res
     .status(200)
     .json(new ApiResponse(200, "Categories fetched successfully.",categories))
+})
+
+export const getRelatedPostController = asyncHandler(async(req, res) => {
+  const relatedPosts = await getRelatedPostService(req)
+  
+  return res.status(200).json(
+    new ApiResponse(200, "Related posts fetched successfully",relatedPosts)
+  );
 })

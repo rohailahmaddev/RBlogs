@@ -221,6 +221,45 @@ export const deleteBlogPost = async(blogId) => {
     })
 }
 
+export const getRelatedPosts = async (postId, categoryId) => {
+  return prisma.posts.findMany({
+    where: {
+      id: {
+        not: Number(postId),
+      },
+      category_id: Number(categoryId),
+      status: "published",
+    },
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      excerpt: true,
+      cover_url: true,
+      published_at: true,
+      created_at:true,
+      read_time: true,
+      author: {
+        select: {
+          id:true,
+          name: true,
+        },
+      },
+      category: {
+        select: {
+          id:true,
+          name: true,
+          slug: true,
+        },
+      },
+    },
+    orderBy: {
+      published_at: "desc",
+    },
+    take: 3,
+  });
+};
+
 
 //category
 export const getCategory = async(categoryId) => {

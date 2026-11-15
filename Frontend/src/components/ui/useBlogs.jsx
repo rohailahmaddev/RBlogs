@@ -1,27 +1,42 @@
 import { useEffect, useState } from "react";
 import { getBlogPosts } from "../../api/blogServices";
 import { useCallback } from "react";
+import axios from "axios";
 
+export const useBlogs = ({ url, params = {} }) => {
+  const [state, setState] = useState({ data: null, error: null, loading: true });
+  const [reloadCount, setReloadCount] = useState(0);
+  const key = JSON.stringify(params);
 
-export const useBlogs = ({url ,params = {}}) => {
-    const [state, setState] = useState({data:null,error:null,loading:true});
-    const [reloadCount, setReloadCount] = useState(0)
-    const key = JSON.stringify(params)
-    useEffect(()=>{
-        const controller = new AbortController();//browser api to abort req
-        setState((s) => ({...s, error:null, loading:true}));
+  useEffect(() => {
+    const controller = new AbortController();
+    let active = true; // flips to false as soon as this effect is replaced
 
-        getBlogPosts(url, JSON.parse(key), {signal:controller.signal})
-        .then((data) =>( setState({data:data, error:null, loading:false})))
-        .catch((error) => {
-            if(error?.name === "AbortError") return; // replaced by a newer request
-            setState((s) =>({...s, error:error?.name, loading:false}));
-        })
+    setState({ data: null, error: null, loading: true }); // reset for the new request
 
-        return () => controller.abort();
-    }, [key, reloadCount])
+    getBlogPosts(url, JSON.parse(key), { signal: controller.signal })
+      .then((data) => {
+        if (active) setState({ data, error: null, loading: false });
+      })
+      .catch((error) => {
+        // A replaced/cancelled request must never touch state
+        if (
+          !active ||
+          axios.isCancel(error) ||
+          error?.name === "AbortError" ||
+          error?.code === "ERR_CANCELED"
+        ) return;
 
-    const refetch = useCallback(() => setReloadCount((n) => (n+1)),[]);
+        setState({ data: null, error: error?.message ?? "Request failed", loading: false });
+      });
 
-    return {...state,refetch}
-}
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, [key, reloadCount, url]);
+
+  const refetch = useCallback(() => setReloadCount((n) => n + 1), []);
+
+  return { ...state, refetch };
+};

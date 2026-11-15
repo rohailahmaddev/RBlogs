@@ -5,10 +5,11 @@ import { Cover } from "./PostCoverImage";
 import ArticleBody from "../article/ArticleBody";
 import ShareButtons from "../article/ShareButtons";
 import TableOfContents from "../article/TableOfContent";
-import PostCard from "./PostCard";
+import PostCard, { PostCardSkeleton } from "./PostCard";
 import { formatDate } from "../../utility/DateFormater";
 import { useBlogs } from "./useBlogs";
 import { prepareContent } from "../../utility/parseContent";
+import ArticleSkeleton from "../article/ArticleBodySekeleton";
 
 function NotFound() {
   return (
@@ -38,36 +39,29 @@ export default function BlogPost() {
   const { id } = useParams();
   const url =`posts/get-post/${id}`
   const bodyRef = useRef(null);
-  const {data, loading} = useBlogs({url});
+  const {data} = useBlogs({url});
+  const relatedPostUrl = `posts/get-posts/${id}/related`;
+  const {data:related, loading = true} = useBlogs({url:relatedPostUrl})
   const post = data?.[0];
 
   const { html, headings } = useMemo(() => {
     if (!post) return { html: "", headings: [] };
     return prepareContent(post.content, post.excerpt);
   }, [post]);
-  
-  const related = useMemo(() => {
-    if (!data) return [];
-    const others = data.filter((p) => p.id !== post.id);
-    const same = others.filter((p) => p.category === post.category);
-    const rest = others.filter((p) => p.category !== post.category);
-    return [...same, ...rest].slice(0, 3);
-  }, [data]);
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
     if (post) document.title = `${post.title} | RBlogs`;
   }, [post]);
 
-  if (loading) return <div>Loading...</div>;
 
-  if (!data || !post) return <NotFound />;
+  if (loading) return <ArticleSkeleton />;
+  if (!data) return <NotFound/>
 
   return (
     <>
       <ReadingProgress targetRef={bodyRef} />
-
-      <article className="bg-white pb-16 pt-10 dark:bg-slate-900 sm:pt-14 lg:pb-24">
+       <article className="bg-white pb-16 pt-10 dark:bg-slate-900 sm:pt-14 lg:pb-24">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <header className="max-w-3xl">
@@ -150,8 +144,7 @@ export default function BlogPost() {
           </div>
         </div>
       </article>
-
-      Related posts
+      {/* Related posts */}
       {related?.length > 0 && (
         <section
           aria-labelledby="related-heading"
@@ -172,6 +165,7 @@ export default function BlogPost() {
           </div>
         </section>
       )}
+      
     </>
   );
 }
