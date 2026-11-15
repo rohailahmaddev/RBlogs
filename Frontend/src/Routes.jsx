@@ -26,7 +26,7 @@ export const Router = () => {
           element: <Blogs />,
         },
         {
-          path: "/blogs/:slug",
+          path: "/blogs/:id",
           element: <BlogDetail />,
         },
         {

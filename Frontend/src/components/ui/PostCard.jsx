@@ -46,7 +46,7 @@ function Category({ children }) {
 }
 
 export default function PostCard({ post, variant = "default" }) {
-    const href = `/blogs/${post.slug}`;
+    const href = `/blogs/${post.id}`;
     // Stretched link: the title link covers the whole card, so the card is
     // clickable but screen readers still hear a single, clear link.
 

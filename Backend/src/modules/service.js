@@ -561,7 +561,7 @@ const toBlogCard = (row) =>({
 const isPublished = (blog) => String(blog.status).toLowerCase() === "published";
 const canSeeDraft = (blog, user) => Boolean(user) && (user.role === ROLES.ADMIN || blog.author_id === user.id)
 
-const toBlogDetail = (blog) => ({
+const toBlogDetail = (blog) => ([{
   id: blog.id,
   title: blog.title,
   slug: blog.slug,
@@ -574,8 +574,8 @@ const toBlogDetail = (blog) => ({
   createdAt: blog.created_at ?? null,
   updatedAt: blog.updated_at ?? null,
   category: blog.category ? { id: blog.category.id, name: blog.category.name } : null,
-  author: blog.author ? { id: blog.author.id, name: blog.author.name } : null,
-});
+  author: blog.author ? { id: blog.author.id, name: blog.author.name , bio:blog.author.bio } : null,
+}]);
 
 export const getBlogByIdService = async (req) => {
     const { id } = req.params;

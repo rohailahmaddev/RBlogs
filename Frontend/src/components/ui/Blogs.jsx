@@ -29,7 +29,8 @@ function FilterChip({ label, onRemove }) {
 
 export default function Blogs() {
   const f = usePostFilters();
-  const {data, error, loading, refetch} = useBlogs(f.apiParams)
+  const url = `posts/get-posts`
+  const {data, error, loading, refetch} = useBlogs({url, params:f.apiParams})
   const {cdata:categories} = useCategory();
   const resultsRef = useRef(null);
 

@@ -3,16 +3,15 @@ import { getBlogPosts } from "../../api/blogServices";
 import { useCallback } from "react";
 
 
-export const useBlogs = (params) => {
+export const useBlogs = ({url ,params = {}}) => {
     const [state, setState] = useState({data:null,error:null,loading:true});
     const [reloadCount, setReloadCount] = useState(0)
-
     const key = JSON.stringify(params)
     useEffect(()=>{
         const controller = new AbortController();//browser api to abort req
         setState((s) => ({...s, error:null, loading:true}));
 
-        getBlogPosts(JSON.parse(key),{signal:controller.signal})
+        getBlogPosts(url, JSON.parse(key), {signal:controller.signal})
         .then((data) =>( setState({data:data, error:null, loading:false})))
         .catch((error) => {
             if(error?.name === "AbortError") return; // replaced by a newer request

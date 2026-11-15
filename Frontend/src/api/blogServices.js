@@ -1,7 +1,7 @@
 import {api} from "./apiClient.js"
 
-export const getBlogPosts = async ({ search, category, author, page, limit } ={},options={}) =>{
-    const res = await api.get("/posts/get-posts",{
+export const getBlogPosts = async (url,{ search, category, author, page, limit } ={},options={}) =>{
+    const res = await api.get(`${url}`,{
         params:{category, author, page, limit, search },
         signal:options.signal
     })

@@ -1,10 +1,5 @@
 import { useState } from "react";
 
-/** Headings used by the table of contents. */
-export function getHeadings(blocks) {
-  return blocks.filter((b) => b.type === "h2").map((b) => ({ id: b.id, text: b.text }));
-}
-
 function CodeBlock({ language, code }) {
   const [copied, setCopied] = useState(false);
 
@@ -39,70 +34,65 @@ function CodeBlock({ language, code }) {
   );
 }
 
-export default function ArticleBody({ blocks }) {
+export default function ArticleBody({ html }) {
+  if (!html) return null;
+
   return (
-    <div className="text-lg leading-8 text-slate-700 dark:text-slate-300">
-      {blocks.map((b, i) => {
-        switch (b.type) {
-          case "h2":
-            return (
-              <h2
-                key={i}
-                id={b.id}
-                className="mb-4 mt-14 scroll-mt-28 font-['Newsreader',serif] text-3xl font-semibold leading-tight tracking-tight text-slate-900 dark:text-white"
-              >
-                {b.text}
-              </h2>
-            );
-          case "h3":
-            return (
-              <h3
-                key={i}
-                id={b.id}
-                className="mb-3 mt-10 scroll-mt-28 font-['Newsreader',serif] text-2xl font-semibold text-slate-900 dark:text-white"
-              >
-                {b.text}
-              </h3>
-            );
-          case "quote":
-            return (
-              <blockquote
-                key={i}
-                className="my-10 border-l-4 border-blue-600 pl-6 font-['Newsreader',serif] text-2xl font-medium italic leading-snug text-slate-900 dark:border-blue-400 dark:text-white"
-              >
-                {b.text}
-              </blockquote>
-            );
-          case "list":
-            return (
-              <ul key={i} className="my-6 space-y-3">
-                {b.items.map((item, j) => (
-                  <li key={j} className="flex gap-3">
-                    <span className="mt-3 h-2 w-2 shrink-0 rounded-full bg-blue-600 dark:bg-blue-400" aria-hidden="true" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            );
-          case "callout":
-            return (
-              <aside
-                key={i}
-                className="my-8 rounded-2xl bg-blue-50 p-6 text-base font-medium leading-relaxed text-blue-900 ring-1 ring-blue-100 dark:bg-blue-500/10 dark:text-blue-100 dark:ring-blue-500/20"
-              >
-                {b.text}
-              </aside>
-            );
-          case "code":
-            return <CodeBlock key={i} language={b.language} code={b.code} />;
-          default:
-            return (
-              <p key={i} className="my-6">
-                {b.text}
-              </p>
-            );
-        }
-      })}
-    </div>
+    <div
+      className="
+        text-lg leading-8 text-slate-700 dark:text-slate-300
+
+        [&_h2]:mb-4 [&_h2]:mt-14 [&_h2]:scroll-mt-28
+        [&_h2]:font-['Newsreader',serif] [&_h2]:text-3xl [&_h2]:font-semibold
+        [&_h2]:leading-tight [&_h2]:tracking-tight
+        [&_h2]:text-slate-900 dark:[&_h2]:text-white
+
+        [&_h3]:mb-3 [&_h3]:mt-10 [&_h3]:scroll-mt-28
+        [&_h3]:font-['Newsreader',serif] [&_h3]:text-2xl [&_h3]:font-semibold
+        [&_h3]:text-slate-900 dark:[&_h3]:text-white
+
+        [&_h4]:mb-2 [&_h4]:mt-8 [&_h4]:scroll-mt-28
+        [&_h4]:text-xl [&_h4]:font-semibold
+        [&_h4]:text-slate-900 dark:[&_h4]:text-white
+
+        [&_p]:my-6
+
+        [&_ul]:my-6 [&_ul]:list-disc [&_ul]:space-y-3 [&_ul]:pl-6
+        [&_ul>li]:marker:text-blue-600 dark:[&_ul>li]:marker:text-blue-400
+
+        [&_ol]:my-6 [&_ol]:list-decimal [&_ol]:space-y-3 [&_ol]:pl-6
+        [&_ol>li]:marker:font-semibold [&_ol>li]:marker:text-blue-600
+        dark:[&_ol>li]:marker:text-blue-400
+
+        [&_blockquote]:my-10 [&_blockquote]:border-l-4 [&_blockquote]:border-blue-600
+        [&_blockquote]:pl-6 [&_blockquote]:font-['Newsreader',serif]
+        [&_blockquote]:text-2xl [&_blockquote]:font-medium [&_blockquote]:italic
+        [&_blockquote]:leading-snug [&_blockquote]:text-slate-900
+        dark:[&_blockquote]:border-blue-400 dark:[&_blockquote]:text-white
+
+        [&_a]:text-blue-600 [&_a]:underline-offset-4 hover:[&_a]:underline
+        dark:[&_a]:text-blue-400
+
+        [&_strong]:font-semibold [&_strong]:text-slate-900 dark:[&_strong]:text-white
+
+        [&_code]:rounded [&_code]:bg-slate-100 [&_code]:px-1.5 [&_code]:py-0.5
+        [&_code]:text-base [&_code]:text-slate-900
+        dark:[&_code]:bg-slate-800 dark:[&_code]:text-slate-100
+
+        [&_pre]:my-8 [&_pre]:overflow-x-auto [&_pre]:rounded-xl
+        [&_pre]:bg-slate-900 [&_pre]:p-5 [&_pre]:text-sm [&_pre]:text-slate-100
+        [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-slate-100
+
+        [&_img]:my-8 [&_img]:rounded-2xl
+        [&_hr]:my-12 [&_hr]:border-slate-200 dark:[&_hr]:border-slate-700
+
+        [&_table]:my-8 [&_table]:w-full [&_table]:text-left
+        [&_th]:border-b [&_th]:border-slate-300 [&_th]:py-2 [&_th]:font-semibold
+        dark:[&_th]:border-slate-600
+        [&_td]:border-b [&_td]:border-slate-200 [&_td]:py-2
+        dark:[&_td]:border-slate-700
+      "
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
   );
 }

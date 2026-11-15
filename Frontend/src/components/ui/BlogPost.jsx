@@ -2,14 +2,13 @@ import { useEffect, useMemo, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import ReadingProgress from "../article/ReadingProgress";
 import { Cover } from "./PostCoverImage";
-import ArticleBody, { getHeadings } from "../article/ArticleBody";
+import ArticleBody from "../article/ArticleBody";
 import ShareButtons from "../article/ShareButtons";
 import TableOfContents from "../article/TableOfContent";
 import PostCard from "./PostCard";
 import { formatDate } from "../../utility/DateFormater";
-
-
-const categorySlug = (name) => name.toLowerCase().replace(/\s+/g, "-");
+import { useBlogs } from "./useBlogs";
+import { prepareContent } from "../../utility/parseContent";
 
 function NotFound() {
   return (
@@ -36,32 +35,33 @@ function NotFound() {
 }
 
 export default function BlogPost() {
-  const { slug } = useParams();
+  const { id } = useParams();
+  const url =`posts/get-post/${id}`
   const bodyRef = useRef(null);
+  const {data, loading} = useBlogs({url});
+  const post = data?.[0];
 
-  const post = POSTS.find((p) => p.slug === slug);
-
-  // Real article if we have one, otherwise the excerpt as a stand-in
-  const blocks = useMemo(
-    () => (post ? ARTICLES[post.slug] ?? [{ type: "p", text: post.excerpt }] : []),
-    [post]
-  );
-  const headings = useMemo(() => getHeadings(blocks), [blocks]);
-
+  const { html, headings } = useMemo(() => {
+    if (!post) return { html: "", headings: [] };
+    return prepareContent(post.content, post.excerpt);
+  }, [post]);
+  
   const related = useMemo(() => {
-    if (!post) return [];
-    const others = POSTS.filter((p) => p.id !== post.id);
+    if (!data) return [];
+    const others = data.filter((p) => p.id !== post.id);
     const same = others.filter((p) => p.category === post.category);
     const rest = others.filter((p) => p.category !== post.category);
     return [...same, ...rest].slice(0, 3);
-  }, [post]);
+  }, [data]);
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
     if (post) document.title = `${post.title} | RBlogs`;
   }, [post]);
 
-  if (!post) return <NotFound />;
+  if (loading) return <div>Loading...</div>;
+
+  if (!data || !post) return <NotFound />;
 
   return (
     <>
@@ -83,31 +83,31 @@ export default function BlogPost() {
 
             <div className="mt-6">
               <Link
-                to={`/categories/${categorySlug(post.category)}`}
+                to={`/categories/${post?.category?.slug}`}
                 className="inline-block rounded-md bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 transition hover:bg-blue-100 dark:bg-blue-500/15 dark:text-blue-300 dark:hover:bg-blue-500/25"
               >
-                {post.category}
+                {post?.category?.name}
               </Link>
             </div>
 
             <h1 className="mt-5 font-['Newsreader',serif] text-4xl font-semibold leading-[1.1] tracking-tight text-slate-900 dark:text-white sm:text-5xl lg:text-[3.5rem]">
-              {post.title}
+              {post?.title}
             </h1>
 
             <p className="mt-5 text-xl leading-relaxed text-slate-600 dark:text-slate-300">
-              {post.excerpt}
+              {post?.excerpt}
             </p>
 
             <div className="mt-8 flex items-center gap-3">
               <span className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-600 text-base font-semibold text-white">
-                {post.author.name.charAt(0)}
+                {post?.author?.name?.charAt(0)}
               </span>
               <div className="text-sm">
-                <p className="font-semibold text-slate-900 dark:text-white">{post.author.name}</p>
+                <p className="font-semibold text-slate-900 dark:text-white">{post?.author?.name}</p>
                 <p className="text-slate-500 dark:text-slate-400">
-                  <time dateTime={post.date}>{formatDate(post.date)}</time>
+                  <time dateTime={post?.createdAt}>{formatDate(post?.createdAt)}</time>
                   <span aria-hidden="true"> · </span>
-                  {post.readTime} min read
+                  {post?.readTime} min read
                 </p>
               </div>
             </div>
@@ -122,23 +122,23 @@ export default function BlogPost() {
           <div className="mt-12 grid gap-12 xl:grid-cols-[minmax(0,44rem)_1fr] xl:gap-16">
             <div className="max-w-3xl">
               <div ref={bodyRef}>
-                <ArticleBody blocks={blocks} />
+                <ArticleBody html={html} />
               </div>
 
               <div className="mt-12 border-t border-slate-200 pt-8 dark:border-slate-800">
-                <ShareButtons title={post.title} />
+                <ShareButtons title={post?.title} />
               </div>
 
               {/* Author box */}
               <div className="mt-10 flex gap-5 rounded-2xl border border-slate-200 bg-slate-50 p-6 dark:border-slate-800 dark:bg-slate-950">
                 <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xl font-semibold text-white">
-                  {post.author.name.charAt(0)}
+                  {post?.author?.name?.charAt(0)}
                 </span>
                 <div>
                   <p className="text-sm text-slate-500 dark:text-slate-400">Written by</p>
-                  <p className="font-semibold text-slate-900 dark:text-white">{post.author.name}</p>
+                  <p className="font-semibold text-slate-900 dark:text-white">{post?.author?.name}</p>
                   <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-                    {post.author.bio || DEFAULT_AUTHOR_BIO}
+                    {post?.author?.bio}
                   </p>
                 </div>
               </div>
@@ -151,8 +151,8 @@ export default function BlogPost() {
         </div>
       </article>
 
-      {/* Related posts */}
-      {related.length > 0 && (
+      Related posts
+      {related?.length > 0 && (
         <section
           aria-labelledby="related-heading"
           className="bg-slate-50 py-16 dark:bg-slate-950 sm:py-20"
@@ -165,8 +165,8 @@ export default function BlogPost() {
               Keep reading
             </h2>
             <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-              {related.map((p) => (
-                <PostCard key={p.id} post={p} />
+              {related?.map((p) => (
+                <PostCard key={p?.id} post={p} />
               ))}
             </div>
           </div>

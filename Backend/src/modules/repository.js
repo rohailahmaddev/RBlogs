@@ -115,7 +115,21 @@ export const updateUserPasswordById = async (userId, newPassword) => {
 //blog posts
 export const getBlogById = async(id) => {
     return prisma.posts.findUnique({
-        where:{id:id}
+        where:{id:id},
+        select: {
+            id: true,
+            title: true,
+            slug: true,
+            excerpt: true,
+            content:true,
+            cover_url: true,
+            read_time: true,
+            status: true,
+            published_at: true,
+            created_at: true,
+            category: { select: { id: true, name: true } },
+            author: { select: { id: true, name: true } },
+        }
     })
 }
 
