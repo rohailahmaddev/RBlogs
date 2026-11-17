@@ -1,4 +1,4 @@
-import {api} from "./apiClient.js"
+import api from "./apiClient.js"
 
 export const getBlogPosts = async (url,{ search, category, author, page, limit } ={},options={}) =>{
     const res = await api.get(`${url}`,{

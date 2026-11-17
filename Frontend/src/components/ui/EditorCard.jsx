@@ -1,15 +1,19 @@
 import { useContext, useEffect, useState } from "react";
 import { Data } from "../../context/context";
+import { getLatestPost } from "../../utility/GetLatestPost";
+import { PostCardSkeleton } from "./PostCard";
 
 
 // The one animated moment: a post being written, then published
 function useWritingDemo(text) {
+    console.log("text", text)
+    if(!text) return { typed: null, stage:null };
     const [reduced] = useState(
         () =>
             typeof window !== "undefined" &&
             window.matchMedia("(prefers-reduced-motion: reduce)").matches
     );
-    const [count, setCount] = useState(reduced ? text.length : 0);
+    const [count, setCount] = useState(reduced ? text?.length : 0);
     const [stage, setStage] = useState(reduced ? "published" : "typing");
 
     useEffect(() => {
@@ -21,7 +25,7 @@ function useWritingDemo(text) {
             interval = setInterval(() => {
                 i += 1;
                 setCount(i);
-                if (i >= text.length) {
+                if (i >= text?.length) {
                     clearInterval(interval);
                     setStage("drafted");
                     publishTimer = setTimeout(() => setStage("published"), 1100);
@@ -36,12 +40,62 @@ function useWritingDemo(text) {
         };
     }, [reduced, text]);
 
-    return { typed: text.slice(0, count), stage };
+    return { typed: text?.slice(0, count), stage };
 }
 
+
+export function HeroEditorSkeleton() {
+  return (
+    <div
+      className="relative animate-pulse rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl shadow-blue-900/10 dark:border-slate-700 dark:bg-slate-800 dark:shadow-black/40 sm:p-6"
+      aria-hidden="true"
+    >
+      {/* Header */}
+      <div className="mb-5 flex items-center justify-between">
+        <div className="h-5 w-24 rounded bg-slate-200 dark:bg-slate-700" />
+
+        <div className="h-8 w-28 rounded-full bg-slate-200 dark:bg-slate-700" />
+      </div>
+
+      {/* Title */}
+      <div className="min-h-[4.5rem] space-y-3 sm:min-h-[5.25rem]">
+        <div className="h-8 w-full rounded bg-slate-200 dark:bg-slate-700 sm:h-9" />
+        <div className="h-8 w-3/5 rounded bg-slate-200 dark:bg-slate-700 sm:h-9" />
+      </div>
+
+      {/* Body lines */}
+      <div className="mt-4 space-y-3">
+        <div className="h-2.5 w-full rounded-full bg-slate-200 dark:bg-slate-700" />
+
+        <div className="h-2.5 w-4/5 rounded-full bg-slate-200 dark:bg-slate-700" />
+
+        <div className="h-2.5 w-3/5 rounded-full bg-slate-200 dark:bg-slate-700" />
+      </div>
+
+      {/* Footer */}
+      <div className="mt-6 flex items-center justify-end gap-3">
+        {/* Category placeholders */}
+        {/* <div className="flex gap-2">
+          <div className="h-7 w-16 rounded-lg bg-slate-200 dark:bg-slate-700" />
+
+          <div className="h-7 w-16 rounded-lg bg-slate-200 dark:bg-slate-700" />
+        </div> */}
+
+        {/* Publish button placeholder */}
+        <div className="h-9 w-28 rounded-full bg-slate-200 dark:bg-slate-700" />
+      </div>
+    </div>
+  );
+}
+
+
+
 export function EditorCard() {
-    const { DEMO_TITLE } = useContext(Data);
-    const { typed, stage } = useWritingDemo(DEMO_TITLE);
+    const { data, loading, reftech } = useContext(Data);
+    const latestPost = getLatestPost(data?.items)
+    console.log("latestPost:",latestPost)
+    const { typed, stage } = useWritingDemo(latestPost?.title);
+    if(loading) return <HeroEditorSkeleton/>
     const filled = stage !== "typing";
     const published = stage === "published";
 
@@ -94,8 +148,8 @@ export function EditorCard() {
             </div>
 
             {/* footer */}
-            <div className="mt-6 flex items-center justify-between gap-3">
-                <div className="flex flex-wrap gap-2">
+            <div className="mt-6 flex items-center justify-end gap-3">
+                {/* <div className="flex flex-wrap gap-2">
                     {["Writing", "Habits"].map((t) => (
                         <span
                             key={t}
@@ -104,7 +158,7 @@ export function EditorCard() {
                             {t}
                         </span>
                     ))}
-                </div>
+                </div> */}
                 <span
                     className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold text-white transition-colors duration-500 ${published ? "bg-emerald-600" : "bg-blue-600"
                         }`}

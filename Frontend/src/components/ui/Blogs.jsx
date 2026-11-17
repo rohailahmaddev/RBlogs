@@ -1,13 +1,13 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import usePostFilters from "./UserPostFilter";
 import SearchBar from "./Search";
 import PostCard, { PostCardSkeleton } from "./PostCard";
 import Pagination from "./Pagination";
 import { SORT_OPTIONS } from "../../utility/FilterPost";
 import SelectField from "./SelectField";
-import { useBlogs } from "./useBlogs";
-import { useCategory } from "./useCategories";
+import usePostFilters from "../hooks/UserPostFilter";
+import { useBlogs } from "../hooks/useBlogs";
+import { useCategory } from "../hooks/useCategories";
 
 function FilterChip({ label, onRemove }) {
   return (
@@ -30,7 +30,7 @@ function FilterChip({ label, onRemove }) {
 export default function Blogs() {
   const f = usePostFilters();
   const url = `posts/get-posts`
-  const {data, error, loading, refetch} = useBlogs({url, params:f.apiParams})
+  const {data, loading, refetch} = useBlogs({url, params:f.apiParams})
   const {cdata:categories} = useCategory();
   const resultsRef = useRef(null);
 

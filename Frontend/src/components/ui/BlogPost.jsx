@@ -7,9 +7,9 @@ import ShareButtons from "../article/ShareButtons";
 import TableOfContents from "../article/TableOfContent";
 import PostCard, { PostCardSkeleton } from "./PostCard";
 import { formatDate } from "../../utility/DateFormater";
-import { useBlogs } from "./useBlogs";
 import { prepareContent } from "../../utility/parseContent";
 import ArticleSkeleton from "../article/ArticleBodySekeleton";
+import { useBlogs } from "../hooks/useBlogs";
 
 function NotFound() {
   return (

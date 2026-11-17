@@ -1,18 +1,18 @@
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 // import { POSTS } from "../../api/data";
 import PostCard, { PostCardSkeleton } from "./PostCard";
-import usePostFilters from "./UserPostFilter";
-import { useBlogs } from "./useBlogs";
+import usePostFilters from "../hooks/UserPostFilter";
+import { useBlogs } from "../hooks/useBlogs";
+import { Data } from "../../context/context";
 
 const MAX_POSTS = 4; // 1 featured +  3cards
 
 export function LatestPosts() {
-    const f = usePostFilters();
-    const url = `posts/get-posts`
-    const {data, loading} = useBlogs({url,params:f.apiParams})
+     const { data, loading, reftech } = useContext(Data);
     const [active, setActive] = useState("All");
 
+    console.log("data",data?.items)
     const blogs = data?.items ?? [];
 
     const categories = useMemo(
