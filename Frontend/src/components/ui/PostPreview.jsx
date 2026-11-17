@@ -1,5 +1,7 @@
 import { useContext } from "react";
 import { Data } from "../../context/context";
+import { getLatestPost } from "../../utility/GetLatestPost";
+import { Link } from "react-router-dom";
 
 
 export function PostPreviewSkeleton() {
@@ -30,23 +32,29 @@ export function PostPreviewSkeleton() {
 
 /* A small finished post sitting behind the editor */
 export function PostPreview() {
-   const { data, loading, reftech } = useContext(Data);
-   if(loading) return <PostPreviewSkeleton/>
-
+  const { data, loading } = useContext(Data);
+  if (loading) return <PostPreviewSkeleton />
+  const latestPost = getLatestPost(data?.items);
+  const href = `/blogs/${latestPost?.id}`;
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-lg shadow-blue-900/10 dark:border-slate-700 dark:bg-slate-800 dark:shadow-black/40">
-      <span className="rounded-md bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-500/15 dark:text-blue-300">
-        Career
-      </span>
-      <p className="mt-2 font-['Newsreader',serif] text-lg font-semibold leading-snug text-slate-900 dark:text-white">
-        A junior developer's guide to code reviews
-      </p>
-      <div className="mt-3 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 font-semibold text-white">
-          R
+    <Link
+      to={href}
+      className="after:absolute after:inset-0 focus:outline-none focus-visible:after:ring-2 focus-visible:after:ring-blue-500 focus-visible:after:rounded-[inherit]"
+    >
+      <div className="rounded-2xl cursor-pointer border border-slate-200 bg-white p-4 shadow-lg shadow-blue-900/10 dark:border-slate-700 dark:bg-slate-800 dark:shadow-black/40">
+        <span className="rounded-md bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-500/15 dark:text-blue-300">
+          {latestPost?.category?.name}
         </span>
-        5 min read
+        <p className="mt-2 font-['Newsreader',serif] text-lg font-semibold leading-snug text-slate-900 dark:text-white">
+          {latestPost?.title}
+        </p>
+        <div className="mt-3 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 font-semibold text-white">
+            {latestPost?.author?.name?.charAt(0)}
+          </span>
+          {latestPost?.readTime} min
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }

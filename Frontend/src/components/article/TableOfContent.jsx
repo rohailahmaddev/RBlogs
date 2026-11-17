@@ -33,11 +33,10 @@ export default function TableOfContents({ headings }) {
               <a
                 href={`#${h.id}`}
                 aria-current={on ? "location" : undefined}
-                className={`-ml-px block border-l-2 py-1.5 pl-4 text-sm leading-snug transition-colors ${
-                  on
+                className={`-ml-px block border-l-2 py-1.5 pl-4 text-sm leading-snug transition-colors ${on
                     ? "border-blue-600 font-medium text-blue-700 dark:border-blue-400 dark:text-blue-400"
                     : "border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-900 dark:text-slate-400 dark:hover:border-slate-600 dark:hover:text-white"
-                }`}
+                  }`}
               >
                 {h.text}
               </a>

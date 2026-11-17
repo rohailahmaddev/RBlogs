@@ -126,8 +126,7 @@ export default function Newsletter() {
                         aria-describedby={error ? "newsletter-error" : undefined}
                         disabled={status === "loading"}
                         className={`w-full flex-1 rounded-full border-0 bg-white px-5 py-3.5 text-base text-slate-900 placeholder:text-slate-400
-                          shadow-sm outline-none ring-2 transition focus:ring-white disabled:opacity-70 ${
-                            error ? "ring-red-300" : "ring-transparent"
+                          shadow-sm outline-none ring-2 transition focus:ring-white disabled:opacity-70 ${error ? "ring-red-300" : "ring-transparent"
                           }`}
                       />
                       <button

@@ -84,7 +84,7 @@ export default function Hero() {
                         <EditorCard />
                     </div>
                     <div className="absolute -bottom-10 -left-2 hidden w-60 sm:block lg:-left-10">
-                        <PostPreview/>
+                        <PostPreview />
                     </div>
                     {/* spacer so the preview card never collides with content below */}
                     <div className="hidden h-10 sm:block" />

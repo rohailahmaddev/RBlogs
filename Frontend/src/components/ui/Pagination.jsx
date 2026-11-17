@@ -40,11 +40,10 @@ export default function Pagination({ page, totalPages, onChange }) {
             onClick={() => onChange(p)}
             aria-current={p === page ? "page" : undefined}
             aria-label={`Page ${p}`}
-            className={`cursor-pointer ${base} ${
-              p === page
+            className={`cursor-pointer ${base} ${p === page
                 ? "bg-blue-600 text-white shadow-md shadow-blue-600/25"
                 : "text-slate-700 hover:bg-white dark:text-slate-200 dark:hover:bg-slate-800"
-            }`}
+              }`}
           >
             {p}
           </button>

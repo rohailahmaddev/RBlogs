@@ -1,18 +1,14 @@
 import { useContext, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-// import { POSTS } from "../../api/data";
 import PostCard, { PostCardSkeleton } from "./PostCard";
-import usePostFilters from "../hooks/UserPostFilter";
-import { useBlogs } from "../hooks/useBlogs";
 import { Data } from "../../context/context";
 
 const MAX_POSTS = 4; // 1 featured +  3cards
 
 export function LatestPosts() {
-     const { data, loading, reftech } = useContext(Data);
+    const { data, loading, reftech } = useContext(Data);
     const [active, setActive] = useState("All");
 
-    console.log("data",data?.items)
     const blogs = data?.items ?? [];
 
     const categories = useMemo(
@@ -81,8 +77,8 @@ export function LatestPosts() {
                                 onClick={() => setActive(c)}
                                 aria-pressed={on}
                                 className={`shrink-0 cursor-pointer rounded-full px-4 py-1.5 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${on
-                                        ? "bg-blue-600 text-white shadow-md shadow-blue-600/25"
-                                        : "bg-white text-slate-700 ring-1 ring-slate-200 hover:ring-blue-300 dark:bg-slate-900 dark:text-slate-200 dark:ring-slate-800 dark:hover:ring-blue-500"
+                                    ? "bg-blue-600 text-white shadow-md shadow-blue-600/25"
+                                    : "bg-white text-slate-700 ring-1 ring-slate-200 hover:ring-blue-300 dark:bg-slate-900 dark:text-slate-200 dark:ring-slate-800 dark:hover:ring-blue-500"
                                     }`}
                             >
                                 {c}

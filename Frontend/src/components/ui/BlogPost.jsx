@@ -37,11 +37,11 @@ function NotFound() {
 
 export default function BlogPost() {
   const { id } = useParams();
-  const url =`posts/get-post/${id}`
+  const url = `posts/get-post/${id}`
   const bodyRef = useRef(null);
-  const {data} = useBlogs({url});
+  const { data } = useBlogs({ url });
   const relatedPostUrl = `posts/get-posts/${id}/related`;
-  const {data:related, loading = true} = useBlogs({url:relatedPostUrl})
+  const { data: related, loading = true } = useBlogs({ url: relatedPostUrl })
   const post = data?.[0];
 
   const { html, headings } = useMemo(() => {
@@ -56,12 +56,12 @@ export default function BlogPost() {
 
 
   if (loading) return <ArticleSkeleton />;
-  if (!data) return <NotFound/>
+  if (!data) return <NotFound />
 
   return (
     <>
       <ReadingProgress targetRef={bodyRef} />
-       <article className="bg-white pb-16 pt-10 dark:bg-slate-900 sm:pt-14 lg:pb-24">
+      <article className="bg-white pb-16 pt-10 dark:bg-slate-900 sm:pt-14 lg:pb-24">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <header className="max-w-3xl">
@@ -165,7 +165,7 @@ export default function BlogPost() {
           </div>
         </section>
       )}
-      
+
     </>
   );
 }
