@@ -2,6 +2,8 @@ import logo from "../../assets/logo.png";
 import { Link } from "react-router-dom";
 import { EditorCard } from "./EditorCard";
 import { PostPreview } from "./PostPreview";
+import { useContext, useMemo } from "react";
+import { Data } from "../../context/context";
 
 /* ------------------------------------------------------------------ */
 /*  Content – edit these to match your real blog                       */
@@ -24,6 +26,14 @@ const TOPICS = [
 /*  Hero                                                               */
 /* ------------------------------------------------------------------ */
 export default function Hero() {
+    const { data, loading, reftech } = useContext(Data);
+
+    const blogs = data?.items ?? [];
+    const categories = useMemo(
+        () => [...new Set(blogs?.map((p) => p.category.name))].slice(0,4),
+        [blogs]
+    );
+
     return (
         <section className="relative overflow-hidden bg-white dark:bg-slate-900">
             {/* Brand mark, large and quiet, behind the visual */}
@@ -64,13 +74,13 @@ export default function Hero() {
                     <div className="mt-12">
                         <p className="text-sm text-slate-500 dark:text-slate-400">Popular topics</p>
                         <ul className="mt-3 flex flex-wrap gap-2">
-                            {TOPICS.map((t) => (
-                                <li key={t.to}>
+                            {categories.map((t,i) => (
+                                <li key={i}>
                                     <Link
-                                        to={t.to}
+                                        to={t?.to}
                                         className="inline-block rounded-full bg-slate-100 px-4 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-blue-600 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-blue-600"
                                     >
-                                        {t.label}
+                                        {t}
                                     </Link>
                                 </li>
                             ))}
